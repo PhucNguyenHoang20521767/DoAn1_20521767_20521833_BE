@@ -1,0 +1,17 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "NGUYEN'S HOME Furniture",
+        "description": "NGUYEN'S HOME Furniture API",
+        "version": "1.0.0"
+    },
+    "schema": [
+        "http",
+        "https"
+    ],
+    "servers": [
+        {
+            "url": "http://localhost:5000/"
+        }
+    ]
+}
