@@ -16,12 +16,13 @@ const swaggerOptions = {
 }
 
 app.get("/", function (req, res) {
-	res.redirect("/doc");
+	res.redirect("/docs");
 });
 
-app.use("/api/catchphrases", require("./routes/catchphrases"));
+app.use("/api/products", require("./routes/products"));
+app.use("/api/categories", require("./routes/categories"));
 
-app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerJsDoc(swaggerOptions)));
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerJsDoc(swaggerOptions)));
 
 // Error Handler
 app.use(errorHandler);

@@ -1,8 +1,8 @@
-// const jwt = require("jsonwebtoken");
-// const { default: mongoose } = require("mongoose");
-// const ErrorResponse = require("../utils/errorResponse");
+const jwt = require("jsonwebtoken");
+const { default: mongoose } = require("mongoose");
+const ErrorResponse = require("../utils/errorResponse");
 
-// exports.protect = async (req, res, next) => {
+exports.protect = async (req, res, next) => {
 //   let token;
 
 //   if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
@@ -38,9 +38,9 @@
 //   } catch (error) {
 //     return next(new ErrorResponse(error));
 //   }
-// };
+};
 
-// exports.adminProtect = async (req, res, next) => {
+exports.adminProtect = async (req, res, next) => {
 //   req.admin = true;
 //   next()
-// }
+}

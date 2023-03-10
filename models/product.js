@@ -29,7 +29,7 @@
 //         productStatus: {
 //             type: Boolean,
 // 			required: true,
-// 			default: true,
+// 			default: true
 //         },
 //         productSupplier: {
 //             type: Schema.Types.ObjectId,
