@@ -19,10 +19,22 @@ app.get("/", function (req, res) {
 	res.redirect("/docs");
 });
 
-app.use("/api/products", require("./routes/products"));
+app.use("/api/customers", require("./routes/customers"));
 app.use("/api/categories", require("./routes/categories"));
+app.use("/api/subcategories", require("./routes/subcategories"));
 
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerJsDoc(swaggerOptions)));
+
+// Authentication
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     bearer:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ */
 
 // Error Handler
 app.use(errorHandler);

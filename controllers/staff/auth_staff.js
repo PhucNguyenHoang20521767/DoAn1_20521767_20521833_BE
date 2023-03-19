@@ -1,0 +1,64 @@
+const Staff = require("../../models/staff");
+const ErrorResponse = require("../../utils/errorResponse");
+
+exports.registerStaff = async (req, res, next) => {
+    const { staffLoginName, staffPassword, staffFullName, staffEmail, staffPhone, privilege  } = req.body;
+
+	try {
+		const staff = await Staff.create(
+            {
+				staffLoginName,
+				staffPassword,
+				staffFullName,
+				staffEmail,
+				staffPhone,
+				privilege
+			}
+		);
+
+		sendTokenStaff(staff, 201, res);
+	} catch (error) {
+		next(error);
+	}
+};
+
+exports.loginStaff = async (req, res, next) => {
+	const { staffLoginName, staffPassword } = req.body;
+
+	if (!staffLoginName || !staffPassword)
+		return next(ErrorResponse("Please provide login name and password", 400));
+
+	try {
+		const staff = await Staff.findOne({
+			staffLoginName
+		}).select("+staffPassword");
+
+		if (!staff) next(new ErrorResponse("Invalid credentials", 401));
+
+		const passwordValid = await staff.checkPassword(staffPassword);
+		if (!passwordValid)
+            return next(new ErrorResponse("Incorrect password", 401));
+
+		sendTokenStaff(staff, 200, res);
+	} catch (error) {
+		next(error);
+	}
+};
+
+exports.validateStaff = async (req, res, next) => {
+	if (req.staff)
+		res.json({
+			success: true,
+			data: req.staff,
+		});
+	else {
+		return next(ErrorResponse("No staff found!", 404));
+	}
+};
+
+const sendTokenStaff = (staff, statusCode, res) => {
+	res.status(statusCode).json({
+		success: true,
+		token: staff.getSignedTokenStaff("STAFF")
+	});
+};
