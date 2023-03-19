@@ -5,12 +5,11 @@ var categorySchema = new Schema(
     {
         categoryName: {
             type: String,
-            required: [true, "Please provide category's name."],
+            required: [true, "Please provide category's name"],
             trim: true
         },
         categoryDescription: {
             type: String,
-            required: [true, "Please provide category's description."],
             trim: true
         }
     },
@@ -33,4 +32,4 @@ module.exports = Category;
  *           type: string
  *         categoryDescription:
  *           type: string
-*/
+ */

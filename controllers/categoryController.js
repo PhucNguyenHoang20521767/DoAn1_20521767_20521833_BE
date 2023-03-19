@@ -9,7 +9,8 @@ exports.getAllCategories = async (req, res, next) => {
         options = {
             ...options,
             $or: [
-                {}
+                {categoryName: new RegExp(search.toString(), "i")},
+                {categoryDescription: new RegExp(search.toString(), "i")}
             ],
         }
     }
