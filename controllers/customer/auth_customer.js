@@ -31,13 +31,14 @@ exports.loginCustomer = async (req, res, next) => {
     
     try {
         const customer = await Customer.findOne({
-            customerEmail
+            customerEmail,
+            isVerified: true
         }).select("+customerPassword");
         
         if (!customer)
             return next(new ErrorResponse("Invalid credentials", 401));
 
-        const passwordValid = await customer.checkPassword(customerPassword);
+        const passwordValid = await customer.checkPasswordCustomer(customerPassword);
 		if (!passwordValid)
             return next(new ErrorResponse("Incorrect password", 401));
 
@@ -86,8 +87,8 @@ const sendTokenCustomer = (customer, statusCode, res) => {
 const sendOTPToCustomerEmail = async (customer, statusCode, res) => {
     await sendEmail(
         customer.customerEmail,
-        "Verify Your Email Address",
-        `Hi ${customer.customerFullName}, please input this OTP code to verify your email address: ${await customer.getOTPToSend()}`
+        "Xác thực địa chỉ email của bạn",
+        `Xin chào ${customer.customerFullName}, cảm ơn bạn vì đã lựa chọn thương hiệu của chúng tôi.\nVui lòng sử dụng mã OTP này để hoàn tất việc đăng ký: ${await customer.getOTPToSend()}.\nNGUYEN'S HOME Furniture`
     );
 
     res.status(statusCode).json({
