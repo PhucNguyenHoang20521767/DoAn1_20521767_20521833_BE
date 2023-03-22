@@ -108,6 +108,9 @@ customerSchema.methods.getSignedTokenCustomer = function () {
 
 // Generate OTP to send
 customerSchema.methods.getOTPToSend = async function () {
+    this.verificationKey = authenticator.generateSecret();
+    await this.save();
+
     totp.options = {
       algorithm: "sha1",
       encoding: "ascii",

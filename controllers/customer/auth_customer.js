@@ -31,8 +31,7 @@ exports.loginCustomer = async (req, res, next) => {
     
     try {
         const customer = await Customer.findOne({
-            customerEmail,
-            isVerified: true
+            customerEmail
         }).select("+customerPassword");
         
         if (!customer)
@@ -69,18 +68,74 @@ exports.verifyCustomerAfterSendOTP = async (req, res, next) => {
     }
 };
 
-exports.forgetPasswordCustomer = async (req, res, next) => {
+exports.sendOTPToCustomer = async (req, res, next) => {
+    const { customerEmail } = req.body;
 
+    if (!customerEmail)
+        return next(ErrorResponse("Please provide email", 400));
+
+    try {
+        const customer = await Customer.findOne({
+            customerEmail,
+            isVerified: false
+        }).select("+verificationKey");
+        
+        if (!customer)
+            return next(new ErrorResponse("Invalid credentials", 401));
+
+        sendOTPToCustomerEmail(customer, 201, res);
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.forgetPasswordCustomer = async (req, res, next) => {
+    const { customerEmail } = req.body;
+
+    try {
+        const customer = await Customer.findOne({
+            customerEmail
+        }).select("+verificationKey");
+
+        if (customer) 
+            await sendOTPToResetPassword(customer, 200, res);
+        else 
+            next(new ErrorResponse("Invalid credentials", 401));
+    } catch (error) {
+        next(error);
+    }
 };
 
 exports.resetPasswordCustomer = async (req, res, next) => {
+    const { customerIdToken, customerOTP, customerPassword } = req.body;
 
+    const customerId = base32.decode(customerIdToken);
+
+    try {
+        const customer = await Customer.findById(customerId).select("+verificationKey");
+
+        if (!customer) return next(new ErrorResponse("No customer found", 404));
+
+        if (!(await customer.verifyOTPFromEmail(customerOTP)))
+            next(new ErrorResponse("Invalid OTP", 401));
+
+        await customer.updatePasswordCustomer(customerPassword);
+
+        res.status(204).json({
+            success: true,
+            message: "Reset password successfully",
+        });
+    } catch (error) {
+        next(error);
+    }
 };
 
-const sendTokenCustomer = (customer, statusCode, res) => {
+const sendTokenCustomer = async (customer, statusCode, res) => {
 	res.status(statusCode).json({
 		success: true,
-		token: customer.getSignedTokenCustomer()
+		token: customer.getSignedTokenCustomer(),
+        customerIdToken: await customer.getBase32Id(),
+        data: customer
 	});
 };
 
@@ -89,6 +144,19 @@ const sendOTPToCustomerEmail = async (customer, statusCode, res) => {
         customer.customerEmail,
         "Xác thực địa chỉ email của bạn",
         `Xin chào ${customer.customerFullName}, cảm ơn bạn vì đã lựa chọn thương hiệu của chúng tôi.\nVui lòng sử dụng mã OTP này để hoàn tất việc đăng ký: ${await customer.getOTPToSend()}.\nNGUYEN'S HOME Furniture`
+    );
+
+    res.status(statusCode).json({
+        success: true,
+        customerIdToken: await customer.getBase32Id()
+    });
+};
+
+const sendOTPToResetPassword = async (customer, statusCode, res) => {
+    await sendEmail(
+        customer.customerEmail,
+        "Reset mật khẩu của bạn",
+        `Xin chào ${customer.customerFullName}, chúng tôi đã nhận được yêu cầu reset mật khẩu.\nNếu đó là bạn, vui lòng sử dụng mã OTP này để hoàn tất quá trình: ${await customer.getOTPToSend()}.\nNGUYEN'S HOME Furniture`
     );
 
     res.status(statusCode).json({

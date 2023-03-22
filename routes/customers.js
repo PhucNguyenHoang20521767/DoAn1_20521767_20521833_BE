@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const { registerCustomer, loginCustomer, verifyCustomerAfterSendOTP } = require("../controllers/customer/auth_customer");
+const { registerCustomer, loginCustomer, sendOTPToCustomer, forgetPasswordCustomer, resetPasswordCustomer, verifyCustomerAfterSendOTP } = require("../controllers/customer/auth_customer");
 
 /**
  * @swagger
@@ -54,6 +54,96 @@ router.route("/registerCustomer").post(registerCustomer);
  *         description: Invalid credentials
  */
 router.route("/loginCustomer").post(loginCustomer);
+
+/**
+ * @swagger
+ * /api/customers/sendOTPCustomer:
+ *   post:
+ *     tags: [Customer]
+ *     operatorId: sendOTPCustomer
+ *     description: Send OTP to customer's email
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - customerEmail
+ *             properties:
+ *               customerEmail:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: Bad Request
+ *       401:
+ *         description: Invalid credentials
+ */
+router.route("/sendOTPCustomer").post(sendOTPToCustomer);
+
+/**
+ * @swagger
+ * /api/customers/forgetPasswordCustomer:
+ *   post:
+ *     tags: [Customer]
+ *     operatorId: forgetPasswordCustomer
+ *     description: Reset password request from customers
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - customerEmail
+ *             properties:
+ *               customerEmail:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Invalid Credentials
+ */
+router.route("/forgetPasswordCustomer").post(forgetPasswordCustomer);
+
+/**
+ * @swagger
+ * /api/customers/resetPasswordCustomer:
+ *   post:
+ *     tags: [Customer]
+ *     operatorId: resetPasswordCustomer
+ *     description: Accept reset password request from customers
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - customerIdToken
+ *               - customerOTP
+ *               - customerPassword
+ *             properties:
+ *               customerIdToken:
+ *                 type: string
+ *               customerOTP:
+ *                 type: string
+ *               customerPassword:
+ *                 type: string
+ *     responses:
+ *       204:
+ *         description: Success
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Invalid Credentials
+ */
+router.route("/resetPasswordCustomer").post(resetPasswordCustomer);
 
 /**
  * @swagger
