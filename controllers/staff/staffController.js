@@ -50,5 +50,79 @@ exports.getStaffById = async (req, res, next) => {
 };
 
 exports.updateStaff = async (req, res, next) => {
+    const { staffId } = req.params;
 
+    if (!staffId)
+        return next(new ErrorResponse("Please provide valid staff's ID", 400));
+
+    const { staffFullName, staffEmail, staffPhone, staffGender } = req.body;
+
+    try {
+        const staff = await Staff.findByIdAndUpdate(staffId, {
+            staffFullName,
+            staffEmail,
+            staffPhone,
+            staffGender
+        });
+
+        if (staff) {
+            res.status(200).json({
+                success: true,
+                message: "Staff updated successfully",
+                data: staff
+            });
+        } else {
+            return next(new ErrorResponse("Staff not found", 404));
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.deleteStaff = async (req, res, next) => {
+    const { staffId } = req.params;
+
+    if (!staffId)
+        return next(new ErrorResponse("Please provide valid staff's ID", 400));
+
+    try {
+        const staff = await Staff.findByIdAndDelete(staffId);
+
+        if (!staff)
+            return next(new ErrorResponse("No staff found", 404));
+
+        res.status(200).json({
+            success: true,
+            message: "Staff deleted successfully",
+            data: staff
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.activeOrInactiveStaff = async (req, res, next) => {
+    const { staffId } = req.params;
+
+    if (!staffId)
+        return next(new ErrorResponse("Please provide valid staff's ID", 400));
+
+    try {
+        const staff = await Staff.findById(staffId);
+
+        if (!staff)
+            return next(new ErrorResponse("No staff found", 404));
+
+        await staff.updateOne({
+            staffStatus: (staff.staffStatus === 0) ? -1 : 0
+        });
+        await staff.save();
+
+        res.status(200).json({
+            success: true,
+            message: `Staff ${staff.staffStatus === 0 ? "deactivated" : "activated"} successfully`
+        });
+    } catch (error) {
+        next(error);
+    }
 };

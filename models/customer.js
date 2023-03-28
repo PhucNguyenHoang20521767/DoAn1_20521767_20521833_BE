@@ -9,7 +9,8 @@ var customerSchema = new Schema(
     {
         customerLoginName: {
             type: String,
-            required: [true, "Please provide customer's name"],
+            unique: [true, "Login name is already registered"],
+            required: true,
             trim: true
         },
         customerPassword: {
@@ -25,7 +26,7 @@ var customerSchema = new Schema(
                 /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]+$/,
                 "Invalid name",
             ],
-            required: true,
+            required: [true, "Please provide customer's name"],
             trim: true
         },
         customerBirthday: {
@@ -64,6 +65,10 @@ var customerSchema = new Schema(
         isVerified: {
             type: Boolean,
             default: false
+        },
+        isActive: {
+            type: Boolean,
+            default: true
         }
     },
     { timestamps: true}

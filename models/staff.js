@@ -8,7 +8,7 @@ var staffSchema = new Schema(
         staffLoginName: {
             type: String,
             unique: [true, "Login name is already registered"],
-            required: [true, "Please provide staff's name"],
+            required: true,
             trim: true
         },
         staffPassword: {
@@ -24,7 +24,7 @@ var staffSchema = new Schema(
                 /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]+$/,
                 "Invalid name",
             ],
-            required: true,
+            required: [true, "Please provide staff's name"],
             trim: true
         },
         staffEmail: {
@@ -48,7 +48,8 @@ var staffSchema = new Schema(
             trim: true
         },
         staffStartWork: {
-            type: Date
+            type: Date,
+            default: Date.now()
         },
         staffStatus: {
             type: Number,
@@ -56,8 +57,7 @@ var staffSchema = new Schema(
         },
         privilege: {
             type: Number,
-            required: true,
-            default: 0
+            required: true
         }
     },
     { timestamps: true }
