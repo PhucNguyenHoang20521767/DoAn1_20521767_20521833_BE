@@ -30,7 +30,8 @@ exports.loginStaff = async (req, res, next) => {
 
 	try {
 		const staff = await Staff.findOne({
-			staffLoginName
+			staffLoginName,
+			staffStatus: 0
 		}).select("+staffPassword");
 
 		if (!staff) next(new ErrorResponse("Invalid credentials", 401));
@@ -42,17 +43,6 @@ exports.loginStaff = async (req, res, next) => {
 		sendTokenStaff(staff, 200, res);
 	} catch (error) {
 		next(error);
-	}
-};
-
-exports.validateStaff = async (req, res, next) => {
-	if (req.staff)
-		res.json({
-			success: true,
-			data: req.staff,
-		});
-	else {
-		return next(ErrorResponse("No staff found!", 404));
 	}
 };
 

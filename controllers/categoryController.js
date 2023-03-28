@@ -5,12 +5,11 @@ const ErrorResponse = require("../utils/errorResponse");
 exports.getAllCategories = async (req, res, next) => {
     let options = {};
 
-    if (req.query.s) {
+    if (req.query.search) {
         options = {
             ...options,
             $or: [
-                {categoryName: new RegExp(search.toString(), "i")},
-                {categoryDescription: new RegExp(search.toString(), "i")}
+                {categoryName: new RegExp(req.query.search.toString(), "i")}
             ],
         }
     }

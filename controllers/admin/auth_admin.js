@@ -2,7 +2,7 @@ const Staff = require("../../models/staff");
 const ErrorResponse = require("../../utils/errorResponse");
 
 exports.registerAdmin = async (req, res, next) => {
-    const { staffLoginName, staffPassword, staffFullName, staffEmail, staffPhone  } = req.body;
+    const { staffLoginName, staffPassword, staffFullName, staffEmail, staffPhone, staffGender  } = req.body;
 
 	try {
 		const admin = await Staff.create(
@@ -12,6 +12,7 @@ exports.registerAdmin = async (req, res, next) => {
 				staffFullName,
 				staffEmail,
 				staffPhone,
+				staffGender,
 				privilege: 0
 			}
 		);
@@ -31,6 +32,7 @@ exports.loginAdmin = async (req, res, next) => {
 	try {
 		const admin = await Staff.findOne({
 			staffLoginName,
+			staffStatus: 0,
 			privilege: 0
 		}).select("+staffPassword");
 
@@ -43,17 +45,6 @@ exports.loginAdmin = async (req, res, next) => {
 		sendTokenAdmin(admin, 200, res);
 	} catch (error) {
 		next(error);
-	}
-};
-
-exports.validateAdmin = async (req, res, next) => {
-	if (req.admin)
-		res.json({
-			success: true,
-			data: req.admin,
-		});
-	else {
-		return next(ErrorResponse("No Admin found!", 404));
 	}
 };
 

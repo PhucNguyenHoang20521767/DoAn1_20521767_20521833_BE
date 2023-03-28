@@ -19,7 +19,10 @@ app.get("/", function (req, res) {
 	res.redirect("/docs");
 });
 
+app.use("/api/admin", require("./routes/admin"));
+app.use("/api/staffs", require("./routes/staffs"));
 app.use("/api/customers", require("./routes/customers"));
+app.use("/api/products", require("./routes/products"))
 app.use("/api/categories", require("./routes/categories"));
 app.use("/api/subcategories", require("./routes/subcategories"));
 

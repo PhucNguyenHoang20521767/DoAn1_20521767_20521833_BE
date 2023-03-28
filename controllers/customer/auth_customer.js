@@ -31,7 +31,8 @@ exports.loginCustomer = async (req, res, next) => {
     
     try {
         const customer = await Customer.findOne({
-            customerEmail
+            customerEmail,
+            isActive: true
         }).select("+customerPassword");
         
         if (!customer)
@@ -41,7 +42,37 @@ exports.loginCustomer = async (req, res, next) => {
 		if (!passwordValid)
             return next(new ErrorResponse("Incorrect password", 401));
 
+        await customer.updateOne({
+            customerStatus: true
+        });
+        await customer.save();
         sendTokenCustomer(customer, 200, res);
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.logoutCustomer = async(res, req, next) => {
+    const { customerId } = req.params;
+
+    if (!customerId || !mongoose.Types.ObjectId.isValid(customerId))
+        return next(new ErrorResponse("Please provide valid customer's ID", 400));
+
+    try {
+        const customer = await Customer.findById(customerId);
+
+        if (!customer)
+            return next(new ErrorResponse("No customer found", 404));
+
+        await customer.updateOne({
+            customerStatus: false
+        });
+        await customer.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Customer logged out"
+        });
     } catch (error) {
         next(error);
     }
@@ -77,7 +108,8 @@ exports.sendOTPToCustomer = async (req, res, next) => {
     try {
         const customer = await Customer.findOne({
             customerEmail,
-            isVerified: false
+            isVerified: false,
+            isActive: true
         }).select("+verificationKey");
         
         if (!customer)

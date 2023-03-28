@@ -10,6 +10,10 @@ const { getAllCategories, getCategoryById, createCategory, updateCategory, delet
  *     tags: [Category]
  *     operatorId: getAllCategories
  *     description: Get all categories
+ *     parameters:
+ *       - in: query
+ *         name: search
+ *         type: string
  *     responses:
  *       200:
  *         description: Success
