@@ -20,7 +20,8 @@ const { getAllStaffs, getStaffById, updateStaff, deleteStaff, activeOrInactiveSt
  *             required:
  *               - staffLoginName
  *               - staffPassword
- *               - staffFullName
+ *               - staffFirstName
+ *               - staffLastName
  *               - staffEmail
  *               - staffPhone
  *               - staffGender
@@ -30,7 +31,9 @@ const { getAllStaffs, getStaffById, updateStaff, deleteStaff, activeOrInactiveSt
  *                 type: string
  *               staffPassword:
  *                 type: string
- *               staffFullName:
+ *               staffFirstName:
+ *                 type: string
+ *               staffLastName:
  *                 type: string
  *               staffEmail:
  *                 type: string
@@ -136,7 +139,9 @@ router.route("/getStaffById/:staffId").get(getStaffById);
  *         application/json:
  *           schema:
  *             properties:
- *               staffFullName:
+ *               staffFirstName:
+ *                 type: string
+ *               staffLastName:
  *                 type: string
  *               staffEmail:
  *                 type: string

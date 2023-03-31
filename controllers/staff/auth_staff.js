@@ -2,14 +2,15 @@ const Staff = require("../../models/staff");
 const ErrorResponse = require("../../utils/errorResponse");
 
 exports.registerStaff = async (req, res, next) => {
-    const { staffLoginName, staffPassword, staffFullName, staffEmail, staffPhone, privilege  } = req.body;
+    const { staffLoginName, staffPassword, staffFirstName, staffLastName, staffEmail, staffPhone, privilege  } = req.body;
 
 	try {
 		const staff = await Staff.create(
             {
 				staffLoginName,
 				staffPassword,
-				staffFullName,
+				staffFirstName,
+				staffLastName,
 				staffEmail,
 				staffPhone,
 				privilege

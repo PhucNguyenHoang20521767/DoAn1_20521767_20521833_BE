@@ -18,13 +18,22 @@ var staffSchema = new Schema(
             select: false,
             trim: true
         },
-        staffFullName: {
+        staffFirstName: {
             type: String,
             match: [
                 /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]+$/,
-                "Invalid name",
+                "Invalid first name",
             ],
-            required: [true, "Please provide staff's name"],
+            required: [true, "Please provide staff's first name"],
+            trim: true
+        },
+        staffLastName: {
+            type: String,
+            match: [
+                /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]+$/,
+                "Invalid last name",
+            ],
+            required: [true, "Please provide staff's last name"],
             trim: true
         },
         staffEmail: {
@@ -100,7 +109,8 @@ module.exports = Staff;
  *       required:
  *         - staffLoginName
  *         - staffPassword
- *         - staffFullName
+ *         - staffFirstName
+ *         - staffLastName
  *         - staffEmail
  *         - staffPhone
  *         - privilege
@@ -109,7 +119,9 @@ module.exports = Staff;
  *           type: string
  *         staffPassword:
  *           type: number
- *         staffFullName:
+ *         staffFirstName:
+ *           type: string
+ *         staffLastName:
  *           type: string
  *         staffEmail:
  *           type: string

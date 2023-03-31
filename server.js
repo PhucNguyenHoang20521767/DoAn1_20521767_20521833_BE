@@ -4,11 +4,24 @@ const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger");
 const errorHandler = require("./middleware/error");
+const cookieSession = require("cookie-session");
+const passport = require("passport");
+const passportGoogleStrategy = require("./passport_google");
 
 const app = express();
 connectDb();
 
+app.use(
+	cookieSession({
+		name: "session",
+		keys: ["nguyenshomefurniture"],
+		maxAge: 24 * 60 * 60 * 100,
+	})
+);
+
 app.use(express.json());
+app.use(passport.initialize());
+app.use(passport.session());
 
 const swaggerOptions = {
     swaggerDefinition: swaggerDocument,
@@ -19,10 +32,11 @@ app.get("/", function (req, res) {
 	res.redirect("/docs");
 });
 
+app.use("/api/auth", require("./routes/auth_google"));
 app.use("/api/admin", require("./routes/admin"));
 app.use("/api/staffs", require("./routes/staffs"));
 app.use("/api/customers", require("./routes/customers"));
-app.use("/api/products", require("./routes/products"))
+// app.use("/api/products", require("./routes/products"));
 app.use("/api/categories", require("./routes/categories"));
 app.use("/api/subcategories", require("./routes/subcategories"));
 

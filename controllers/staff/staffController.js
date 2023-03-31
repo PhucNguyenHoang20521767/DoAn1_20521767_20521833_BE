@@ -55,11 +55,12 @@ exports.updateStaff = async (req, res, next) => {
     if (!staffId)
         return next(new ErrorResponse("Please provide valid staff's ID", 400));
 
-    const { staffFullName, staffEmail, staffPhone, staffGender } = req.body;
+    const { staffFirstName, staffLastName, staffEmail, staffPhone, staffGender } = req.body;
 
     try {
         const staff = await Staff.findByIdAndUpdate(staffId, {
-            staffFullName,
+            staffFirstName,
+            staffLastName,
             staffEmail,
             staffPhone,
             staffGender
