@@ -55,11 +55,12 @@ exports.updateCustomer = async(req, res, next) => {
     if (!customerId || !mongoose.Types.ObjectId.isValid(customerId))
         return next(new ErrorResponse("Please provide valid customer's ID", 400));
 
-    const { customerFullName, customerBirthday, customerEmail, customerPhone, customerGender, customerAvatar } = req.body;
+    const { customerFirstName, customerLastName, customerBirthday, customerEmail, customerPhone, customerGender, customerAvatar } = req.body;
 
     try {
         const customer = await Customer.findByIdAndUpdate(customerId, {
-            customerFullName,
+            customerFirstName,
+            customerLastName,
             customerBirthday,
             customerEmail,
             customerPhone,

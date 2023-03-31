@@ -4,13 +4,14 @@ const base32 = require("base32");
 const { sendEmail } = require("../../config/sendEmail");
 
 exports.registerCustomer = async (req, res, next) => {
-    const { customerLoginName, customerPassword, customerFullName, customerBirthday, customerEmail, customerPhone, customerGender } = req.body;
+    const { customerLoginName, customerPassword, customerFirstName, customerLastName, customerBirthday, customerEmail, customerPhone, customerGender } = req.body;
 
     try {
         const customer = await Customer.create({
             customerLoginName,
             customerPassword,
-            customerFullName,
+            customerFirstName,
+            customerLastName,
             customerBirthday,
             customerEmail,
             customerPhone,
@@ -175,7 +176,7 @@ const sendOTPToCustomerEmail = async (customer, statusCode, res) => {
     await sendEmail(
         customer.customerEmail,
         "Xác thực địa chỉ email của bạn",
-        `Xin chào ${customer.customerFullName}, cảm ơn bạn vì đã lựa chọn thương hiệu của chúng tôi.\nVui lòng sử dụng mã OTP này để hoàn tất việc đăng ký: ${await customer.getOTPToSend()}.\nNGUYEN'S HOME Furniture`
+        `Xin chào ${customer.customerFirstName}, cảm ơn bạn vì đã lựa chọn thương hiệu của chúng tôi.\nVui lòng sử dụng mã OTP này để hoàn tất việc đăng ký: ${await customer.getOTPToSend()}.\nNGUYEN'S HOME Furniture`
     );
 
     res.status(statusCode).json({
@@ -188,7 +189,7 @@ const sendOTPToResetPassword = async (customer, statusCode, res) => {
     await sendEmail(
         customer.customerEmail,
         "Reset mật khẩu của bạn",
-        `Xin chào ${customer.customerFullName}, chúng tôi đã nhận được yêu cầu reset mật khẩu.\nNếu đó là bạn, vui lòng sử dụng mã OTP này để hoàn tất quá trình: ${await customer.getOTPToSend()}.\nNGUYEN'S HOME Furniture`
+        `Xin chào ${customer.customerFirstName}, chúng tôi đã nhận được yêu cầu reset mật khẩu.\nNếu đó là bạn, vui lòng sử dụng mã OTP này để hoàn tất quá trình: ${await customer.getOTPToSend()}.\nNGUYEN'S HOME Furniture`
     );
 
     res.status(statusCode).json({

@@ -20,13 +20,22 @@ var customerSchema = new Schema(
             select: false,
             trim: true
         },
-        customerFullName: {
+        customerFirstName: {
             type: String,
             match: [
                 /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]+$/,
-                "Invalid name",
+                "Invalid first name",
             ],
-            required: [true, "Please provide customer's name"],
+            required: [true, "Please provide customer's first name"],
+            trim: true
+        },
+        customerLastName: {
+            type: String,
+            match: [
+                /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]+$/,
+                "Invalid last name",
+            ],
+            required: [true, "Please provide customer's last name"],
             trim: true
         },
         customerBirthday: {
@@ -158,7 +167,8 @@ module.exports = Customer;
  *       required:
  *         - customerLoginName
  *         - customerPassword
- *         - customerFullName
+ *         - customerFirstName
+ *         - customerLastName
  *         - customerEmail
  *         - customerPhone
  *       properties:
@@ -166,7 +176,9 @@ module.exports = Customer;
  *           type: string
  *         customerPassword:
  *           type: string
- *         customerFullName:
+ *         customerFirstName:
+ *           type: string
+ *         customerLastName:
  *           type: string
  *         customerBirthday:
  *           type: string

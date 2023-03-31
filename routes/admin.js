@@ -19,7 +19,8 @@ const { registerAdmin, loginAdmin } = require("../controllers/admin/auth_admin")
  *             required:
  *               - staffLoginName
  *               - staffPassword
- *               - staffFullName
+ *               - staffFirstName
+ *               - staffLastName
  *               - staffEmail
  *               - staffPhone
  *               - staffGender
@@ -28,7 +29,9 @@ const { registerAdmin, loginAdmin } = require("../controllers/admin/auth_admin")
  *                 type: string
  *               staffPassword:
  *                 type: string
- *               staffFullName:
+ *               staffFirstName:
+ *                 type: string
+ *               staffLastName:
  *                 type: string
  *               staffEmail:
  *                 type: string

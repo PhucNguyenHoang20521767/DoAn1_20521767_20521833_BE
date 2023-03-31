@@ -257,7 +257,9 @@ router.route("/getCustomerById/:customerId").get(getCustomerById);
  *         application/json:
  *           schema:
  *             properties:
- *               customerFullName:
+ *               customerFirstName:
+ *                 type: string
+ *               customerLastName:
  *                 type: string
  *               customerBirthday:
  *                 type: string
