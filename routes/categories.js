@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { protect, staffAndAdminProtect, adminProtect } = require("../middleware/auth");
 
 const { getAllCategories, getCategoryById, createCategory, updateCategory, deleteCategory } = require("../controllers/categoryController");
 
@@ -52,6 +53,8 @@ router.route("/getCategoryById/:categoryId").get(getCategoryById);
  *     tags: [Category]
  *     operatorId: createCategory
  *     description: Create new category
+ *     security:
+ *      - bearer: []
  *     requestBody:
  *       required: true
  *       content:
@@ -64,7 +67,7 @@ router.route("/getCategoryById/:categoryId").get(getCategoryById);
  *       400:
  *         description: Bad Request
  */
-router.route("/createCategory").post(createCategory);
+router.route("/createCategory").post(staffAndAdminProtect, createCategory);
 
 /**
  * @swagger

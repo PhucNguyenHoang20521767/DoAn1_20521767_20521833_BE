@@ -4,11 +4,10 @@ const base32 = require("base32");
 const { sendEmail } = require("../../config/sendEmail");
 
 exports.registerCustomer = async (req, res, next) => {
-    const { customerLoginName, customerPassword, customerFirstName, customerLastName, customerBirthday, customerEmail, customerPhone, customerGender } = req.body;
+    const { customerPassword, customerFirstName, customerLastName, customerBirthday, customerEmail, customerPhone, customerGender } = req.body;
 
     try {
         const customer = await Customer.create({
-            customerLoginName,
             customerPassword,
             customerFirstName,
             customerLastName,
@@ -19,6 +18,39 @@ exports.registerCustomer = async (req, res, next) => {
         });
 
         sendOTPToCustomerEmail(customer, 201, res);
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.loginGoogleAndFacebookCustomer = async (req, res, next) => {
+    const { customerPassword, customerFirstName, customerLastName, customerBirthday, customerEmail, customerPhone, customerGender, customerAvatar, customerProvider } = req.body;
+
+    try {
+        const customer = await Customer.findOne({
+            customerEmail,
+            isVerified: true,
+            isActive: true
+        });
+
+        if (!customer) {
+            const newCustomer = await Customer.create({
+                customerPassword,
+                customerFirstName,
+                customerLastName,
+                customerBirthday,
+                customerEmail,
+                customerPhone,
+                customerGender,
+                customerAvatar,
+                customerProvider,
+                isVerified: true
+            });
+    
+            sendTokenCustomer(newCustomer, 201, res);
+        } else {
+            sendTokenCustomer(customer, 201, res);
+        }
     } catch (error) {
         next(error);
     }

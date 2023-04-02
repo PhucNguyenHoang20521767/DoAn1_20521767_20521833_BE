@@ -82,6 +82,40 @@ exports.updateCustomer = async(req, res, next) => {
     }
 };
 
+exports.updateCustomerByAdmin = async(req, res, next) => {
+    const { customerId } = req.params;
+
+    if (!customerId || !mongoose.Types.ObjectId.isValid(customerId))
+        return next(new ErrorResponse("Please provide valid customer's ID", 400));
+
+    const { customerPassword, customerFirstName, customerLastName, customerBirthday, customerEmail, customerPhone, customerGender, customerAvatar } = req.body;
+
+    try {
+        const customer = await Customer.findByIdAndUpdate(customerId, {
+            customerPassword,
+            customerFirstName,
+            customerLastName,
+            customerBirthday,
+            customerEmail,
+            customerPhone,
+            customerGender,
+            customerAvatar
+        });
+
+        if (customer) {
+            res.status(200).json({
+                success: true,
+                message: "Customer updated successfully",
+                data: customer
+            });
+        } else {
+            return next(new ErrorResponse("Customer not found", 404));
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
 exports.deleteCustomer = async (req, res, next) => {
     const { customerId } = req.params;
 

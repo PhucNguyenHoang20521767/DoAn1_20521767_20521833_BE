@@ -18,7 +18,6 @@ const { getAllStaffs, getStaffById, updateStaff, deleteStaff, activeOrInactiveSt
  *           schema:
  *             type: object
  *             required:
- *               - staffLoginName
  *               - staffPassword
  *               - staffFirstName
  *               - staffLastName
@@ -27,8 +26,6 @@ const { getAllStaffs, getStaffById, updateStaff, deleteStaff, activeOrInactiveSt
  *               - staffGender
  *               - privilege
  *             properties:
- *               staffLoginName:
- *                 type: string
  *               staffPassword:
  *                 type: string
  *               staffFirstName:
@@ -65,10 +62,10 @@ router.route("/registerStaff").post(registerStaff);
  *           schema:
  *             type: object
  *             required:
- *               - staffLoginName
+ *               - staffEmail
  *               - staffPassword
  *             properties:
- *               staffLoginName:
+ *               staffEmail:
  *                 type: string
  *               staffPassword:
  *                 type: string
@@ -139,6 +136,8 @@ router.route("/getStaffById/:staffId").get(getStaffById);
  *         application/json:
  *           schema:
  *             properties:
+ *               staffPassword:
+ *                 type: string
  *               staffFirstName:
  *                 type: string
  *               staffLastName:
@@ -149,6 +148,8 @@ router.route("/getStaffById/:staffId").get(getStaffById);
  *                 type: string
  *               staffGender:
  *                 type: string
+ *               privilege:
+ *                 type: number
  *     responses:
  *       200:
  *         description: Success

@@ -17,7 +17,6 @@ const { registerAdmin, loginAdmin } = require("../controllers/admin/auth_admin")
  *           schema:
  *             type: object
  *             required:
- *               - staffLoginName
  *               - staffPassword
  *               - staffFirstName
  *               - staffLastName
@@ -25,8 +24,6 @@ const { registerAdmin, loginAdmin } = require("../controllers/admin/auth_admin")
  *               - staffPhone
  *               - staffGender
  *             properties:
- *               staffLoginName:
- *                 type: string
  *               staffPassword:
  *                 type: string
  *               staffFirstName:
@@ -61,10 +58,10 @@ router.route("/registerAdmin").post(registerAdmin);
  *           schema:
  *             type: object
  *             required:
- *               - staffLoginName
+ *               - staffEmail
  *               - staffPassword
  *             properties:
- *               staffLoginName:
+ *               staffEmail:
  *                 type: string
  *               staffPassword:
  *                 type: string

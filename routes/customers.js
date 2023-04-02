@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
-const { registerCustomer, loginCustomer, logoutCustomer, sendOTPToCustomer, forgetPasswordCustomer, resetPasswordCustomer, verifyCustomerAfterSendOTP } = require("../controllers/customer/auth_customer");
-const { getAllCustomers, getCustomerById, updateCustomer, deleteCustomer, activeOrInactiveCustomer } = require("../controllers/customer/customerController");
+const { registerCustomer, loginGoogleAndFacebookCustomer, loginCustomer, logoutCustomer, sendOTPToCustomer, forgetPasswordCustomer, resetPasswordCustomer, verifyCustomerAfterSendOTP } = require("../controllers/customer/auth_customer");
+const { getAllCustomers, getCustomerById, updateCustomer, updateCustomerByAdmin, deleteCustomer, activeOrInactiveCustomer } = require("../controllers/customer/customerController");
 
 /**
  * @swagger
@@ -24,6 +24,27 @@ const { getAllCustomers, getCustomerById, updateCustomer, deleteCustomer, active
  *         description: Bad Request
  */
 router.route("/registerCustomer").post(registerCustomer);
+
+/**
+ * @swagger
+ * /api/customers/loginGoogleAndFacebookCustomer:
+ *   post:
+ *     tags: [Customer]
+ *     operatorId: loginGoogleAndFacebookCustomer
+ *     description: Login a customer with FB and GG
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/Customer'
+ *     responses:
+ *       201:
+ *         description: Created
+ *       400:
+ *         description: Bad Request
+ */
+router.route("/loginGoogleAndFacebookCustomer").post(loginGoogleAndFacebookCustomer);
 
 /**
  * @swagger
@@ -280,6 +301,51 @@ router.route("/getCustomerById/:customerId").get(getCustomerById);
  *         description: Not Found
  */
 router.route("/updateCustomer/:customerId").put(updateCustomer);
+
+/**
+ * @swagger
+ * /api/customers/updateCustomerByAdmin/{id}:
+ *   put:
+ *     tags: [Customer]
+ *     operatorId: updateCustomerByAdmin
+ *     description: Update customer by ID (for ADMIN only)
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Customer ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             properties:
+ *               customerPassword:
+ *                 type: string
+ *               customerFirstName:
+ *                 type: string
+ *               customerLastName:
+ *                 type: string
+ *               customerBirthday:
+ *                 type: string
+ *               customerEmail:
+ *                 type: string
+ *               customerPhone:
+ *                 type: string
+ *               customerGender:
+ *                 type: string
+ *               customerAvatar:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: Bad Request
+ *       404:
+ *         description: Not Found
+ */
+router.route("/updateCustomerByAdmin/:customerId").put(updateCustomerByAdmin);
 
 /**
  * @swagger

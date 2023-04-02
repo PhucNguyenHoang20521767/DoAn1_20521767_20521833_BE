@@ -7,12 +7,6 @@ const base32 = require("base32");
 
 var customerSchema = new Schema(
     {
-        customerLoginName: {
-            type: String,
-            unique: [true, "Login name is already registered"],
-            required: true,
-            trim: true
-        },
         customerPassword: {
             type: String,
             required: [true, "Please add a password"],
@@ -54,7 +48,6 @@ var customerSchema = new Schema(
         customerPhone: {
             type: String,
             validate: [/(84|0[3|5|7|8|9])+([0-9]{8})\b/, "Invalid phone number"],
-            required: [true, "Please provide customer's phone number"],
             unique: [true, "Phone number is already registered"]
         },
         customerGender: {
@@ -67,15 +60,25 @@ var customerSchema = new Schema(
             trim: true
         },
         customerStatus: {
+            // TRUE: Logged In, FALSE: Logged Out
             type: Boolean,
             default: false
         },
+        customerProvider: {
+            // 3 options: Default, Google, Facebook
+            required: true,
+            type: String,
+            default: "default",
+            trim: true
+        },
         verificationKey: { type: String, select: false, trim: true },
         isVerified: {
+            // TRUE: Verified with OTP receive from email, FALSE: Not verify
             type: Boolean,
             default: false
         },
         isActive: {
+            // TRUE: Still in database, FALSE: Deleted
             type: Boolean,
             default: true
         }
@@ -114,7 +117,7 @@ customerSchema.methods.updatePasswordCustomer = async function (customerPassword
 // Get JSON Web Token
 customerSchema.methods.getSignedTokenCustomer = function () {
     return jwt.sign(
-        { id: this._id, staff: false },
+        { id: this._id, staff: false, privilege: "CUSTOMER" },
         process.env.JWT_SECRET,
         { expiresIn: process.env.JWT_EXPIRE }
     );
@@ -165,15 +168,12 @@ module.exports = Customer;
  *     Customer:
  *       type: object
  *       required:
- *         - customerLoginName
  *         - customerPassword
  *         - customerFirstName
  *         - customerLastName
  *         - customerEmail
- *         - customerPhone
+ *         - customerProvider
  *       properties:
- *         customerLoginName:
- *           type: string
  *         customerPassword:
  *           type: string
  *         customerFirstName:
@@ -192,4 +192,6 @@ module.exports = Customer;
  *           type: string
  *         customerStatus:
  *           type: boolean
+ *         customerProvider:
+ *           type: string
  */

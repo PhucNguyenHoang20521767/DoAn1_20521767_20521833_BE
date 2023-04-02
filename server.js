@@ -7,6 +7,7 @@ const errorHandler = require("./middleware/error");
 const cookieSession = require("cookie-session");
 const passport = require("passport");
 const passportGoogleStrategy = require("./passport_google");
+const passportFacebookStrategy = require("./passport_facebook");
 
 const app = express();
 connectDb();
@@ -23,6 +24,14 @@ app.use(express.json());
 app.use(passport.initialize());
 app.use(passport.session());
 
+passport.serializeUser((user, done) => {
+	done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+	done(null, user);
+});
+
 const swaggerOptions = {
     swaggerDefinition: swaggerDocument,
     apis: ["server.js", "./routes/*.js", "./middleware/*.js", "./models/*.js"]
@@ -32,7 +41,7 @@ app.get("/", function (req, res) {
 	res.redirect("/docs");
 });
 
-app.use("/api/auth", require("./routes/auth_google"));
+app.use("/api/auth", require("./routes/auth"));
 app.use("/api/admin", require("./routes/admin"));
 app.use("/api/staffs", require("./routes/staffs"));
 app.use("/api/customers", require("./routes/customers"));
