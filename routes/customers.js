@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { protect, adminProtect } = require("../middleware/auth");
 
 const { registerCustomer, loginGoogleAndFacebookCustomer, loginCustomer, logoutCustomer, sendOTPToCustomer, forgetPasswordCustomer, resetPasswordCustomer, verifyCustomerAfterSendOTP } = require("../controllers/customer/auth_customer");
 const { getAllCustomers, getCustomerById, updateCustomer, updateCustomerByAdmin, deleteCustomer, activeOrInactiveCustomer } = require("../controllers/customer/customerController");
@@ -228,13 +229,17 @@ router.route("/verifyCustomerAfterSendOTP").post(verifyCustomerAfterSendOTP);
  *     tags: [Customer]
  *     operatorId: getAllCustomers
  *     description: Get all customers
+ *     security:
+ *       - bearer: []
+ *     security:
+ *       - bearer: []
  *     responses:
  *       200:
  *         description: Success
  *       400:
  *         description: Bad Request
  */
-router.route("/getAllCustomers").get(getAllCustomers);
+router.route("/getAllCustomers").get(adminProtect, protect, getAllCustomers);
 
 /**
  * @swagger
@@ -243,6 +248,8 @@ router.route("/getAllCustomers").get(getAllCustomers);
  *     tags: [Customer]
  *     operatorId: getCustomerById
  *     description: Get customer by ID
+ *     security:
+ *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -257,7 +264,7 @@ router.route("/getAllCustomers").get(getAllCustomers);
  *       404:
  *         description: Not Found
  */
-router.route("/getCustomerById/:customerId").get(getCustomerById);
+router.route("/getCustomerById/:customerId").get(adminProtect, protect, getCustomerById);
 
 /**
  * @swagger
@@ -266,6 +273,8 @@ router.route("/getCustomerById/:customerId").get(getCustomerById);
  *     tags: [Customer]
  *     operatorId: updateCustomer
  *     description: Update customer by ID
+ *     security:
+ *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -300,7 +309,7 @@ router.route("/getCustomerById/:customerId").get(getCustomerById);
  *       404:
  *         description: Not Found
  */
-router.route("/updateCustomer/:customerId").put(updateCustomer);
+router.route("/updateCustomer/:customerId").put(protect, updateCustomer);
 
 /**
  * @swagger
@@ -309,6 +318,8 @@ router.route("/updateCustomer/:customerId").put(updateCustomer);
  *     tags: [Customer]
  *     operatorId: updateCustomerByAdmin
  *     description: Update customer by ID (for ADMIN only)
+ *     security:
+ *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -345,7 +356,7 @@ router.route("/updateCustomer/:customerId").put(updateCustomer);
  *       404:
  *         description: Not Found
  */
-router.route("/updateCustomerByAdmin/:customerId").put(updateCustomerByAdmin);
+router.route("/updateCustomerByAdmin/:customerId").put(adminProtect, protect, updateCustomerByAdmin);
 
 /**
  * @swagger
@@ -354,6 +365,8 @@ router.route("/updateCustomerByAdmin/:customerId").put(updateCustomerByAdmin);
  *     tags: [Customer]
  *     operatorId: deleteCustomer
  *     description: Delete customer by ID
+ *     security:
+ *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -368,7 +381,7 @@ router.route("/updateCustomerByAdmin/:customerId").put(updateCustomerByAdmin);
  *       404:
  *         description: Not Found
  */
-router.route("/deleteCustomer/:customerId").delete(deleteCustomer);
+router.route("/deleteCustomer/:customerId").delete(adminProtect, protect, deleteCustomer);
 
 /**
  * @swagger
@@ -377,6 +390,8 @@ router.route("/deleteCustomer/:customerId").delete(deleteCustomer);
  *     tags: [Customer]
  *     operatorId: activeOrInactiveCustomer
  *     description: Active or inactive customer by ID
+ *     security:
+ *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -391,6 +406,6 @@ router.route("/deleteCustomer/:customerId").delete(deleteCustomer);
  *       404:
  *         description: Not Found
  */
-router.route("/activeOrInactiveCustomer/:customerId").put(activeOrInactiveCustomer);
+router.route("/activeOrInactiveCustomer/:customerId").put(adminProtect, protect, activeOrInactiveCustomer);
 
 module.exports = router;

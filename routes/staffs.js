@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { protect, adminProtect } = require("../middleware/auth");
 
 const { registerStaff, loginStaff } = require("../controllers/staff/auth_staff");
 const { getAllStaffs, getStaffById, updateStaff, deleteStaff, activeOrInactiveStaff } = require("../controllers/staff/staffController");
@@ -11,6 +12,8 @@ const { getAllStaffs, getStaffById, updateStaff, deleteStaff, activeOrInactiveSt
  *     tags: [Staff]
  *     operatorId: registerStaff
  *     description: Register a staff
+ *     security:
+ *       - bearer: []
  *     requestBody:
  *       required: true
  *       content:
@@ -46,7 +49,7 @@ const { getAllStaffs, getStaffById, updateStaff, deleteStaff, activeOrInactiveSt
  *       400:
  *         description: Bad Request
  */
-router.route("/registerStaff").post(registerStaff);
+router.route("/registerStaff").post(adminProtect, protect, registerStaff);
 
 /**
  * @swagger
@@ -86,13 +89,15 @@ router.route("/loginStaff").post(loginStaff);
  *     tags: [Staff]
  *     operatorId: getAllStaffs
  *     description: Get all staffs
+ *     security:
+ *       - bearer: []
  *     responses:
  *       200:
  *         description: Success
  *       400:
  *         description: Bad Request
  */
-router.route("/getAllStaffs").get(getAllStaffs);
+router.route("/getAllStaffs").get(adminProtect, protect, getAllStaffs);
 
 /**
  * @swagger
@@ -101,6 +106,8 @@ router.route("/getAllStaffs").get(getAllStaffs);
  *     tags: [Staff]
  *     operatorId: getStaffById
  *     description: Get staff by ID
+ *     security:
+ *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -115,7 +122,7 @@ router.route("/getAllStaffs").get(getAllStaffs);
  *       404:
  *         description: Not Found
  */
-router.route("/getStaffById/:staffId").get(getStaffById);
+router.route("/getStaffById/:staffId").get(adminProtect, protect, getStaffById);
 
 /**
  * @swagger
@@ -124,6 +131,8 @@ router.route("/getStaffById/:staffId").get(getStaffById);
  *     tags: [Staff]
  *     operatorId: updateStaff
  *     description: Update staff by ID
+ *     security:
+ *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -158,7 +167,7 @@ router.route("/getStaffById/:staffId").get(getStaffById);
  *       404:
  *         description: Not Found
  */
-router.route("/updateStaff/:staffId").put(updateStaff);
+router.route("/updateStaff/:staffId").put(adminProtect, protect, updateStaff);
 
 /**
  * @swagger
@@ -167,6 +176,8 @@ router.route("/updateStaff/:staffId").put(updateStaff);
  *     tags: [Staff]
  *     operatorId: deleteStaff
  *     description: Delete staff by ID
+ *     security:
+ *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -181,7 +192,7 @@ router.route("/updateStaff/:staffId").put(updateStaff);
  *       404:
  *         description: Not Found
  */
-router.route("/deleteStaff/:staffId").delete(deleteStaff);
+router.route("/deleteStaff/:staffId").delete(adminProtect, protect, deleteStaff);
 
 /**
  * @swagger
@@ -190,6 +201,8 @@ router.route("/deleteStaff/:staffId").delete(deleteStaff);
  *     tags: [Staff]
  *     operatorId: activeOrInactiveStaff
  *     description: Active or inactive staff by ID
+ *     security:
+ *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -204,6 +217,6 @@ router.route("/deleteStaff/:staffId").delete(deleteStaff);
  *       404:
  *         description: Not Found
  */
-router.route("/activeOrInactiveStaff/:staffId").put(activeOrInactiveStaff);
+router.route("/activeOrInactiveStaff/:staffId").put(adminProtect, protect, activeOrInactiveStaff);
 
 module.exports = router;

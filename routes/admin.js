@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { protect, adminProtect } = require("../middleware/auth");
 
 const { registerAdmin, loginAdmin } = require("../controllers/admin/auth_admin");
 
@@ -10,6 +11,8 @@ const { registerAdmin, loginAdmin } = require("../controllers/admin/auth_admin")
  *     tags: [Admin]
  *     operatorId: registerAdmin
  *     description: Register admin
+ *     security:
+ *       - bearer: []
  *     requestBody:
  *       required: true
  *       content:
@@ -42,7 +45,7 @@ const { registerAdmin, loginAdmin } = require("../controllers/admin/auth_admin")
  *       400:
  *         description: Bad Request
  */
-router.route("/registerAdmin").post(registerAdmin);
+router.route("/registerAdmin").post(adminProtect, protect, registerAdmin);
 
 /**
  * @swagger

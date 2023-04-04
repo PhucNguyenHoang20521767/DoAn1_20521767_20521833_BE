@@ -27,8 +27,7 @@ exports.protect = async (req, res, next) => {
     const user = decoded.staff
       ? await Staff.findOne({
           _id: decoded.id,
-          isVerified: true,
-          isActive: true
+          staffStatus: 0
         })
       : await Customer.findOne({
           _id: decoded.id,

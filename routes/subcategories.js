@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { protect, adminProtect } = require("../middleware/auth");
 
 const { getAllSubcategories, getSubcategoryById, createSubcategory, updateSubcategory, deleteSubcategory } = require("../controllers/subcategoryController");
 
@@ -10,6 +11,8 @@ const { getAllSubcategories, getSubcategoryById, createSubcategory, updateSubcat
  *     tags: [Subcategory]
  *     operatorId: getAllSubcategories
  *     description: Get all subcategories
+ *     security:
+ *       - bearer: []
  *     parameters:
  *       - in: query
  *         name: search
@@ -20,7 +23,7 @@ const { getAllSubcategories, getSubcategoryById, createSubcategory, updateSubcat
  *       400:
  *         description: Bad Request
  */
-router.route("/getAllSubcategories").get(getAllSubcategories);
+router.route("/getAllSubcategories").get(adminProtect, protect, getAllSubcategories);
 
 /**
  * @swagger
@@ -29,6 +32,8 @@ router.route("/getAllSubcategories").get(getAllSubcategories);
  *     tags: [Subcategory]
  *     operatorId: getSubcategoryById
  *     description: Get subcategory by ID
+ *     security:
+ *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -43,7 +48,7 @@ router.route("/getAllSubcategories").get(getAllSubcategories);
  *       401:
  *         description: Not Found
  */
-router.route("/getSubcategoryById/:subcategoryId").get(getSubcategoryById);
+router.route("/getSubcategoryById/:subcategoryId").get(adminProtect, protect, getSubcategoryById);
 
 /**
  * @swagger
@@ -52,6 +57,8 @@ router.route("/getSubcategoryById/:subcategoryId").get(getSubcategoryById);
  *     tags: [Subcategory]
  *     operatorId: createSubcategory
  *     description: Create new subcategory
+ *     security:
+ *       - bearer: []
  *     requestBody:
  *       required: true
  *       content:
@@ -64,7 +71,7 @@ router.route("/getSubcategoryById/:subcategoryId").get(getSubcategoryById);
  *       400:
  *         description: Bad Request
  */
-router.route("/createSubcategory").post(createSubcategory);
+router.route("/createSubcategory").post(adminProtect, protect, createSubcategory);
 
 /**
  * @swagger
@@ -73,6 +80,8 @@ router.route("/createSubcategory").post(createSubcategory);
  *     tags: [Subcategory]
  *     operatorId: updateSubcategory
  *     description: Update subcategory
+ *     security:
+ *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -93,7 +102,7 @@ router.route("/createSubcategory").post(createSubcategory);
  *       404:
  *         description: Not Found
  */
-router.route("/updateSubcategory/:subcategoryId").put(updateSubcategory);
+router.route("/updateSubcategory/:subcategoryId").put(adminProtect, protect, updateSubcategory);
 
 /**
  * @swagger
@@ -102,6 +111,8 @@ router.route("/updateSubcategory/:subcategoryId").put(updateSubcategory);
  *     tags: [Subcategory]
  *     operatorId: deleteSubcategory
  *     description: Delete subcategory
+ *     security:
+ *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -116,6 +127,6 @@ router.route("/updateSubcategory/:subcategoryId").put(updateSubcategory);
  *       404:
  *         description: Not Found
  */
-router.route("/deleteSubcategory/:subcategoryId").delete(deleteSubcategory);
+router.route("/deleteSubcategory/:subcategoryId").delete(adminProtect, protect, deleteSubcategory);
 
 module.exports = router;
