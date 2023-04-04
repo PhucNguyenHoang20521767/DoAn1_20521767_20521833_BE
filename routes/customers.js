@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
+const { protect, adminProtect } = require("../middleware/auth");
 
-const { registerCustomer, loginCustomer, logoutCustomer, sendOTPToCustomer, forgetPasswordCustomer, resetPasswordCustomer, verifyCustomerAfterSendOTP } = require("../controllers/customer/auth_customer");
-const { getAllCustomers, getCustomerById, updateCustomer, deleteCustomer, activeOrInactiveCustomer } = require("../controllers/customer/customerController");
+const { registerCustomer, loginGoogleAndFacebookCustomer, loginCustomer, logoutCustomer, sendOTPToCustomer, forgetPasswordCustomer, resetPasswordCustomer, verifyCustomerAfterSendOTP } = require("../controllers/customer/auth_customer");
+const { getAllCustomers, getCustomerById, updateCustomer, updateCustomerByAdmin, deleteCustomer, activeOrInactiveCustomer } = require("../controllers/customer/customerController");
 
 /**
  * @swagger
@@ -24,6 +25,27 @@ const { getAllCustomers, getCustomerById, updateCustomer, deleteCustomer, active
  *         description: Bad Request
  */
 router.route("/registerCustomer").post(registerCustomer);
+
+/**
+ * @swagger
+ * /api/customers/loginGoogleAndFacebookCustomer:
+ *   post:
+ *     tags: [Customer]
+ *     operatorId: loginGoogleAndFacebookCustomer
+ *     description: Login a customer with FB and GG
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/Customer'
+ *     responses:
+ *       201:
+ *         description: Created
+ *       400:
+ *         description: Bad Request
+ */
+router.route("/loginGoogleAndFacebookCustomer").post(loginGoogleAndFacebookCustomer);
 
 /**
  * @swagger
@@ -207,13 +229,17 @@ router.route("/verifyCustomerAfterSendOTP").post(verifyCustomerAfterSendOTP);
  *     tags: [Customer]
  *     operatorId: getAllCustomers
  *     description: Get all customers
+ *     security:
+ *       - bearer: []
+ *     security:
+ *       - bearer: []
  *     responses:
  *       200:
  *         description: Success
  *       400:
  *         description: Bad Request
  */
-router.route("/getAllCustomers").get(getAllCustomers);
+router.route("/getAllCustomers").get(adminProtect, protect, getAllCustomers);
 
 /**
  * @swagger
@@ -222,6 +248,8 @@ router.route("/getAllCustomers").get(getAllCustomers);
  *     tags: [Customer]
  *     operatorId: getCustomerById
  *     description: Get customer by ID
+ *     security:
+ *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -236,7 +264,7 @@ router.route("/getAllCustomers").get(getAllCustomers);
  *       404:
  *         description: Not Found
  */
-router.route("/getCustomerById/:customerId").get(getCustomerById);
+router.route("/getCustomerById/:customerId").get(adminProtect, protect, getCustomerById);
 
 /**
  * @swagger
@@ -245,6 +273,8 @@ router.route("/getCustomerById/:customerId").get(getCustomerById);
  *     tags: [Customer]
  *     operatorId: updateCustomer
  *     description: Update customer by ID
+ *     security:
+ *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -279,7 +309,54 @@ router.route("/getCustomerById/:customerId").get(getCustomerById);
  *       404:
  *         description: Not Found
  */
-router.route("/updateCustomer/:customerId").put(updateCustomer);
+router.route("/updateCustomer/:customerId").put(protect, updateCustomer);
+
+/**
+ * @swagger
+ * /api/customers/updateCustomerByAdmin/{id}:
+ *   put:
+ *     tags: [Customer]
+ *     operatorId: updateCustomerByAdmin
+ *     description: Update customer by ID (for ADMIN only)
+ *     security:
+ *       - bearer: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Customer ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             properties:
+ *               customerPassword:
+ *                 type: string
+ *               customerFirstName:
+ *                 type: string
+ *               customerLastName:
+ *                 type: string
+ *               customerBirthday:
+ *                 type: string
+ *               customerEmail:
+ *                 type: string
+ *               customerPhone:
+ *                 type: string
+ *               customerGender:
+ *                 type: string
+ *               customerAvatar:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: Bad Request
+ *       404:
+ *         description: Not Found
+ */
+router.route("/updateCustomerByAdmin/:customerId").put(adminProtect, protect, updateCustomerByAdmin);
 
 /**
  * @swagger
@@ -288,6 +365,8 @@ router.route("/updateCustomer/:customerId").put(updateCustomer);
  *     tags: [Customer]
  *     operatorId: deleteCustomer
  *     description: Delete customer by ID
+ *     security:
+ *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -302,7 +381,7 @@ router.route("/updateCustomer/:customerId").put(updateCustomer);
  *       404:
  *         description: Not Found
  */
-router.route("/deleteCustomer/:customerId").delete(deleteCustomer);
+router.route("/deleteCustomer/:customerId").delete(adminProtect, protect, deleteCustomer);
 
 /**
  * @swagger
@@ -311,6 +390,8 @@ router.route("/deleteCustomer/:customerId").delete(deleteCustomer);
  *     tags: [Customer]
  *     operatorId: activeOrInactiveCustomer
  *     description: Active or inactive customer by ID
+ *     security:
+ *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -325,6 +406,6 @@ router.route("/deleteCustomer/:customerId").delete(deleteCustomer);
  *       404:
  *         description: Not Found
  */
-router.route("/activeOrInactiveCustomer/:customerId").put(activeOrInactiveCustomer);
+router.route("/activeOrInactiveCustomer/:customerId").put(adminProtect, protect, activeOrInactiveCustomer);
 
 module.exports = router;

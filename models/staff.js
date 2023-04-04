@@ -5,12 +5,6 @@ const jwt = require("jsonwebtoken");
 
 var staffSchema = new Schema(
     {
-        staffLoginName: {
-            type: String,
-            unique: [true, "Login name is already registered"],
-            required: true,
-            trim: true
-        },
         staffPassword: {
             type: String,
             required: [true, "Please add a password"],
@@ -41,7 +35,7 @@ var staffSchema = new Schema(
             required: [true, "Please provide staff's email"],
             unique: [true, "Email is already registered"],
             match: [
-                /^[a-z0-9_\.]{1,32}@@[a-z0-9]{2,10}(\.[a-z0-9]{2,10}){1,}$/,
+                /^[a-z0-9_\.]{1,32}@[a-z0-9]{2,10}(\.[a-z0-9]{2,10}){1,}$/,
                 "Invalid email",
             ],
             trim: true
@@ -61,10 +55,12 @@ var staffSchema = new Schema(
             default: Date.now()
         },
         staffStatus: {
+            // 0: Still Working, -1: Quit Job
             type: Number,
             default: 0
         },
         privilege: {
+            // 0: ADMIN; 1,2: STAFF
             type: Number,
             required: true
         }
@@ -107,7 +103,6 @@ module.exports = Staff;
  *     Staff:
  *       type: object
  *       required:
- *         - staffLoginName
  *         - staffPassword
  *         - staffFirstName
  *         - staffLastName
@@ -115,10 +110,8 @@ module.exports = Staff;
  *         - staffPhone
  *         - privilege
  *       properties:
- *         staffLoginName:
- *           type: string
  *         staffPassword:
- *           type: number
+ *           type: string
  *         staffFirstName:
  *           type: string
  *         staffLastName:
@@ -130,7 +123,7 @@ module.exports = Staff;
  *         staffGender:
  *           type: string
  *         staffStartWork:
- *           type: date
+ *           type: string
  *         staffStatus:
  *           type: number
  *         privilege:

@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { protect, adminProtect } = require("../middleware/auth");
 
 const { registerAdmin, loginAdmin } = require("../controllers/admin/auth_admin");
 
@@ -10,6 +11,8 @@ const { registerAdmin, loginAdmin } = require("../controllers/admin/auth_admin")
  *     tags: [Admin]
  *     operatorId: registerAdmin
  *     description: Register admin
+ *     security:
+ *       - bearer: []
  *     requestBody:
  *       required: true
  *       content:
@@ -17,7 +20,6 @@ const { registerAdmin, loginAdmin } = require("../controllers/admin/auth_admin")
  *           schema:
  *             type: object
  *             required:
- *               - staffLoginName
  *               - staffPassword
  *               - staffFirstName
  *               - staffLastName
@@ -25,8 +27,6 @@ const { registerAdmin, loginAdmin } = require("../controllers/admin/auth_admin")
  *               - staffPhone
  *               - staffGender
  *             properties:
- *               staffLoginName:
- *                 type: string
  *               staffPassword:
  *                 type: string
  *               staffFirstName:
@@ -45,7 +45,7 @@ const { registerAdmin, loginAdmin } = require("../controllers/admin/auth_admin")
  *       400:
  *         description: Bad Request
  */
-router.route("/registerAdmin").post(registerAdmin);
+router.route("/registerAdmin").post(adminProtect, protect, registerAdmin);
 
 /**
  * @swagger
@@ -61,10 +61,10 @@ router.route("/registerAdmin").post(registerAdmin);
  *           schema:
  *             type: object
  *             required:
- *               - staffLoginName
+ *               - staffEmail
  *               - staffPassword
  *             properties:
- *               staffLoginName:
+ *               staffEmail:
  *                 type: string
  *               staffPassword:
  *                 type: string

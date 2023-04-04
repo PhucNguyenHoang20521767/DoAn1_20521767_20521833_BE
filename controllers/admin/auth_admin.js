@@ -2,12 +2,11 @@ const Staff = require("../../models/staff");
 const ErrorResponse = require("../../utils/errorResponse");
 
 exports.registerAdmin = async (req, res, next) => {
-    const { staffLoginName, staffPassword, staffFirstName, staffLastName, staffEmail, staffPhone, staffGender  } = req.body;
+    const { staffPassword, staffFirstName, staffLastName, staffEmail, staffPhone, staffGender  } = req.body;
 
 	try {
 		const admin = await Staff.create(
             {
-				staffLoginName,
 				staffPassword,
 				staffFirstName,
 				staffLastName,
@@ -25,14 +24,14 @@ exports.registerAdmin = async (req, res, next) => {
 };
 
 exports.loginAdmin = async (req, res, next) => {
-	const { staffLoginName, staffPassword } = req.body;
+	const { staffEmail, staffPassword } = req.body;
 
-	if (!staffLoginName || !staffPassword)
-		return next(ErrorResponse("Please provide login name and password", 400));
+	if (!staffEmail || !staffPassword)
+		return next(ErrorResponse("Please provide email and password", 400));
 
 	try {
 		const admin = await Staff.findOne({
-			staffLoginName,
+			staffEmail,
 			staffStatus: 0,
 			privilege: 0
 		}).select("+staffPassword");
