@@ -231,8 +231,6 @@ router.route("/verifyCustomerAfterSendOTP").post(verifyCustomerAfterSendOTP);
  *     description: Get all customers
  *     security:
  *       - bearer: []
- *     security:
- *       - bearer: []
  *     responses:
  *       200:
  *         description: Success

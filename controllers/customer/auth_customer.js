@@ -85,7 +85,7 @@ exports.loginCustomer = async (req, res, next) => {
     }
 };
 
-exports.logoutCustomer = async(res, req, next) => {
+exports.logoutCustomer = async(req, res, next) => {
     const { customerId } = req.params;
 
     if (!customerId || !mongoose.Types.ObjectId.isValid(customerId))
