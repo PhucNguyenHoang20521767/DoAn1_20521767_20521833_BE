@@ -138,7 +138,7 @@ exports.deleteCustomer = async (req, res, next) => {
     }
 };
 
-exports.activeOrInactiveCustomer = async(res, req, next) => {
+exports.activeOrInactiveCustomer = async(req, res, next) => {
     const { customerId } = req.params;
 
     if (!customerId || !mongoose.Types.ObjectId.isValid(customerId))
