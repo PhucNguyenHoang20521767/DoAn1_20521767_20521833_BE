@@ -1,7 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const { saveAttachment, previewAttachment, previewAttachmentInfo, previewAttachmentInfoList } = require("../controllers/attachmentController");
-const { upload } = require("../config/attachment");
+const { uploadMemoryStorage } = require("../config/attachment");
+
+const firebaseStorage = require("../config/firebase");
+const { ref, uploadBytesResumable } = require("firebase/storage");
+
 
 /**
  * @swagger
@@ -32,7 +36,19 @@ const { upload } = require("../config/attachment");
  *         description: Bad Request
  *
  */
-router.route("/saveAttachment").post(upload.array("Files[]"), saveAttachment);
+router.route("/saveAttachment").post(uploadMemoryStorage.array("Files[]"), async (req, res, next) => {
+    try {
+        if (req.files) {
+            req.files.forEach((file) => {
+                file.originalname = file.originalname + "_" + Date.now();
+                uploadBytesResumable(ref(firebaseStorage, `attachments/${file.originalname}`), file.buffer, { contentType: file.mimetype});
+            });
+        }
+        next();
+    } catch (error) {
+        next(error);
+    }
+}, saveAttachment);
 
 /**
  * @swagger

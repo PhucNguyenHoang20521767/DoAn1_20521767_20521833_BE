@@ -68,7 +68,7 @@ var customerSchema = new Schema(
             // 3 options: Default, Google, Facebook
             required: true,
             type: String,
-            default: "default",
+            default: "Default",
             trim: true
         },
         verificationKey: { type: String, select: false, trim: true },

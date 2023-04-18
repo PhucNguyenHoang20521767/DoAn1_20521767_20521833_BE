@@ -1,7 +1,13 @@
-const mongoose = required("mongoose");
-const Product = required("../models/product");
+const mongoose = require("mongoose");
+const Product = require("../models/product");
+const Attachment = require("../models/attachment");
+const ProductImage = require("../models/product_image");
 const ErrorResponse = require("../utils/errorResponse");
 
+const firebaseStorage = require("../config/firebase");
+const { ref, deleteObject } = require("firebase/storage");
+
+// CRUD Product
 exports.getAllProducts = async (req, res, next) => {
     let options = {};
 
@@ -148,6 +154,92 @@ exports.activeOrInactiveProduct = async(req, res, next) => {
         res.status(200).json({
             success: true,
             message: `Product ${product.productStatus ? "deactivated" : "activated"} successfully`
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Product Image
+exports.getAllProductImages = async (req, res, next) => {
+    const { productId } = req.params;
+
+    if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
+        return next(new ErrorResponse("Please provide valid product's ID", 400));
+    }
+
+    try {
+        const prodImgs = await ProductImage.find({
+            productId: productId,
+        }).select("-productId");
+
+        res.status(200).json({
+            success: true,
+            message: "List of product images fetched successfully",
+            data: prodImgs
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.saveProductImage = async (req, res, next) => {
+    const { productId } = req.params;
+
+    if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
+        return next(new ErrorResponse("Please provide valid product's ID", 400));
+    }
+
+    let attachmentsList = req.files
+		? req.files.map((file) => {
+				return {
+					attachmentMimeType: file.mimetype,
+					attachmentName: file.originalname,
+					attachmentSize: file.size,
+				};
+		  })
+		: [];
+
+    if (!attachmentsList.length)
+		return next(new ErrorResponse("No attachments added", 404));
+
+    try {
+        const attachment = await Attachment.insertMany(attachmentsList);
+
+        await ProductImage.insertMany(
+            Array.from(attachment, (att) => {
+                return {
+                    productId: productId,
+                    productImage: att._id.toString()
+                };
+            })
+        );
+
+        res.status(201).json({
+            success: true,
+            message: "Product image added successfully"
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.deleteProductImage = async (req, res, next) => {
+    const { productImageId } = req.params;
+
+    if (!productImageId || !mongoose.Types.ObjectId.isValid(productImageId)) {
+        return next(new ErrorResponse("Please provide valid product image's ID", 400));
+    }
+
+    try {
+        const prodImg = await ProductImage.findByIdAndDelete(productImageId);
+        const attachment = await Attachment.findByIdAndDelete(prodImg.productImage);
+
+        await deleteObject(ref(firebaseStorage, `attachments/${attachment.attachmentName}`));
+
+        res.status(200).json({
+            success: true,
+            message: "Product image deleted successfully"
         });
     } catch (error) {
         next(error);
