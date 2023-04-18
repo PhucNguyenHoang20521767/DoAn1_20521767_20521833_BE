@@ -45,10 +45,12 @@ app.use("/api/auth", require("./routes/auth"));
 app.use("/api/admin", require("./routes/admin"));
 app.use("/api/staffs", require("./routes/staffs"));
 app.use("/api/customers", require("./routes/customers"));
-app.use("/api/attachments", require("./routes/attachments"));
-// app.use("/api/products", require("./routes/products"));
+
+app.use("/api/products", require("./routes/products"));
 app.use("/api/categories", require("./routes/categories"));
 app.use("/api/subcategories", require("./routes/subcategories"));
+app.use("/api/wishlist", require("./routes/wishlist"));
+app.use("/api/attachments", require("./routes/attachments"));
 
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerJsDoc(swaggerOptions)));
 

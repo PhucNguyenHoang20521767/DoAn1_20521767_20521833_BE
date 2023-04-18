@@ -1,14 +1,17 @@
 const mongoose = require("mongoose");
-const Attachment = require("../models/Attachment");
+const Attachment = require("../models/attachment");
 const ErrorResponse = require("../utils/errorResponse");
 const fs = require("fs");
+
+const firebaseStorage = require("../config/firebase");
+const { ref, getDownloadURL } = require("firebase/storage");
 
 exports.saveAttachment = async (req, res, next) => {
 	let attachmentsList = req.files
 		? req.files.map((file) => {
 				return {
 					attachmentMimeType: file.mimetype,
-					attachmentName: file.filename,
+					attachmentName: file.originalname,
 					attachmentSize: file.size,
 				};
 		  })
@@ -41,9 +44,17 @@ exports.previewAttachment = async (req, res, next) => {
 
 		if (!attachment) next(new ErrorResponse("No attachment found", 404));
 
-		let imageBuffer = fs.readFileSync("../file_bucket/" + attachment.attachmentName);
-		res.setHeader("Content-Type", attachment.attachmentMimeType);
-		res.send(imageBuffer);
+		const attachmentURL = await getDownloadURL(ref(firebaseStorage, `attachments/${attachment.attachmentName}`));
+
+		res.status(200).json({
+			success: true,
+			message: "Attachment URL",
+			attachmentURL: attachmentURL
+		});
+
+		// let imageBuffer = fs.readFileSync("C:/NGUYEN'S HOME Furniture/Attachments/" + attachment.attachmentName);
+		// res.setHeader("Content-Type", attachment.attachmentMimeType);
+		// res.send(imageBuffer);
 	} catch (error) {
 		next(error);
 	}
