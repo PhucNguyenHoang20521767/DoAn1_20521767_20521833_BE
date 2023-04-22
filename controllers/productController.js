@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const Product = require("../models/product");
 const Attachment = require("../models/attachment");
 const ProductImage = require("../models/product_image");
+const ProductColor = require("../models/product_color");
+const ProductDimension = require("../models/product_dimension");
 const ErrorResponse = require("../utils/errorResponse");
 
 const firebaseStorage = require("../config/firebase");
@@ -240,6 +242,210 @@ exports.deleteProductImage = async (req, res, next) => {
         res.status(200).json({
             success: true,
             message: "Product image deleted successfully"
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Product Color
+exports.getAllProductColors = async (req, res, next) => {
+    const { productId } = req.params;
+
+    if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
+        return next(new ErrorResponse("Please provide valid product's ID", 400));
+    }
+
+    try {
+        const productColors = await ProductColor.find({
+            productId: productId,
+        });
+
+        res.status(200).json({
+            success: true,
+            message: "List of product colors fetched successfully",
+            data: productColors
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.addProductColor = async (req, res, next) => {
+    const { productId } = req.params;
+
+    if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
+        return next(new ErrorResponse("Please provide valid product's ID", 400));
+    }
+
+    const { productColorName, productColorCode } = req.body;
+
+    try {
+        const productColor = await ProductColor.create({
+            productId,
+            productColorName,
+            productColorCode
+        });
+
+        res.status(201).json({
+            success: true,
+            message: "Product color added successfully",
+            data: productColor
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.updateProductColor = async (req, res, next) => {
+    const { productColorId } = req.params;
+
+    if (!productColorId || !mongoose.Types.ObjectId.isValid(productColorId)) {
+        return next(new ErrorResponse("Please provide valid product color's ID", 400));
+    }
+
+    const { productColorName, productColorCode } = req.body;
+
+    try {
+        const productColor = await ProductColor.findByIdAndUpdate(productColorId, {
+            productColorName,
+            productColorCode
+        });
+
+        if (!productColor)
+            return next(new ErrorResponse("No product color found", 404));
+
+        res.status(200).json({
+            success: true,
+            message: "Product color updated successfully",
+            data: productColor
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.deleteProductColor = async (req, res, next) => {
+    const { productColorId } = req.params;
+
+    if (!productColorId || !mongoose.Types.ObjectId.isValid(productColorId)) {
+        return next(new ErrorResponse("Please provide valid product color's ID", 400));
+    }
+
+    try {
+        const productColor = await ProductColor.findByIdAndDelete(productColorId);
+
+        if (!productColor)
+            return next(new ErrorResponse("No product color found", 404));
+
+        res.status(200).json({
+            success: true,
+            message: "Product color deleted successfully",
+            data: productColor
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Product Dimension
+exports.getProductDimension = async (req, res, next) => {
+    const { productId } = req.params;
+
+    if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
+        return next(new ErrorResponse("Please provide valid product's ID", 400));
+    }
+
+    try {
+        const productDimension = await ProductDimension.find({
+            productId: productId,
+        });
+
+        res.status(200).json({
+            success: true,
+            message: "Product dimension fetched successfully",
+            data: productDimension
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.addProductDimension = async (req, res, next) => {
+    const { productId } = req.params;
+
+    if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
+        return next(new ErrorResponse("Please provide valid product's ID", 400));
+    }
+
+    const { productLength, productWidth, productHeight, productWeight } = req.body;
+
+    try {
+        const productDimension = await ProductDimension.create({
+            productId,
+            productLength,
+            productWidth,
+            productHeight,
+            productWeight
+        });
+
+        res.status(201).json({
+            success: true,
+            message: "Product dimension added successfully",
+            data: productDimension
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.updateProductDimension = async (req, res, next) => {
+    const { productDimensionId } = req.params;
+
+    if (!productDimensionId || !mongoose.Types.ObjectId.isValid(productDimensionId)) {
+        return next(new ErrorResponse("Please provide valid product dimension's ID", 400));
+    }
+
+    const { productLength, productWidth, productHeight, productWeight } = req.body;
+
+    try {
+        const productDimension = await ProductDimension.findByIdAndUpdate(productDimensionId, {
+            productLength,
+            productWidth,
+            productHeight,
+            productWeight
+        });
+
+        if (!productDimension)
+            return next(new ErrorResponse("No product dimension found", 404));
+
+        res.status(200).json({
+            success: true,
+            message: "Product dimension updated successfully",
+            data: productDimension
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.deleteProductDimension = async (req, res, next) => {
+    const { productDimensionId } = req.params;
+
+    if (!productDimensionId || !mongoose.Types.ObjectId.isValid(productDimensionId)) {
+        return next(new ErrorResponse("Please provide valid product dimension's ID", 400));
+    }
+
+    try {
+        const productDimension = await ProductDimension.findByIdAndDelete(productDimensionId);
+
+        if (!productDimension)
+            return next(new ErrorResponse("No product dimension found", 404));
+
+        res.status(200).json({
+            success: true,
+            message: "Product dimension deleted successfully",
+            data: productDimension
         });
     } catch (error) {
         next(error);

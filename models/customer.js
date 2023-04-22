@@ -83,7 +83,7 @@ var customerSchema = new Schema(
             default: true
         }
     },
-    { timestamps: true}
+    { timestamps: true }
 );
 
 // Encrypt password & generate verification key before save

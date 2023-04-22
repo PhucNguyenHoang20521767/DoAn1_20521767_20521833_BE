@@ -3,18 +3,199 @@ const router = express.Router();
 
 const { uploadMemoryStorage } = require("../config/attachment");
 const { protect, staffAndAdminProtect, adminProtect } = require("../middleware/auth");
-const { getAllProductImages, saveProductImage, deleteProductImage } = require("../controllers/productController");
+const { getAllProducts, getProductById, createProduct, updateProduct, deleteProduct, activeOrInactiveProduct,
+    getAllProductImages, saveProductImage, deleteProductImage,
+    getAllProductColors, addProductColor, updateProductColor, deleteProductColor,
+    getProductDimension, addProductDimension, updateProductDimension, deleteProductDimension } = require("../controllers/productController");
 
 const firebaseStorage = require("../config/firebase");
 const { ref, uploadBytesResumable } = require("firebase/storage");
 
 /**
  * @swagger
- * /api/products/getAllProductImages/{id}:
+ * /api/products/getAllProducts:
  *   get:
  *     tags: [Product]
+ *     operatorId: getAllProducts
+ *     description: Get all products
+ *     security:
+ *       - bearer: []
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: Bad Request
+ */
+router.route("/getAllProducts").get(staffAndAdminProtect, protect, getAllProducts);
+
+/**
+ * @swagger
+ * /api/products/getProductById/{id}:
+ *   get:
+ *     tags: [Product]
+ *     operatorId: getProductById
+ *     description: Get product by ID
+ *     security:
+ *       - bearer: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Product ID
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: Bad Request
+ *       404:
+ *         description: Not Found
+ */
+router.route("/getProductById/:productId").get(staffAndAdminProtect, protect, getProductById);
+
+/**
+ * @swagger
+ * /api/products/createProduct:
+ *   post:
+ *     tags: [Product]
+ *     operatorId: createProduct
+ *     description: Create product by ID
+ *     security:
+ *       - bearer: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             properties:
+ *               productName:
+ *                 type: string
+ *               productDescription:
+ *                 type: string
+ *               productPrice:
+ *                 type: number
+ *               productCategoryId:
+ *                 type: string
+ *               productSubcategoryId:
+ *                 type: string
+ *               productQuantity:
+ *                 type: number
+ *               productSupplierId:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: Bad Request
+ *       404:
+ *         description: Not Found
+ */
+router.route("/createProduct").post(staffAndAdminProtect, protect, createProduct);
+
+/**
+ * @swagger
+ * /api/products/updateProduct/{id}:
+ *   put:
+ *     tags: [Product]
+ *     operatorId: updateProduct
+ *     description: Update product by ID
+ *     security:
+ *       - bearer: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Product ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             properties:
+ *               productName:
+ *                 type: string
+ *               productDescription:
+ *                 type: string
+ *               productPrice:
+ *                 type: number
+ *               productCategoryId:
+ *                 type: string
+ *               productSubcategoryId:
+ *                 type: string
+ *               productQuantity:
+ *                 type: number
+ *               productSupplierId:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: Bad Request
+ *       404:
+ *         description: Not Found
+ */
+router.route("/updateProduct/:productId").put(staffAndAdminProtect, protect, updateProduct);
+
+/**
+ * @swagger
+ * /api/products/deleteProduct/{id}:
+ *   delete:
+ *     tags: [Product]
+ *     operatorId: deleteProduct
+ *     description: Delete product by ID
+ *     security:
+ *       - bearer: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Product ID
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: Bad Request
+ *       404:
+ *         description: Not Found
+ */
+router.route("/deleteProduct/:productId").delete(staffAndAdminProtect, protect, deleteProduct);
+
+/**
+ * @swagger
+ * /api/products/activeOrInactiveProduct/{id}:
+ *   put:
+ *     tags: [Product]
+ *     operatorId: activeOrInactiveProduct
+ *     description: Active or inactive product by ID
+ *     security:
+ *       - bearer: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Product ID
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: Bad Request
+ *       404:
+ *         description: Not Found
+ */
+router.route("/activeOrInactiveProduct/:productId").put(staffAndAdminProtect, protect, activeOrInactiveProduct);
+
+/**
+ * @swagger
+ * /api/products/getAllProductImages/{id}:
+ *   get:
+ *     tags: [Product Image]
  *     operatorId: getAllProductImages
  *     description: Get all product images
+ *     security:
+ *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -33,7 +214,7 @@ router.route("/getAllProductImages/:productId").get(staffAndAdminProtect, protec
  * @swagger
  * /api/products/saveProductImage/{id}:
  *   post:
- *     tags: [Product]
+ *     tags: [Product Image]
  *     operatorId: saveProductImage
  *     description: Save product image
  *     security:
@@ -68,7 +249,7 @@ router.route("/saveProductImage/:productId").post(staffAndAdminProtect, protect,
     try {
         if (req.files) {
             req.files.forEach((file) => {
-                file.originalname = file.originalname + "_" + Date.now();
+                file.originalname = "product_" + file.originalname + "_" + Date.now();
                 uploadBytesResumable(ref(firebaseStorage, `attachments/${file.originalname}`), file.buffer, { contentType: file.mimetype});
             });
         }
@@ -82,7 +263,7 @@ router.route("/saveProductImage/:productId").post(staffAndAdminProtect, protect,
  * @swagger
  * /api/products/deleteProductImage/{id}:
  *   delete:
- *     tags: [Product]
+ *     tags: [Product Image]
  *     operatorId: deleteProductImage
  *     description: Delete product image
  *     security:
@@ -102,5 +283,244 @@ router.route("/saveProductImage/:productId").post(staffAndAdminProtect, protect,
  *         description: Not Found
  */
 router.route("/deleteProductImage/:productImageId").delete(staffAndAdminProtect, protect, deleteProductImage);
+
+/**
+ * @swagger
+ * /api/products/getAllProductColors/{id}:
+ *   get:
+ *     tags: [Product Color]
+ *     operatorId: getAllProductColors
+ *     description: Get all product colors
+ *     security:
+ *       - bearer: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Product ID
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: Bad Request
+ */
+router.route("/getAllProductColors/:productId").get(staffAndAdminProtect, protect, getAllProductColors);
+
+/**
+ * @swagger
+ * /api/products/addProductColor/{id}:
+ *   post:
+ *     tags: [Product Color]
+ *     operatorId: addProductColor
+ *     description: Add product color
+ *     security:
+ *       - bearer: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Product ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             properties:
+ *               productColorName:
+ *                 type: string
+ *               productColorCode:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Add Successful
+ *       400:
+ *         description: Bad Request
+ */
+router.route("/addProductColor/:productId").post(staffAndAdminProtect, protect, addProductColor);
+
+/**
+ * @swagger
+ * /api/products/updateProductColor/{id}:
+ *   put:
+ *     tags: [Product Color]
+ *     operatorId: updateProductColor
+ *     description: Update product color
+ *     security:
+ *       - bearer: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Product Color ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             properties:
+ *               productColorName:
+ *                 type: string
+ *               productColorCode:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Add Successful
+ *       400:
+ *         description: Bad Request
+ *       404:
+ *         description: Not Found
+ */
+router.route("/updateProductColor/:productColorId").put(staffAndAdminProtect, protect, updateProductColor);
+
+/**
+ * @swagger
+ * /api/products/deleteProductColor/{id}:
+ *   delete:
+ *     tags: [Product Color]
+ *     operatorId: deleteProductColor
+ *     description: Delete product color
+ *     security:
+ *       - bearer: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Product Color ID
+ *     responses:
+ *       201:
+ *         description: Add Successful
+ *       400:
+ *         description: Bad Request
+ *       404:
+ *         description: Not Found
+ */
+router.route("/deleteProductColor/:productColorId").delete(staffAndAdminProtect, protect, deleteProductColor);
+
+/**
+ * @swagger
+ * /api/products/getProductDimension/{id}:
+ *   get:
+ *     tags: [Product Dimension]
+ *     operatorId: getProductDimension
+ *     description: Get product dimension
+ *     security:
+ *       - bearer: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Product ID
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: Bad Request
+ */
+router.route("/getProductDimension/:productId").get(staffAndAdminProtect, protect, getProductDimension);
+
+/**
+ * @swagger
+ * /api/products/addProductDimension/{id}:
+ *   post:
+ *     tags: [Product Dimension]
+ *     operatorId: addProductDimension
+ *     description: Add product dimension
+ *     security:
+ *       - bearer: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Product ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             properties:
+ *               productLength:
+ *                 type: number
+ *               productWidth:
+ *                 type: number
+ *               productHeight:
+ *                 type: number
+ *               productWeight:
+ *                 type: number
+ *     responses:
+ *       201:
+ *         description: Add Successful
+ *       400:
+ *         description: Bad Request
+ */
+router.route("/addProductDimension/:productId").post(staffAndAdminProtect, protect, addProductDimension);
+
+/**
+ * @swagger
+ * /api/products/updateProductDimension/{id}:
+ *   put:
+ *     tags: [Product Dimension]
+ *     operatorId: updateProductDimension
+ *     description: Update product dimension
+ *     security:
+ *       - bearer: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Product Dimension ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             properties:
+ *               productLength:
+ *                 type: number
+ *               productWidth:
+ *                 type: number
+ *               productHeight:
+ *                 type: number
+ *               productWeight:
+ *                 type: number
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: Bad Request
+ */
+router.route("/updateProductDimension/:productDimensionId").put(staffAndAdminProtect, protect, updateProductDimension);
+
+/**
+ * @swagger
+ * /api/products/deleteProductDimension/{id}:
+ *   delete:
+ *     tags: [Product Dimension]
+ *     operatorId: deleteProductDimension
+ *     description: Delete product dimension
+ *     security:
+ *       - bearer: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Product Dimension ID
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: Bad Request
+ *       404:
+ *         description: Not Found
+ */
+router.route("/deleteProductDimension/:productDimensionId").delete(staffAndAdminProtect, protect, deleteProductDimension);
+
 
 module.exports = router;
