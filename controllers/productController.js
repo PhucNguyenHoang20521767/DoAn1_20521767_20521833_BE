@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
-const Product = require("../models/product");
+const Product = require("../models/product/product");
 const Attachment = require("../models/attachment");
-const ProductImage = require("../models/product_image");
-const ProductColor = require("../models/product_color");
-const ProductDimension = require("../models/product_dimension");
+const ProductImage = require("../models/product/product_image");
+const ProductColor = require("../models/product/product_color");
+const ProductDimension = require("../models/product/product_dimension");
 const ErrorResponse = require("../utils/errorResponse");
 
 const firebaseStorage = require("../config/firebase");
