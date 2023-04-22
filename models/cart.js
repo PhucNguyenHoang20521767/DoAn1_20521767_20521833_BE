@@ -1,39 +1,36 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-var wishlistSchema = new Schema(
+var cartSchema = new Schema(
     {
-        productId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Product",
-            required: [true, "Please provide product's ID"],
-			trim: true
-        },
         customerId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Customer",
             required: [true, "Please provide customer's ID"],
             trim: true
+        },
+        cartStatus: {
+            type: Boolean,
+            default: true
         }
     },
     { timestamps: true }
 );
 
-const Wishlist = mongoose.model("Wishlist", wishlistSchema);
-module.exports = Wishlist;
+const Cart = mongoose.model("Cart", cartSchema);
+module.exports = Cart;
 
 /**
  * @swagger
  * components:
  *   schemas:
- *     Wishlist:
+ *     Cart:
  *       type: object
  *       required:
- *         - productId
  *         - customerId
  *       properties:
- *         productId:
- *           type: string
  *         customerId:
  *           type: string
+ *         cartStatus:
+ *           type: boolean
  */
