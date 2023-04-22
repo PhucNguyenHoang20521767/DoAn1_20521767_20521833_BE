@@ -47,6 +47,7 @@ app.use("/api/staffs", require("./routes/staffs"));
 app.use("/api/customers", require("./routes/customers"));
 
 app.use("/api/products", require("./routes/products"));
+app.use("/api/suppliers", require("./routes/suppliers"));
 app.use("/api/categories", require("./routes/categories"));
 app.use("/api/subcategories", require("./routes/subcategories"));
 app.use("/api/wishlist", require("./routes/wishlist"));
