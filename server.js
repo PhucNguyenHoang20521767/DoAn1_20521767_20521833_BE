@@ -45,8 +45,16 @@ app.use("/api/auth", require("./routes/auth"));
 app.use("/api/admin", require("./routes/admin"));
 app.use("/api/staffs", require("./routes/staffs"));
 app.use("/api/customers", require("./routes/customers"));
+app.use("/api/addresses", require("./routes/addresses"));
+app.use("/api/carts", require("./routes/carts"));
+app.use("/api/feedbacks", require("./routes/feedbacks"));
+
+// app.use("/api/orders", require("./routes/orders"));
 
 app.use("/api/products", require("./routes/products"));
+app.use("/api/imports", require("./routes/imports"));
+app.use("/api/discounts", require("./routes/discounts"));
+app.use("/api/payments", require("./routes/payments"));
 app.use("/api/suppliers", require("./routes/suppliers"));
 app.use("/api/categories", require("./routes/categories"));
 app.use("/api/subcategories", require("./routes/subcategories"));

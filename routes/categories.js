@@ -45,7 +45,7 @@ router.route("/getAllCategories").get(adminProtect, protect, getAllCategories);
  *         description: Success
  *       400:
  *         description: Bad Request
- *       401:
+ *       404:
  *         description: Not Found
  */
 router.route("/getCategoryById/:categoryId").get(adminProtect, protect, getCategoryById);

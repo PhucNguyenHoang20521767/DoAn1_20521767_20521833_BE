@@ -66,6 +66,8 @@ module.exports = Discount;
  *           type: string
  *         discountDescription:
  *           type: string
+ *         discountPercent:
+ *           type: number
  *         discountStartDate:
  *           type: string
  *         discountEndDate:

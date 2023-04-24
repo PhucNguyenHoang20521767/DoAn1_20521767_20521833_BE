@@ -45,7 +45,7 @@ router.route("/getAllSubcategories").get(adminProtect, protect, getAllSubcategor
  *         description: Success
  *       400:
  *         description: Bad Request
- *       401:
+ *       404:
  *         description: Not Found
  */
 router.route("/getSubcategoryById/:subcategoryId").get(adminProtect, protect, getSubcategoryById);
