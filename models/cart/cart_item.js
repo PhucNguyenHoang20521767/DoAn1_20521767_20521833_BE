@@ -17,7 +17,7 @@ var cartItemSchema = new Schema(
         },
         productQuantity: {
             type: Number,
-            default: 0
+            required: [true, "Please provide product's quantity"]
         }
     },
     { timestamps: true }
@@ -35,6 +35,7 @@ module.exports = CartItem;
  *       required:
  *         - cartId
  *         - productId
+ *         - productQuantity
  *       properties:
  *         cartId:
  *           type: string

@@ -1,16 +1,16 @@
 const express = require("express");
 const router = express.Router();
-const { protect, adminProtect } = require("../middleware/auth");
+const { protect, staffAndAdminProtect } = require("../middleware/auth");
 
-const { getAllSuppliers, getSupplierById, createSupplier, updateSupplier, deleteSupplier } = require("../controllers/supplierController");
+const { getAllDiscounts, getDiscountById, createDiscount, updateDiscount, deleteDiscount } = require("../controllers/discountController");
 
 /**
  * @swagger
- * /api/suppliers/getAllSuppliers:
+ * /api/discounts/getAllDiscounts:
  *   get:
- *     tags: [Supplier]
- *     operatorId: getAllSuppliers
- *     description: Get all suppliers
+ *     tags: [Discount]
+ *     operatorId: getAllDiscounts
+ *     description: Get all discounts
  *     security:
  *       - bearer: []
  *     responses:
@@ -19,15 +19,15 @@ const { getAllSuppliers, getSupplierById, createSupplier, updateSupplier, delete
  *       400:
  *         description: Bad Request
  */
-router.route("/getAllSuppliers").get(adminProtect, protect, getAllSuppliers);
+router.route("/getAllDiscounts").get(staffAndAdminProtect, protect, getAllDiscounts);
 
 /**
  * @swagger
- * /api/suppliers/getSupplierById/{id}:
+ * /api/discounts/getDiscountById/{id}:
  *   get:
- *     tags: [Supplier]
- *     operatorId: getSupplierById
- *     description: Get supplier by ID
+ *     tags: [Discount]
+ *     operatorId: getDiscountById
+ *     description: Get discount by ID
  *     security:
  *       - bearer: []
  *     parameters:
@@ -35,7 +35,7 @@ router.route("/getAllSuppliers").get(adminProtect, protect, getAllSuppliers);
  *         name: id
  *         required: true
  *         type: string
- *         description: Supplier ID
+ *         description: Discount ID
  *     responses:
  *       200:
  *         description: Success
@@ -44,15 +44,15 @@ router.route("/getAllSuppliers").get(adminProtect, protect, getAllSuppliers);
  *       404:
  *         description: Not Found
  */
-router.route("/getSupplierById/:supplierId").get(adminProtect, protect, getSupplierById);
+router.route("/getDiscountById/:discountId").get(staffAndAdminProtect, protect, getDiscountById);
 
 /**
  * @swagger
- * /api/suppliers/createSupplier:
+ * /api/discounts/createDiscount:
  *   post:
- *     tags: [Supplier]
- *     operatorId: createSupplier
- *     description: Create new supplier
+ *     tags: [Discount]
+ *     operatorId: createDiscount
+ *     description: Create new discount
  *     security:
  *       - bearer: []
  *     requestBody:
@@ -60,22 +60,22 @@ router.route("/getSupplierById/:supplierId").get(adminProtect, protect, getSuppl
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Supplier'
+ *             $ref: '#/components/schemas/Discount'
  *     responses:
  *       201:
  *         description: Created
  *       400:
  *         description: Bad Request
  */
-router.route("/createSupplier").post(adminProtect, protect, createSupplier);
+router.route("/createDiscount").post(staffAndAdminProtect, protect, createDiscount);
 
 /**
  * @swagger
- * /api/suppliers/updateSupplier/{id}:
+ * /api/discounts/updateDiscount/{id}:
  *   put:
- *     tags: [Supplier]
- *     operatorId: updateSupplier
- *     description: Update supplier
+ *     tags: [Discount]
+ *     operatorId: updateDiscount
+ *     description: Update discount
  *     security:
  *       - bearer: []
  *     parameters:
@@ -83,13 +83,13 @@ router.route("/createSupplier").post(adminProtect, protect, createSupplier);
  *         name: id
  *         required: true
  *         type: string
- *         description: Supplier ID
+ *         description: Discount ID
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Supplier'
+ *             $ref: '#/components/schemas/Discount'
  *     responses:
  *       200:
  *         description: Updated
@@ -98,15 +98,15 @@ router.route("/createSupplier").post(adminProtect, protect, createSupplier);
  *       404:
  *         description: Not Found
  */
-router.route("/updateSupplier/:supplierId").put(adminProtect, protect, updateSupplier);
+router.route("/updateDiscount/:discountId").put(staffAndAdminProtect, protect, updateDiscount);
 
 /**
  * @swagger
- * /api/suppliers/deleteSupplier/{id}:
+ * /api/discounts/deleteDiscount/{id}:
  *   delete:
- *     tags: [Supplier]
- *     operatorId: deleteSupplier
- *     description: Delete supplier
+ *     tags: [Discount]
+ *     operatorId: deleteDiscount
+ *     description: Delete discount
  *     security:
  *       - bearer: []
  *     parameters:
@@ -114,7 +114,7 @@ router.route("/updateSupplier/:supplierId").put(adminProtect, protect, updateSup
  *         name: id
  *         required: true
  *         type: string
- *         description: Supplier ID
+ *         description: Discount ID
  *     responses:
  *       200:
  *         description: Deleted
@@ -123,6 +123,6 @@ router.route("/updateSupplier/:supplierId").put(adminProtect, protect, updateSup
  *       404:
  *         description: Not Found
  */
-router.route("/deleteSupplier/:supplierId").delete(adminProtect, protect, deleteSupplier);
+router.route("/deleteDiscount/:discountId").delete(staffAndAdminProtect, protect, deleteDiscount);
 
 module.exports = router;

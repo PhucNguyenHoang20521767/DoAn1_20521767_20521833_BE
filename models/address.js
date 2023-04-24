@@ -54,7 +54,7 @@ var addressSchema = new Schema(
         },
         isDefault: {
             type: Boolean,
-            default: true
+            default: false
         }
     },
     { timestamps: true }
