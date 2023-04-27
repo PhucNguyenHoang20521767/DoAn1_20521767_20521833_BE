@@ -55,9 +55,10 @@ var customerSchema = new Schema(
             trim: true
         },
         customerAvatar: {
-            type: String,
-            default: "https://static.vecteezy.com/system/resources/previews/009/734/564/original/default-avatar-profile-icon-of-social-media-user-vector.jpg",
-            trim: true
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Attachment",
+            default: null,
+			trim: true
         },
         customerStatus: {
             // TRUE: Logged In, FALSE: Logged Out

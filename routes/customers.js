@@ -1,9 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const { protect, adminProtect } = require("../middleware/auth");
+const { uploadMemoryStorage } = require("../config/attachment");
 
 const { registerCustomer, loginGoogleAndFacebookCustomer, loginCustomer, logoutCustomer, sendOTPToCustomer, forgetPasswordCustomer, resetPasswordCustomer, verifyCustomerAfterSendOTP } = require("../controllers/customer/auth_customer");
-const { getAllCustomers, getCustomerById, updateCustomer, updateCustomerByAdmin, deleteCustomer, activeOrInactiveCustomer } = require("../controllers/customer/customerController");
+const { getAllCustomers, getCustomerById, saveCustomerAvatar, updateCustomer, updateCustomerByAdmin, deleteCustomer, activeOrInactiveCustomer } = require("../controllers/customer/customerController");
+
+const firebaseStorage = require("../config/firebase");
+const { ref, uploadBytesResumable } = require("firebase/storage");
 
 /**
  * @swagger
@@ -16,8 +20,23 @@ const { getAllCustomers, getCustomerById, updateCustomer, updateCustomerByAdmin,
  *       required: true
  *       content:
  *         application/json:
- *          schema:
- *            $ref: '#/components/schemas/Customer'
+ *           schema:
+ *             type: object
+ *             properties:
+ *               customerPassword:
+ *                 type: string
+ *               customerFirstName:
+ *                 type: string
+ *               customerLastName:
+ *                 type: string
+ *               customerBirthday:
+ *                 type: string
+ *               customerEmail:
+ *                 type: string
+ *               customerPhone:
+ *                 type: string
+ *               customerGender:
+ *                 type: string
  *     responses:
  *       201:
  *         description: Created
@@ -37,8 +56,25 @@ router.route("/registerCustomer").post(registerCustomer);
  *       required: true
  *       content:
  *         application/json:
- *          schema:
- *            $ref: '#/components/schemas/Customer'
+ *           schema:
+ *             type: object
+ *             properties:
+ *               customerPassword:
+ *                 type: string
+ *               customerFirstName:
+ *                 type: string
+ *               customerLastName:
+ *                 type: string
+ *               customerBirthday:
+ *                 type: string
+ *               customerEmail:
+ *                 type: string
+ *               customerPhone:
+ *                 type: string
+ *               customerGender:
+ *                 type: string
+ *               customerProvider:
+ *                 type: string
  *     responses:
  *       201:
  *         description: Created
@@ -266,6 +302,51 @@ router.route("/getCustomerById/:customerId").get(adminProtect, protect, getCusto
 
 /**
  * @swagger
+ * /api/customers/saveCustomerAvatar:
+ *   post:
+ *     tags: [Customer]
+ *     operatorId: saveCustomerAvatar
+ *     description: Save customer avatar
+ *     security:
+ *       - bearer: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - Files[]
+ *             properties:
+ *               Files[]:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *     responses:
+ *       201:
+ *         description: Saved
+ *       400:
+ *         description: Bad Request
+ *       404:
+ *         description: Not Found
+ */
+router.route("/saveCustomerAvatar").post(protect, uploadMemoryStorage.array("Files[]"), async (req, res, next) => {
+    try {
+        if (req.files && req.files.length === 1) {
+            req.files.forEach((file) => {
+                file.originalname = "customer_" + file.originalname + "_" + Date.now();
+                uploadBytesResumable(ref(firebaseStorage, `attachments/${file.originalname}`), file.buffer, { contentType: file.mimetype});
+            });
+        }
+        next();
+    } catch (error) {
+        next(error);
+    }
+}, saveCustomerAvatar);
+
+/**
+ * @swagger
  * /api/customers/updateCustomer/{id}:
  *   put:
  *     tags: [Customer]
@@ -296,8 +377,6 @@ router.route("/getCustomerById/:customerId").get(adminProtect, protect, getCusto
  *               customerPhone:
  *                 type: string
  *               customerGender:
- *                 type: string
- *               customerAvatar:
  *                 type: string
  *     responses:
  *       200:
@@ -343,8 +422,6 @@ router.route("/updateCustomer/:customerId").put(protect, updateCustomer);
  *               customerPhone:
  *                 type: string
  *               customerGender:
- *                 type: string
- *               customerAvatar:
  *                 type: string
  *     responses:
  *       200:

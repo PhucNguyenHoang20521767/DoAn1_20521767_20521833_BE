@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Customer = require("../../models/customer");
+const Attachment = require("../../models/attachment");
 const ErrorResponse = require("../../utils/errorResponse");
 
 exports.getAllCustomers = async (req, res, next) => {
@@ -49,13 +50,52 @@ exports.getCustomerById = async(req, res, next) => {
     }
 };
 
+exports.saveCustomerAvatar = async (req, res, next) => {
+    const currentCustomer = req.user;
+
+    let attachmentsList = req.files
+		? req.files.map((file) => {
+				return {
+					attachmentMimeType: file.mimetype,
+					attachmentName: file.originalname,
+					attachmentSize: file.size,
+				};
+		  })
+		: [];
+
+    if (!attachmentsList.length)
+		return next(new ErrorResponse("No attachments added", 404));
+
+    if (attachmentsList.length > 1)
+		return next(new ErrorResponse("Only one attachment can be selected", 400));
+
+    try {
+        const attachment = await Attachment.insertMany(attachmentsList);
+
+        const customer = await Customer.findByIdAndUpdate(currentCustomer._id, {
+            customerAvatar: attachment[0]._id.toString() 
+        });
+        
+        if (!customer)
+            return next(new ErrorResponse("No customer found", 404));
+
+        res.status(201).json({
+            success: true,
+            message: "Customer avatar saved successfully",
+            data: customer
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 exports.updateCustomer = async(req, res, next) => {
     const { customerId } = req.params;
 
     if (!customerId || !mongoose.Types.ObjectId.isValid(customerId))
         return next(new ErrorResponse("Please provide valid customer's ID", 400));
 
-    const { customerFirstName, customerLastName, customerBirthday, customerEmail, customerPhone, customerGender, customerAvatar } = req.body;
+    const { customerFirstName, customerLastName, customerBirthday, customerEmail, customerPhone, customerGender } = req.body;
 
     try {
         const customer = await Customer.findByIdAndUpdate(customerId, {
@@ -64,8 +104,7 @@ exports.updateCustomer = async(req, res, next) => {
             customerBirthday,
             customerEmail,
             customerPhone,
-            customerGender,
-            customerAvatar
+            customerGender
         });
 
         if (customer) {
@@ -88,7 +127,7 @@ exports.updateCustomerByAdmin = async(req, res, next) => {
     if (!customerId || !mongoose.Types.ObjectId.isValid(customerId))
         return next(new ErrorResponse("Please provide valid customer's ID", 400));
 
-    const { customerPassword, customerFirstName, customerLastName, customerBirthday, customerEmail, customerPhone, customerGender, customerAvatar } = req.body;
+    const { customerPassword, customerFirstName, customerLastName, customerBirthday, customerEmail, customerPhone, customerGender } = req.body;
 
     try {
         const customer = await Customer.findByIdAndUpdate(customerId, {
@@ -98,8 +137,7 @@ exports.updateCustomerByAdmin = async(req, res, next) => {
             customerBirthday,
             customerEmail,
             customerPhone,
-            customerGender,
-            customerAvatar
+            customerGender
         });
 
         if (customer) {

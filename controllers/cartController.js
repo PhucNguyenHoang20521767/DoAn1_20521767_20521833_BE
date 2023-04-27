@@ -61,7 +61,7 @@ exports.activeOrInactiveCart = async(req, res, next) => {
     const customer = req.user;
 
     try {
-        const cart = await Cart.find({ customerId: customer._id });
+        const cart = await Cart.findOne({ customerId: customer._id });
 
         if (!cart)
             return next(new ErrorResponse("No cart found", 404));
@@ -88,7 +88,7 @@ exports.getAllCartItems = async (req, res, next) => {
         return next(new ErrorResponse("Please provide valid cart's ID", 400));
 
     try {
-        const cartItems = CartItem.find({ cartId: cartId });
+        const cartItems = await CartItem.find({ cartId: cartId });
 
         if (!cartItems)
             return next(new ErrorResponse("No item in cart", 404));
@@ -118,7 +118,7 @@ exports.addItemToCart = async (req, res, next) => {
         return next(new ErrorResponse("Product quantity must be greater than 0", 400));
 
     try {
-        const cartItem = CartItem.create({
+        const cartItem = await CartItem.create({
             cartId,
             productId,
             productQuantity
@@ -149,7 +149,7 @@ exports.updateItemInCart = async (req, res, next) => {
         return next(new ErrorResponse("Product quantity must be greater than 0", 400));
 
     try {
-        const cartItem = CartItem.updateOne(
+        const cartItem = await CartItem.updateOne(
             {
                 cartId: cartId,
                 productId: productId
@@ -181,7 +181,7 @@ exports.removeItemFromCart = async (req, res, next) => {
     if (!productId || !mongoose.Types.ObjectId.isValid(productId))
         return next(new ErrorResponse("Please provide valid product's ID", 400));
     try {
-        const cartItem = CartItem.deleteOne({
+        const cartItem = await CartItem.deleteOne({
             cartId: cartId,
             productId: productId
         });
@@ -206,7 +206,7 @@ exports.removeAllItemsFromCart = async (req, res, next) => {
         return next(new ErrorResponse("Please provide valid cart's ID", 400));
 
     try {
-        const cartItems = CartItem.deleteMany({
+        const cartItems = await CartItem.deleteMany({
             cartId: cartId
         });
 

@@ -12,8 +12,8 @@ var orderSchema = new Schema(
         staffId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Staff",
-            required: [true, "Please provide staff's ID"],
-            trim: true
+            trim: true,
+            default: null
         },
         orderCode: {
             type: String,
@@ -71,7 +71,6 @@ module.exports = Order;
  *       type: object
  *       required:
  *         - customerId
- *         - staffId
  *         - orderCode
  *         - orderStatus
  *         - orderAddress

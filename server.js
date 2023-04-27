@@ -49,8 +49,8 @@ app.use("/api/addresses", require("./routes/addresses"));
 app.use("/api/carts", require("./routes/carts"));
 app.use("/api/feedbacks", require("./routes/feedbacks"));
 
-// app.use("/api/orders", require("./routes/orders"));
-
+app.use("/api/campaigns", require("./routes/campaigns"));
+app.use("/api/orders", require("./routes/orders"));
 app.use("/api/products", require("./routes/products"));
 app.use("/api/imports", require("./routes/imports"));
 app.use("/api/discounts", require("./routes/discounts"));

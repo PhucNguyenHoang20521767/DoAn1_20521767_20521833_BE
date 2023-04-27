@@ -61,7 +61,13 @@ router.route("/getImportById/:importId").get(adminProtect, protect, getImportByI
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Import'
+ *             properties:
+ *               staffId:
+ *                 type: string
+ *               supplierId:
+ *                 type: string
+ *               importDate:
+ *                 type: string
  *     responses:
  *       201:
  *         description: Created
@@ -89,7 +95,14 @@ router.route("/createImport").post(adminProtect, protect, createImport);
  *       required: true
  *       content:
  *         application/json:
- *           $ref: '#/components/schemas/Import'
+ *           schema:
+ *             properties:
+ *               staffId:
+ *                 type: string
+ *               supplierId:
+ *                 type: string
+ *               importDate:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Updated
@@ -207,7 +220,13 @@ router.route("/getImportDetailById/:importDetailId").get(adminProtect, protect, 
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/ImportDetail'
+ *             properties:
+ *               importId:
+ *                 type: string
+ *               productId:
+ *                 type: string
+ *               productQuantity:
+ *                 type: number
  *     responses:
  *       201:
  *         description: Created
@@ -235,7 +254,14 @@ router.route("/createImportDetail").post(adminProtect, protect, createImportDeta
  *       required: true
  *       content:
  *         application/json:
- *           $ref: '#/components/schemas/ImportDetail'
+ *           schema:
+ *             properties:
+ *               importId:
+ *                 type: string
+ *               productId:
+ *                 type: string
+ *               productQuantity:
+ *                 type: number
  *     responses:
  *       200:
  *         description: Updated

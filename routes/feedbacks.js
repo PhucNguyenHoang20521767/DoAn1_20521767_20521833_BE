@@ -65,7 +65,19 @@ router.route("/getFeedbackById/:feedbackId").get(protect, getFeedbackById);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Feedback'
+ *             properties:
+ *               customerId:
+ *                 type: string
+ *               productId:
+ *                 type: string
+ *               orderId:
+ *                 type: string
+ *               feedbackRating:
+ *                 type: number
+ *               feedbackTitle:
+ *                 type: string
+ *               feedbackContent:
+ *                 type: string
  *     responses:
  *       201:
  *         description: Created
@@ -94,7 +106,19 @@ router.route("/createFeedback").post(protect, createFeedback);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Feedback'
+ *             properties:
+ *               customerId:
+ *                 type: string
+ *               productId:
+ *                 type: string
+ *               orderId:
+ *                 type: string
+ *               feedbackRating:
+ *                 type: number
+ *               feedbackTitle:
+ *                 type: string
+ *               feedbackContent:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Updated
