@@ -24,7 +24,7 @@ exports.registerCustomer = async (req, res, next) => {
 };
 
 exports.loginGoogleAndFacebookCustomer = async (req, res, next) => {
-    const { customerPassword, customerFirstName, customerLastName, customerBirthday, customerEmail, customerPhone, customerGender, customerAvatar, customerProvider } = req.body;
+    const { customerPassword, customerFirstName, customerLastName, customerBirthday, customerEmail, customerPhone, customerGender, customerProvider } = req.body;
 
     try {
         const customer = await Customer.findOne({
@@ -42,7 +42,6 @@ exports.loginGoogleAndFacebookCustomer = async (req, res, next) => {
                 customerEmail,
                 customerPhone,
                 customerGender,
-                customerAvatar,
                 customerProvider,
                 isVerified: true
             });
