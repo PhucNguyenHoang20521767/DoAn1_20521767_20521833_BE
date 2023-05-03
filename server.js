@@ -5,6 +5,7 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger");
 const errorHandler = require("./middleware/error");
 const cookieSession = require("cookie-session");
+const cors = require("cors");
 const passport = require("passport");
 const passportGoogleStrategy = require("./passport_google");
 const passportFacebookStrategy = require("./passport_facebook");
@@ -20,6 +21,7 @@ app.use(
 	})
 );
 
+app.use(cors());
 app.use(express.json());
 app.use(passport.initialize());
 app.use(passport.session());
