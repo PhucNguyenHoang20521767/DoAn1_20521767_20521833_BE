@@ -33,8 +33,6 @@ const { ref, uploadBytesResumable } = require("firebase/storage");
  *                 type: string
  *               customerEmail:
  *                 type: string
- *               customerPhone:
- *                 type: string
  *               customerGender:
  *                 type: string
  *     responses:
@@ -68,8 +66,6 @@ router.route("/registerCustomer").post(registerCustomer);
  *               customerBirthday:
  *                 type: string
  *               customerEmail:
- *                 type: string
- *               customerPhone:
  *                 type: string
  *               customerGender:
  *                 type: string

@@ -4,7 +4,7 @@ const base32 = require("base32");
 const { sendEmail } = require("../../config/sendEmail");
 
 exports.registerCustomer = async (req, res, next) => {
-    const { customerPassword, customerFirstName, customerLastName, customerBirthday, customerEmail, customerPhone, customerGender } = req.body;
+    const { customerPassword, customerFirstName, customerLastName, customerBirthday, customerEmail, customerGender } = req.body;
 
     try {
         const customer = await Customer.create({
@@ -13,7 +13,6 @@ exports.registerCustomer = async (req, res, next) => {
             customerLastName,
             customerBirthday,
             customerEmail,
-            customerPhone,
             customerGender
         });
 
@@ -24,7 +23,7 @@ exports.registerCustomer = async (req, res, next) => {
 };
 
 exports.loginGoogleAndFacebookCustomer = async (req, res, next) => {
-    const { customerPassword, customerFirstName, customerLastName, customerBirthday, customerEmail, customerPhone, customerGender, customerProvider } = req.body;
+    const { customerPassword, customerFirstName, customerLastName, customerBirthday, customerEmail, customerGender, customerProvider } = req.body;
 
     try {
         const customer = await Customer.findOne({
@@ -40,7 +39,6 @@ exports.loginGoogleAndFacebookCustomer = async (req, res, next) => {
                 customerLastName,
                 customerBirthday,
                 customerEmail,
-                customerPhone,
                 customerGender,
                 customerProvider,
                 isVerified: true
