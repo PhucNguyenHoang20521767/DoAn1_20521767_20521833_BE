@@ -370,8 +370,6 @@ router.route("/saveCustomerAvatar").post(protect, uploadMemoryStorage.array("Fil
  *                 type: string
  *               customerEmail:
  *                 type: string
- *               customerPhone:
- *                 type: string
  *               customerGender:
  *                 type: string
  *     responses:
@@ -414,8 +412,6 @@ router.route("/updateCustomer/:customerId").put(protect, updateCustomer);
  *               customerBirthday:
  *                 type: string
  *               customerEmail:
- *                 type: string
- *               customerPhone:
  *                 type: string
  *               customerGender:
  *                 type: string

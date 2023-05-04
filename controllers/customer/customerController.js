@@ -95,7 +95,7 @@ exports.updateCustomer = async(req, res, next) => {
     if (!customerId || !mongoose.Types.ObjectId.isValid(customerId))
         return next(new ErrorResponse("Please provide valid customer's ID", 400));
 
-    const { customerFirstName, customerLastName, customerBirthday, customerEmail, customerPhone, customerGender } = req.body;
+    const { customerFirstName, customerLastName, customerBirthday, customerEmail, customerGender } = req.body;
 
     try {
         const customer = await Customer.findByIdAndUpdate(customerId, {
@@ -103,7 +103,6 @@ exports.updateCustomer = async(req, res, next) => {
             customerLastName,
             customerBirthday,
             customerEmail,
-            customerPhone,
             customerGender
         });
 
@@ -127,7 +126,7 @@ exports.updateCustomerByAdmin = async(req, res, next) => {
     if (!customerId || !mongoose.Types.ObjectId.isValid(customerId))
         return next(new ErrorResponse("Please provide valid customer's ID", 400));
 
-    const { customerPassword, customerFirstName, customerLastName, customerBirthday, customerEmail, customerPhone, customerGender } = req.body;
+    const { customerPassword, customerFirstName, customerLastName, customerBirthday, customerEmail, customerGender } = req.body;
 
     try {
         const customer = await Customer.findByIdAndUpdate(customerId, {
@@ -136,7 +135,6 @@ exports.updateCustomerByAdmin = async(req, res, next) => {
             customerLastName,
             customerBirthday,
             customerEmail,
-            customerPhone,
             customerGender
         });
 
