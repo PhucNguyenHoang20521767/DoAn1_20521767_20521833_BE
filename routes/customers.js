@@ -4,7 +4,7 @@ const { protect, adminProtect } = require("../middleware/auth");
 const { uploadMemoryStorage } = require("../config/attachment");
 
 const { registerCustomer, loginGoogleAndFacebookCustomer, loginCustomer, logoutCustomer, sendOTPToCustomer, forgetPasswordCustomer, resetPasswordCustomer, verifyCustomerAfterSendOTP } = require("../controllers/customer/auth_customer");
-const { getAllCustomers, getCustomerById, saveCustomerAvatar, updateCustomer, updateCustomerByAdmin, deleteCustomer, activeOrInactiveCustomer } = require("../controllers/customer/customerController");
+const { getAllCustomers, getCustomerById, getCustomerAvatar, saveCustomerAvatar, deleteCustomerAvatar, updateCustomer, updateCustomerByAdmin, deleteCustomer, activeOrInactiveCustomer } = require("../controllers/customer/customerController");
 
 const firebaseStorage = require("../config/firebase");
 const { ref, uploadBytesResumable } = require("firebase/storage");
@@ -278,8 +278,6 @@ router.route("/getAllCustomers").get(adminProtect, protect, getAllCustomers);
  *     tags: [Customer]
  *     operatorId: getCustomerById
  *     description: Get customer by ID
- *     security:
- *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -294,7 +292,24 @@ router.route("/getAllCustomers").get(adminProtect, protect, getAllCustomers);
  *       404:
  *         description: Not Found
  */
-router.route("/getCustomerById/:customerId").get(adminProtect, protect, getCustomerById);
+router.route("/getCustomerById/:customerId").get(getCustomerById);
+
+/**
+ * @swagger
+ * /api/customers/getCustomerAvatar:
+ *   get:
+ *     tags: [Customer]
+ *     operatorId: getCustomerAvatar
+ *     description: Get customer avatar
+ *     security:
+ *       - bearer: []
+ *     responses:
+ *       200:
+ *         description: Success
+ *       404:
+ *         description: Not Found
+ */
+router.route("/getCustomerAvatar").get(protect, getCustomerAvatar);
 
 /**
  * @swagger
@@ -340,6 +355,23 @@ router.route("/saveCustomerAvatar").post(protect, uploadMemoryStorage.array("Fil
         next(error);
     }
 }, saveCustomerAvatar);
+
+/**
+ * @swagger
+ * /api/customers/deleteCustomerAvatar:
+ *   delete:
+ *     tags: [Customer]
+ *     operatorId: deleteCustomerAvatar
+ *     description: Delete customer avatar
+ *     security:
+ *       - bearer: []
+ *     responses:
+ *       200:
+ *         description: Success
+ *       404:
+ *         description: Not Found
+ */
+router.route("/deleteCustomerAvatar").delete(protect, deleteCustomerAvatar);
 
 /**
  * @swagger

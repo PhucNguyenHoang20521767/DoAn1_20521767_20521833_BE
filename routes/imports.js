@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { protect, adminProtect } = require("../middleware/auth");
+const { protect, staffAndAdminProtect } = require("../middleware/auth");
 
 const { getAllImports, getImportById, createImport, updateImport, deleteImport,
         getAllImportDetails, getDetailsForImport, getImportDetailById, createImportDetail, updateImportDetail, deleteImportDetail } = require("../controllers/importController");
@@ -20,7 +20,7 @@ const { getAllImports, getImportById, createImport, updateImport, deleteImport,
  *       400:
  *         description: Bad Request
  */
-router.route("/getAllImports").get(adminProtect, protect, getAllImports);
+router.route("/getAllImports").get(staffAndAdminProtect, protect, getAllImports);
 
 /**
  * @swagger
@@ -45,7 +45,7 @@ router.route("/getAllImports").get(adminProtect, protect, getAllImports);
  *       404:
  *         description: Not Found
  */
-router.route("/getImportById/:importId").get(adminProtect, protect, getImportById);
+router.route("/getImportById/:importId").get(staffAndAdminProtect, protect, getImportById);
 
 /**
  * @swagger
@@ -74,7 +74,7 @@ router.route("/getImportById/:importId").get(adminProtect, protect, getImportByI
  *       400:
  *         description: Bad Request
  */
-router.route("/createImport").post(adminProtect, protect, createImport);
+router.route("/createImport").post(staffAndAdminProtect, protect, createImport);
 
 /**
  * @swagger
@@ -111,7 +111,7 @@ router.route("/createImport").post(adminProtect, protect, createImport);
  *       404:
  *         description: Not Found
  */
-router.route("/updateImport/:importId").put(adminProtect, protect, updateImport);
+router.route("/updateImport/:importId").put(staffAndAdminProtect, protect, updateImport);
 
 /**
  * @swagger
@@ -136,7 +136,7 @@ router.route("/updateImport/:importId").put(adminProtect, protect, updateImport)
  *       404:
  *         description: Not Found
  */
-router.route("/deleteImport/:importId").delete(adminProtect, protect, deleteImport);
+router.route("/deleteImport/:importId").delete(staffAndAdminProtect, protect, deleteImport);
 
 /**
  * @swagger
@@ -153,7 +153,7 @@ router.route("/deleteImport/:importId").delete(adminProtect, protect, deleteImpo
  *       400:
  *         description: Bad Request
  */
-router.route("/getAllImportDetails").get(adminProtect, protect, getAllImportDetails);
+router.route("/getAllImportDetails").get(staffAndAdminProtect, protect, getAllImportDetails);
 
 /**
  * @swagger
@@ -178,7 +178,7 @@ router.route("/getAllImportDetails").get(adminProtect, protect, getAllImportDeta
  *       404:
  *         description: Not Found
  */
-router.route("/getDetailsForImport/:importId").get(adminProtect, protect, getDetailsForImport);
+router.route("/getDetailsForImport/:importId").get(staffAndAdminProtect, protect, getDetailsForImport);
 
 
 /**
@@ -204,7 +204,7 @@ router.route("/getDetailsForImport/:importId").get(adminProtect, protect, getDet
  *       404:
  *         description: Not Found
  */
-router.route("/getImportDetailById/:importDetailId").get(adminProtect, protect, getImportDetailById);
+router.route("/getImportDetailById/:importDetailId").get(staffAndAdminProtect, protect, getImportDetailById);
 
 /**
  * @swagger
@@ -233,7 +233,7 @@ router.route("/getImportDetailById/:importDetailId").get(adminProtect, protect, 
  *       400:
  *         description: Bad Request
  */
-router.route("/createImportDetail").post(adminProtect, protect, createImportDetail);
+router.route("/createImportDetail").post(staffAndAdminProtect, protect, createImportDetail);
 
 /**
  * @swagger
@@ -270,7 +270,7 @@ router.route("/createImportDetail").post(adminProtect, protect, createImportDeta
  *       404:
  *         description: Not Found
  */
-router.route("/updateImportDetail/:importDetailId").put(adminProtect, protect, updateImportDetail);
+router.route("/updateImportDetail/:importDetailId").put(staffAndAdminProtect, protect, updateImportDetail);
 
 /**
  * @swagger
@@ -295,6 +295,6 @@ router.route("/updateImportDetail/:importDetailId").put(adminProtect, protect, u
  *       404:
  *         description: Not Found
  */
-router.route("/deleteImportDetail/:importDetailId").delete(adminProtect, protect, deleteImportDetail);
+router.route("/deleteImportDetail/:importDetailId").delete(staffAndAdminProtect, protect, deleteImportDetail);
 
 module.exports = router;
