@@ -11,7 +11,7 @@
     ],
     "servers": [
         {
-            "url": "http://localhost:5000/"
+            "url": "https://nguyenshomefurniture-be.onrender.com/"
         }
     ]
 }
