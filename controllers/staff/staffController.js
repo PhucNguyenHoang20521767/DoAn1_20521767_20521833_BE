@@ -2,6 +2,18 @@ const mongoose = require("mongoose");
 const Staff = require("../../models/staff");
 const ErrorResponse = require("../../utils/errorResponse");
 
+exports.getCurrentStaff = async (req, res, next) => {
+    try {
+        res.status(200).json({
+            success: true,
+            message: "Get current staff successfully",
+            data: req.user
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 exports.getAllStaffs = async (req, res, next) => {
     let options = { privilege: { $gte: 1 } };
 

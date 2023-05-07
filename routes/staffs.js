@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const { protect, adminProtect } = require("../middleware/auth");
+const { protect, staffAndAdminProtect, adminProtect } = require("../middleware/auth");
 
 const { registerStaff, loginStaff } = require("../controllers/staff/auth_staff");
-const { getAllStaffs, getStaffById, updateStaff, deleteStaff, activeOrInactiveStaff } = require("../controllers/staff/staffController");
+const { getCurrentStaff, getAllStaffs, getStaffById, updateStaff, deleteStaff, activeOrInactiveStaff } = require("../controllers/staff/staffController");
 
 /**
  * @swagger
@@ -81,6 +81,21 @@ router.route("/registerStaff").post(adminProtect, protect, registerStaff);
  *         description: Invalid credentials
  */
 router.route("/loginStaff").post(loginStaff);
+
+/**
+ * @swagger
+ * /api/staffs/getCurrentStaff:
+ *   get:
+ *     tags: [Staff]
+ *     operatorId: getCurrentStaff
+ *     description: Get current staff
+ *     security:
+ *       - bearer: []
+ *     responses:
+ *       200:
+ *         description: Success
+ */
+router.route("/getCurrentStaff").get(staffAndAdminProtect, protect, getCurrentStaff);
 
 /**
  * @swagger
