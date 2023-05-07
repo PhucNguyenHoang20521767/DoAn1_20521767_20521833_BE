@@ -16,8 +16,6 @@ const { ref, uploadBytesResumable } = require("firebase/storage");
  *     tags: [Feedback]
  *     operatorId: getAllFeedbacks
  *     description: Get all feedbacks
- *     security:
- *       - bearer: []
  *     responses:
  *       200:
  *         description: Success
@@ -33,8 +31,6 @@ router.route("/getAllFeedbacks").get(getAllFeedbacks);
  *     tags: [Feedback]
  *     operatorId: getFeedbackById
  *     description: Get feedback by ID
- *     security:
- *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -49,7 +45,7 @@ router.route("/getAllFeedbacks").get(getAllFeedbacks);
  *       404:
  *         description: Not Found
  */
-router.route("/getFeedbackById/:feedbackId").get(protect, getFeedbackById);
+router.route("/getFeedbackById/:feedbackId").get(getFeedbackById);
 
 /**
  * @swagger
@@ -161,8 +157,6 @@ router.route("/deleteFeedback/:feedbackId").delete(protect, deleteFeedback);
  *     tags: [Feedback Image]
  *     operatorId: getAllFeedbackImages
  *     description: Get all feedback images
- *     security:
- *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -175,7 +169,7 @@ router.route("/deleteFeedback/:feedbackId").delete(protect, deleteFeedback);
  *       400:
  *         description: Bad Request
  */
-router.route("/getAllFeedbackImages/:feedbackId").get(protect, getAllFeedbackImages);
+router.route("/getAllFeedbackImages/:feedbackId").get(getAllFeedbackImages);
 
 /**
  * @swagger

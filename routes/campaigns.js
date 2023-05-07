@@ -13,15 +13,13 @@ const { ref, uploadBytesResumable } = require("firebase/storage");
  *     tags: [Campaign]
  *     operatorId: getAllCampaigns
  *     description: Get all campaigns
- *     security:
- *       - bearer: []
  *     responses:
  *       200:
  *         description: Success
  *       400:
  *         description: Bad Request
  */
-router.route("/getAllCampaigns").get(staffAndAdminProtect, protect, getAllCampaigns);
+router.route("/getAllCampaigns").get(getAllCampaigns);
 
 /**
  * @swagger
@@ -30,8 +28,6 @@ router.route("/getAllCampaigns").get(staffAndAdminProtect, protect, getAllCampai
  *     tags: [Campaign]
  *     operatorId: getCampaignById
  *     description: Get campaign by ID
- *     security:
- *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -46,7 +42,7 @@ router.route("/getAllCampaigns").get(staffAndAdminProtect, protect, getAllCampai
  *       404:
  *         description: Not Found
  */
-router.route("/getCampaignById/:campaignId").get(staffAndAdminProtect, protect, getCampaignById);
+router.route("/getCampaignById/:campaignId").get(getCampaignById);
 
 /**
  * @swagger
