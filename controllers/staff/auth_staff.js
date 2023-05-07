@@ -48,8 +48,15 @@ exports.loginStaff = async (req, res, next) => {
 };
 
 const sendTokenStaff = (staff, statusCode, res) => {
-	res.status(statusCode).json({
-		success: true,
-		token: staff.getSignedTokenStaff("STAFF")
-	});
+	if (staff.privilege === 0) {
+		res.status(statusCode).json({
+			success: true,
+			token: staff.getSignedTokenStaff("ADMIN")
+		});
+	} else if (staff.privilege === 1 || staff.privilege === 2) {
+		res.status(statusCode).json({
+			success: true,
+			token: staff.getSignedTokenStaff("STAFF")
+		});
+	}
 };
