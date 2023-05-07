@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { protect, adminProtect } = require("../middleware/auth");
+const { protect, staffAndAdminProtect } = require("../middleware/auth");
 
 const { getAllSuppliers, getSupplierById, createSupplier, updateSupplier, deleteSupplier } = require("../controllers/supplierController");
 
@@ -11,15 +11,13 @@ const { getAllSuppliers, getSupplierById, createSupplier, updateSupplier, delete
  *     tags: [Supplier]
  *     operatorId: getAllSuppliers
  *     description: Get all suppliers
- *     security:
- *       - bearer: []
  *     responses:
  *       200:
  *         description: Success
  *       400:
  *         description: Bad Request
  */
-router.route("/getAllSuppliers").get(adminProtect, protect, getAllSuppliers);
+router.route("/getAllSuppliers").get(getAllSuppliers);
 
 /**
  * @swagger
@@ -28,8 +26,6 @@ router.route("/getAllSuppliers").get(adminProtect, protect, getAllSuppliers);
  *     tags: [Supplier]
  *     operatorId: getSupplierById
  *     description: Get supplier by ID
- *     security:
- *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -44,7 +40,7 @@ router.route("/getAllSuppliers").get(adminProtect, protect, getAllSuppliers);
  *       404:
  *         description: Not Found
  */
-router.route("/getSupplierById/:supplierId").get(adminProtect, protect, getSupplierById);
+router.route("/getSupplierById/:supplierId").get(getSupplierById);
 
 /**
  * @swagger
@@ -67,7 +63,7 @@ router.route("/getSupplierById/:supplierId").get(adminProtect, protect, getSuppl
  *       400:
  *         description: Bad Request
  */
-router.route("/createSupplier").post(adminProtect, protect, createSupplier);
+router.route("/createSupplier").post(staffAndAdminProtect, protect, createSupplier);
 
 /**
  * @swagger
@@ -98,7 +94,7 @@ router.route("/createSupplier").post(adminProtect, protect, createSupplier);
  *       404:
  *         description: Not Found
  */
-router.route("/updateSupplier/:supplierId").put(adminProtect, protect, updateSupplier);
+router.route("/updateSupplier/:supplierId").put(staffAndAdminProtect, protect, updateSupplier);
 
 /**
  * @swagger
@@ -123,6 +119,6 @@ router.route("/updateSupplier/:supplierId").put(adminProtect, protect, updateSup
  *       404:
  *         description: Not Found
  */
-router.route("/deleteSupplier/:supplierId").delete(adminProtect, protect, deleteSupplier);
+router.route("/deleteSupplier/:supplierId").delete(staffAndAdminProtect, protect, deleteSupplier);
 
 module.exports = router;

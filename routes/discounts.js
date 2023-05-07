@@ -11,15 +11,13 @@ const { getAllDiscounts, getDiscountById, createDiscount, updateDiscount, delete
  *     tags: [Discount]
  *     operatorId: getAllDiscounts
  *     description: Get all discounts
- *     security:
- *       - bearer: []
  *     responses:
  *       200:
  *         description: Success
  *       400:
  *         description: Bad Request
  */
-router.route("/getAllDiscounts").get(staffAndAdminProtect, protect, getAllDiscounts);
+router.route("/getAllDiscounts").get(getAllDiscounts);
 
 /**
  * @swagger
@@ -28,8 +26,6 @@ router.route("/getAllDiscounts").get(staffAndAdminProtect, protect, getAllDiscou
  *     tags: [Discount]
  *     operatorId: getDiscountById
  *     description: Get discount by ID
- *     security:
- *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -44,7 +40,7 @@ router.route("/getAllDiscounts").get(staffAndAdminProtect, protect, getAllDiscou
  *       404:
  *         description: Not Found
  */
-router.route("/getDiscountById/:discountId").get(staffAndAdminProtect, protect, getDiscountById);
+router.route("/getDiscountById/:discountId").get(getDiscountById);
 
 /**
  * @swagger

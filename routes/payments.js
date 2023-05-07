@@ -11,15 +11,13 @@ const { getAllPayments, getPaymentById, createPayment, updatePayment, deletePaym
  *     tags: [Payment]
  *     operatorId: getAllPayments
  *     description: Get all payments
- *     security:
- *       - bearer: []
  *     responses:
  *       200:
  *         description: Success
  *       400:
  *         description: Bad Request
  */
-router.route("/getAllPayments").get(adminProtect, protect, getAllPayments);
+router.route("/getAllPayments").get(getAllPayments);
 
 /**
  * @swagger
@@ -28,8 +26,6 @@ router.route("/getAllPayments").get(adminProtect, protect, getAllPayments);
  *     tags: [Payment]
  *     operatorId: getPaymentById
  *     description: Get payment by ID
- *     security:
- *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -44,7 +40,7 @@ router.route("/getAllPayments").get(adminProtect, protect, getAllPayments);
  *       404:
  *         description: Not Found
  */
-router.route("/getPaymentById/:paymentId").get(adminProtect, protect, getPaymentById);
+router.route("/getPaymentById/:paymentId").get(getPaymentById);
 
 /**
  * @swagger

@@ -47,8 +47,6 @@ router.route("/getAllOrdersForCustomer").get(protect, getAllOrdersForCustomer);
  *     tags: [Order]
  *     operatorId: getOrderById
  *     description: Get order by ID
- *     security:
- *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -200,8 +198,6 @@ router.route("/getAllOrderItems").get(staffAndAdminProtect, protect, getAllOrder
  *     tags: [Order Item]
  *     operatorId: getOrderItemsForOrder
  *     description: Get items for order
- *     security:
- *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -226,8 +222,6 @@ router.route("/getOrderItemsForOrder/:orderId").get(getOrderItemsForOrder);
  *     tags: [Order Item]
  *     operatorId: getOrderItemById
  *     description: Get order item by ID
- *     security:
- *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id

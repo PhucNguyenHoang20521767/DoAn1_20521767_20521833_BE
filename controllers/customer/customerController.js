@@ -3,6 +3,9 @@ const Customer = require("../../models/customer");
 const Attachment = require("../../models/attachment");
 const ErrorResponse = require("../../utils/errorResponse");
 
+const firebaseStorage = require("../config/firebase");
+const { ref, deleteObject } = require("firebase/storage");
+
 exports.getAllCustomers = async (req, res, next) => {
     let options = {};
 
@@ -50,6 +53,25 @@ exports.getCustomerById = async(req, res, next) => {
     }
 };
 
+exports.getCustomerAvatar = async (req, res, next) => {
+    const currentCustomer = req.user;
+
+    try {
+        const customerAvatar = await Attachment.findById(currentCustomer.customerAvatar);
+
+        if (!customerAvatar)
+            return next(new ErrorResponse("No avatar found", 404));
+
+        res.status(200).json({
+            success: true,
+            message: "Get avatar successfully",
+            data: customerAvatar
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 exports.saveCustomerAvatar = async (req, res, next) => {
     const currentCustomer = req.user;
 
@@ -83,6 +105,30 @@ exports.saveCustomerAvatar = async (req, res, next) => {
             success: true,
             message: "Customer avatar saved successfully",
             data: customer
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.deleteCustomerAvatar = async (req, res, next) => {
+    const currentCustomer = req.user;
+
+    try {
+        const attachment = await Attachment.findByIdAndDelete(currentCustomer.customerAvatar);
+
+        if (!attachment)
+            return next(new ErrorResponse("No avatar found", 404));
+
+        await deleteObject(ref(firebaseStorage, `attachments/${attachment.attachmentName}`));
+
+        await Customer.findByIdAndUpdate(currentCustomer._id, {
+            customerAvatar: null
+        });
+
+        res.status(200).json({
+            success: true,
+            message: "Avatar deleted successfully"
         });
     } catch (error) {
         next(error);

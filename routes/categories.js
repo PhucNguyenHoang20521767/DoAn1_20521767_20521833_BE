@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { protect, adminProtect } = require("../middleware/auth");
+const { protect, staffAndAdminProtect } = require("../middleware/auth");
 
 const { getAllCategories, getCategoryById, createCategory, updateCategory, deleteCategory } = require("../controllers/categoryController");
 
@@ -11,8 +11,6 @@ const { getAllCategories, getCategoryById, createCategory, updateCategory, delet
  *     tags: [Category]
  *     operatorId: getAllCategories
  *     description: Get all categories
- *     security:
- *       - bearer: []
  *     parameters:
  *       - in: query
  *         name: search
@@ -23,7 +21,7 @@ const { getAllCategories, getCategoryById, createCategory, updateCategory, delet
  *       400:
  *         description: Bad Request
  */
-router.route("/getAllCategories").get(adminProtect, protect, getAllCategories);
+router.route("/getAllCategories").get(getAllCategories);
 
 /**
  * @swagger
@@ -32,8 +30,6 @@ router.route("/getAllCategories").get(adminProtect, protect, getAllCategories);
  *     tags: [Category]
  *     operatorId: getCategoryById
  *     description: Get category by ID
- *     security:
- *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -48,7 +44,7 @@ router.route("/getAllCategories").get(adminProtect, protect, getAllCategories);
  *       404:
  *         description: Not Found
  */
-router.route("/getCategoryById/:categoryId").get(adminProtect, protect, getCategoryById);
+router.route("/getCategoryById/:categoryId").get(getCategoryById);
 
 /**
  * @swagger
@@ -71,7 +67,7 @@ router.route("/getCategoryById/:categoryId").get(adminProtect, protect, getCateg
  *       400:
  *         description: Bad Request
  */
-router.route("/createCategory").post(adminProtect, protect, createCategory);
+router.route("/createCategory").post(staffAndAdminProtect, protect, createCategory);
 
 /**
  * @swagger
@@ -102,7 +98,7 @@ router.route("/createCategory").post(adminProtect, protect, createCategory);
  *       404:
  *         description: Not Found
  */
-router.route("/updateCategory/:categoryId").put(adminProtect, protect, updateCategory);
+router.route("/updateCategory/:categoryId").put(staffAndAdminProtect, protect, updateCategory);
 
 /**
  * @swagger
@@ -127,6 +123,6 @@ router.route("/updateCategory/:categoryId").put(adminProtect, protect, updateCat
  *       404:
  *         description: Not Found
  */
-router.route("/deleteCategory/:categoryId").delete(adminProtect, protect, deleteCategory);
+router.route("/deleteCategory/:categoryId").delete(staffAndAdminProtect, protect, deleteCategory);
 
 module.exports = router;

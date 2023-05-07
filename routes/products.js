@@ -18,15 +18,13 @@ const { ref, uploadBytesResumable } = require("firebase/storage");
  *     tags: [Product]
  *     operatorId: getAllProducts
  *     description: Get all products
- *     security:
- *       - bearer: []
  *     responses:
  *       200:
  *         description: Success
  *       400:
  *         description: Bad Request
  */
-router.route("/getAllProducts").get(staffAndAdminProtect, protect, getAllProducts);
+router.route("/getAllProducts").get(getAllProducts);
 
 /**
  * @swagger
@@ -35,8 +33,6 @@ router.route("/getAllProducts").get(staffAndAdminProtect, protect, getAllProduct
  *     tags: [Product]
  *     operatorId: getProductById
  *     description: Get product by ID
- *     security:
- *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -51,7 +47,7 @@ router.route("/getAllProducts").get(staffAndAdminProtect, protect, getAllProduct
  *       404:
  *         description: Not Found
  */
-router.route("/getProductById/:productId").get(staffAndAdminProtect, protect, getProductById);
+router.route("/getProductById/:productId").get(getProductById);
 
 /**
  * @swagger
@@ -59,7 +55,7 @@ router.route("/getProductById/:productId").get(staffAndAdminProtect, protect, ge
  *   post:
  *     tags: [Product]
  *     operatorId: createProduct
- *     description: Create product by ID
+ *     description: Create product
  *     security:
  *       - bearer: []
  *     requestBody:
@@ -194,8 +190,6 @@ router.route("/activeOrInactiveProduct/:productId").put(staffAndAdminProtect, pr
  *     tags: [Product Image]
  *     operatorId: getAllProductImages
  *     description: Get all product images
- *     security:
- *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -208,7 +202,7 @@ router.route("/activeOrInactiveProduct/:productId").put(staffAndAdminProtect, pr
  *       400:
  *         description: Bad Request
  */
-router.route("/getAllProductImages/:productId").get(staffAndAdminProtect, protect, getAllProductImages);
+router.route("/getAllProductImages/:productId").get(getAllProductImages);
 
 /**
  * @swagger
@@ -291,8 +285,6 @@ router.route("/deleteProductImage/:productImageId").delete(staffAndAdminProtect,
  *     tags: [Product Color]
  *     operatorId: getAllProductColors
  *     description: Get all product colors
- *     security:
- *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -305,7 +297,7 @@ router.route("/deleteProductImage/:productImageId").delete(staffAndAdminProtect,
  *       400:
  *         description: Bad Request
  */
-router.route("/getAllProductColors/:productId").get(staffAndAdminProtect, protect, getAllProductColors);
+router.route("/getAllProductColors/:productId").get(getAllProductColors);
 
 /**
  * @swagger
@@ -407,8 +399,6 @@ router.route("/deleteProductColor/:productColorId").delete(staffAndAdminProtect,
  *     tags: [Product Dimension]
  *     operatorId: getProductDimension
  *     description: Get product dimension
- *     security:
- *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -421,7 +411,7 @@ router.route("/deleteProductColor/:productColorId").delete(staffAndAdminProtect,
  *       400:
  *         description: Bad Request
  */
-router.route("/getProductDimension/:productId").get(staffAndAdminProtect, protect, getProductDimension);
+router.route("/getProductDimension/:productId").get(getProductDimension);
 
 /**
  * @swagger
