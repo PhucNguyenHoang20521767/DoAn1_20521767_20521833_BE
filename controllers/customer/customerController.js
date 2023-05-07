@@ -3,7 +3,7 @@ const Customer = require("../../models/customer");
 const Attachment = require("../../models/attachment");
 const ErrorResponse = require("../../utils/errorResponse");
 
-const firebaseStorage = require("../config/firebase");
+const firebaseStorage = require("../../config/firebase");
 const { ref, deleteObject } = require("firebase/storage");
 
 exports.getAllCustomers = async (req, res, next) => {
