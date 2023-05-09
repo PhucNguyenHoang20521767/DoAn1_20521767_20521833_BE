@@ -94,7 +94,6 @@ customerSchema.pre("save", async function(next) {
 
     const salt = await bcrypt.genSalt(10);
     this.customerPassword = await bcrypt.hash(this.customerPassword, salt);
-    this.verificationKey = authenticator.generateSecret();
     next();
 });
 
