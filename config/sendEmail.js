@@ -23,14 +23,11 @@ exports.sendEmail = async (to, subject, body) => {
         ]
     });
 
-    const requestOptions = {
-        method: "POST",
-        headers,
-        body: data
-    };
-
-    fetch("https://api.mailjet.com/v3.1/send", requestOptions)
-        .then((response) => response.text())
-        .then((result) => console.log(result))
-        .catch((error) => console.log("Error: ", error));
+    try {
+        const response = await axios.post("https://api.mailjet.com/v3.1/send", data, { headers });
+        console.log(response.data);
+    } catch (error) {
+        console.error(error);
+        throw new ErrorResponse("Error sending email", 500);
+    }
 };
