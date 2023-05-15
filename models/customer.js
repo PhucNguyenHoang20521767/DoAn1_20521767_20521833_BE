@@ -45,10 +45,6 @@ var customerSchema = new Schema(
             ],
             trim: true
         },
-        customerPhone: {
-            type: String,
-            validate: [/(84|0[3|5|7|8|9])+([0-9]{8})\b/, "Invalid phone number"]
-        },
         customerGender: {
             type: String,
             trim: true
@@ -182,8 +178,6 @@ module.exports = Customer;
  *         customerBirthday:
  *           type: string
  *         customerEmail:
- *           type: string
- *         customerPhone:
  *           type: string
  *         customerGender:
  *           type: string
