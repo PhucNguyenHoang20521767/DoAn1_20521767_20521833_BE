@@ -183,9 +183,34 @@ exports.resetPasswordCustomer = async (req, res, next) => {
 
         await customer.updatePasswordCustomer(customerPassword);
 
-        res.status(204).json({
+        res.status(201).json({
             success: true,
             message: "Reset password successfully",
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.changePasswordCustomer = async (req, res, next) => {
+    const { customerIdToken, customerOldPassword, customerNewPassword } = req.body;
+
+    const customerId = base32.decode(customerIdToken);
+
+    try {
+        const customer = await Customer.findById(customerId).select("+customerPassword");
+
+        if (!customer) return next(new ErrorResponse("No customer found", 404));
+
+        const passwordValid = await customer.checkPasswordCustomer(customerOldPassword);
+        if (!passwordValid)
+            return next(new ErrorResponse("Incorrect old password", 401));
+
+        await customer.updatePasswordCustomer(customerNewPassword);
+
+        res.status(201).json({
+            success: true,
+            message: "Change password successfully",
         });
     } catch (error) {
         next(error);
