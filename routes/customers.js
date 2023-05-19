@@ -3,7 +3,7 @@ const router = express.Router();
 const { protect, adminProtect } = require("../middleware/auth");
 const { uploadMemoryStorage } = require("../config/attachment");
 
-const { registerCustomer, loginGoogleAndFacebookCustomer, loginCustomer, logoutCustomer, sendOTPToCustomer, forgetPasswordCustomer, resetPasswordCustomer, verifyCustomerAfterSendOTP } = require("../controllers/customer/auth_customer");
+const { registerCustomer, loginGoogleAndFacebookCustomer, loginCustomer, logoutCustomer, sendOTPToCustomer, forgetPasswordCustomer, changePasswordCustomer, verifyCustomerAfterSendOTP, resetPasswordCustomer } = require("../controllers/customer/auth_customer");
 const { getAllCustomers, getCustomerById, getCustomerAvatar, saveCustomerAvatar, deleteCustomerAvatar, updateCustomer, updateCustomerByAdmin, deleteCustomer, activeOrInactiveCustomer } = require("../controllers/customer/customerController");
 
 const firebaseStorage = require("../config/firebase");
@@ -214,7 +214,7 @@ router.route("/forgetPasswordCustomer").post(forgetPasswordCustomer);
  *               customerPassword:
  *                 type: string
  *     responses:
- *       204:
+ *       201:
  *         description: Success
  *       400:
  *         description: Bad request
@@ -253,6 +253,40 @@ router.route("/resetPasswordCustomer").post(resetPasswordCustomer);
  *         description: No OTP Request Found
  */
 router.route("/verifyCustomerAfterSendOTP").post(verifyCustomerAfterSendOTP);
+
+/**
+ * @swagger
+ * /api/customers/changePasswordCustomer:
+ *   post:
+ *     tags: [Customer]
+ *     operatorId: changePasswordCustomer
+ *     description: Change customer's password
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - customerIdToken
+ *               - customerOldPassword
+ *               - customerNewPassword
+ *             properties:
+ *               customerIdToken:
+ *                 type: string
+ *               customerOldPassword:
+ *                 type: string
+ *               customerNewPassword:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Success
+ *       401:
+ *         description: Invalid Credentials
+ *       404:
+ *         description: Not Found
+ */
+router.route("/changePasswordCustomer").post(changePasswordCustomer);
 
 /**
  * @swagger
