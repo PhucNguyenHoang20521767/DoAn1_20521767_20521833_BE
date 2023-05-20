@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Customer = require("../../models/customer");
 const ErrorResponse = require("../../utils/errorResponse");
 const base32 = require("base32");
