@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { protect, staffAndAdminProtect } = require("../middleware/auth");
+const { protect, staffAndAdminProtect, adminProtect } = require("../middleware/auth");
 
-const { getAllImports, getImportById, createImport, updateImport, deleteImport,
+const { getAllImports, getImportById, createImport, updateImport, deleteImport, confirmImport, cancelImport,
         getAllImportDetails, getDetailsForImport, getImportDetailById, createImportDetail, updateImportDetail, deleteImportDetail } = require("../controllers/importController");
 
 /**
@@ -137,6 +137,57 @@ router.route("/updateImport/:importId").put(staffAndAdminProtect, protect, updat
  *         description: Not Found
  */
 router.route("/deleteImport/:importId").delete(staffAndAdminProtect, protect, deleteImport);
+
+/**
+ * @swagger
+ * /api/imports/confirmImport/{id}:
+ *   put:
+ *     tags: [Import]
+ *     operatorId: confirmImport
+ *     description: Confirm import
+ *     security:
+ *       - bearer: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Import ID
+ *     responses:
+ *       200:
+ *         description: Confirmed
+ *       400:
+ *         description: Bad Request
+ *       404:
+ *         description: Not Found
+ */
+router.route("/confirmImport/:importId").put(adminProtect, protect, confirmImport);
+
+/**
+ * @swagger
+ * /api/imports/cancelImport/{id}:
+ *   put:
+ *     tags: [Import]
+ *     operatorId: cancelImport
+ *     description: Cancel import
+ *     security:
+ *       - bearer: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Import ID
+ *     responses:
+ *       200:
+ *         description: Canceled
+ *       400:
+ *         description: Bad Request
+ *       404:
+ *         description: Not Found
+ */
+router.route("/cancelImport/:importId").put(adminProtect, protect, cancelImport);
+
 
 /**
  * @swagger

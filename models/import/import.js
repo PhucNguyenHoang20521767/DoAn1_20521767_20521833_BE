@@ -18,6 +18,18 @@ var importSchema = new Schema(
         importDate: {
             type: Date,
             required: [true, "Please provide import date"]
+        },
+        importStatus: {
+            type: String,
+            required: [true, "Please provide import's status"], // If Required
+            enum: {
+                values: [
+                    "Chờ xác nhận",
+                    "Đã xác nhận",
+                    "Đã hủy"
+                ],
+                message: "{VALUE} is not supported as order's status"
+            }
         }
     },
     { timestamps: true }
@@ -36,11 +48,14 @@ module.exports = Import;
  *         - staffId
  *         - supplierId
  *         - importDate
+ *         - importStatus
  *       properties:
  *         staffId:
  *           type: string
  *         supplierId:
  *           type: string
  *         importDate:
+ *           type: string
+ *         importStatus
  *           type: string
  */

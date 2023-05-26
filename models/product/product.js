@@ -47,6 +47,11 @@ var productSchema = new Schema(
     { timestamps: true }
 );
 
+productSchema.methods.updateProductQuantity = async function (productQuantity) {
+    this.productQuantity += productQuantity;
+    await this.save();
+};
+
 const Product = mongoose.model("Product", productSchema);
 module.exports = Product;
 
