@@ -316,9 +316,7 @@ router.route("/getAllProductColors/:productId").get(getAllProductColors);
  *         application/json:
  *           schema:
  *             properties:
- *               productColorName:
- *                 type: string
- *               productColorCode:
+ *               colorId:
  *                 type: string
  *     responses:
  *       201:
@@ -349,9 +347,7 @@ router.route("/addProductColor/:productId").post(staffAndAdminProtect, protect, 
  *         application/json:
  *           schema:
  *             properties:
- *               productColorName:
- *                 type: string
- *               productColorCode:
+ *               colorId:
  *                 type: string
  *     responses:
  *       201:
