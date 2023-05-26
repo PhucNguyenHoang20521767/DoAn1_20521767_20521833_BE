@@ -9,15 +9,11 @@ var productColorSchema = new Schema(
             required: [true, "Please provide product's ID"],
 			trim: true
         },
-        productColorName: {
-            type: String,
-            required: true,
-            trim: true
-        },
-        productColorCode: {
-            type: String,
-            required: true,
-            trim: true
+        colorId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Color",
+            required: [true, "Please provide color's ID"],
+			trim: true
         }
     },
     { timestamps: true }
@@ -34,13 +30,10 @@ module.exports = ProductColor;
  *       type: object
  *       required:
  *         - productId
- *         - productColorName
- *         - productColorCode
+ *         - colorId
  *       properties:
  *         productId:
  *           type: string
- *         productColorName:
- *           type: string
- *         productColorCode:
+ *         colorId:
  *           type: string
  */
