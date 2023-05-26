@@ -58,7 +58,7 @@ exports.getProductById = async(req, res, next) => {
 };
 
 exports.createProduct = async (req, res, next) => {
-    const { productName, productDescription, productPrice, productCategoryId, productSubcategoryId, productQuantity, productSupplierId } = req.body;
+    const { productName, productDescription, productPrice, productCategoryId, productSubcategoryId, productSupplierId } = req.body;
 
     try {
         const product = await Product.create({
@@ -67,7 +67,6 @@ exports.createProduct = async (req, res, next) => {
             productPrice,
             productCategoryId,
             productSubcategoryId,
-            productQuantity,
             productSupplierId
         });
 
@@ -87,7 +86,7 @@ exports.updateProduct = async(req, res, next) => {
     if (!productId || !mongoose.Types.ObjectId.isValid(productId))
         return next(new ErrorResponse("Please provide valid product's ID", 400));
 
-    const { productName, productDescription, productPrice, productCategoryId, productSubcategoryId, productQuantity, productSupplierId } = req.body;
+    const { productName, productDescription, productPrice, productCategoryId, productSubcategoryId, productSupplierId } = req.body;
 
     try {
         const product = await Product.findByIdAndUpdate(productId, {
@@ -96,7 +95,6 @@ exports.updateProduct = async(req, res, next) => {
             productPrice,
             productCategoryId,
             productSubcategoryId,
-            productQuantity,
             productSupplierId
         });
 
