@@ -276,13 +276,16 @@ exports.addProductColor = async (req, res, next) => {
         return next(new ErrorResponse("Please provide valid product's ID", 400));
     }
 
-    const { productColorName, productColorCode } = req.body;
+    const { colorId } = req.body;
+
+    if (!colorId || !mongoose.Types.ObjectId.isValid(colorId)) {
+        return next(new ErrorResponse("Please provide valid color's ID", 400));
+    }
 
     try {
         const productColor = await ProductColor.create({
             productId,
-            productColorName,
-            productColorCode
+            colorId
         });
 
         res.status(201).json({
@@ -302,12 +305,15 @@ exports.updateProductColor = async (req, res, next) => {
         return next(new ErrorResponse("Please provide valid product color's ID", 400));
     }
 
-    const { productColorName, productColorCode } = req.body;
+    const { colorId } = req.body;
+
+    if (!colorId || !mongoose.Types.ObjectId.isValid(colorId)) {
+        return next(new ErrorResponse("Please provide valid color's ID", 400));
+    }
 
     try {
         const productColor = await ProductColor.findByIdAndUpdate(productColorId, {
-            productColorName,
-            productColorCode
+            colorId
         });
 
         if (!productColor)

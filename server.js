@@ -68,6 +68,8 @@ app.use("/api/categories", require("./routes/categories"));
 app.use("/api/subcategories", require("./routes/subcategories"));
 app.use("/api/wishlist", require("./routes/wishlist"));
 app.use("/api/attachments", require("./routes/attachments"));
+app.use("/api/attachments", require("./routes/attachments"));
+app.use("/api/colors", require("./routes/colors"));
 
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerJsDoc(swaggerOptions)));
 
