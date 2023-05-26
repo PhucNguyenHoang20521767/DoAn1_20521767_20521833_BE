@@ -74,8 +74,6 @@ router.route("/getProductById/:productId").get(getProductById);
  *                 type: string
  *               productSubcategoryId:
  *                 type: string
- *               productQuantity:
- *                 type: number
  *               productSupplierId:
  *                 type: string
  *     responses:
@@ -119,8 +117,6 @@ router.route("/createProduct").post(staffAndAdminProtect, protect, createProduct
  *                 type: string
  *               productSubcategoryId:
  *                 type: string
- *               productQuantity:
- *                 type: number
  *               productSupplierId:
  *                 type: string
  *     responses:

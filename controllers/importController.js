@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Import = require("../models/import/import");
 const ImportDetail = require("../models/import/import_detail");
+const Product = require("../models/product/product");
 const ErrorResponse = require("../utils/errorResponse");
 
 exports.getAllImports = async (req, res, next) => {
@@ -57,7 +58,8 @@ exports.createImport = async (req, res, next) => {
         const imp = await Import.create({
             staffId,
             supplierId,
-            importDate
+            importDate,
+            importStatus: "Chờ xác nhận"
         });
 
         res.status(201).json({
@@ -113,6 +115,70 @@ exports.deleteImport = async (req, res, next) => {
         res.status(200).json({
             success: true,
             message: "Import deleted successfully",
+            data: imp
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.confirmImport = async (req, res, next) => {
+    const { importId } = req.params;
+
+    if (!importId || !mongoose.Types.ObjectId.isValid(importId))
+        return next(new ErrorResponse("Please provide valid import's ID", 400));
+
+    try {
+        const imp = await Import.findByIdAndUpdate(importId, {
+            importStatus: "Đã xác nhận"
+        });
+
+        if (!imp)
+            return next(new ErrorResponse("No import found", 404));
+
+        const impDetails = await ImportDetail.find({
+            importId: importId
+        });
+
+        const updateProductPromises = impDetails.map(async (item) => {
+            const product = await Product.findOne({
+                _id: item.productId,
+                productStatus: true,
+            });
+            if (!product) throw new ErrorResponse("No product found", 404);
+          
+            await product.updateProductQuantity(item.productQuantity);
+        });
+          
+        await Promise.all(updateProductPromises);
+
+        res.status(200).json({
+            success: true,
+            message: "Confirm import successfully",
+            data: imp
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.cancelImport = async (req, res, next) => {
+    const { importId } = req.params;
+
+    if (!importId || !mongoose.Types.ObjectId.isValid(importId))
+        return next(new ErrorResponse("Please provide valid import's ID", 400));
+
+    try {
+        const imp = await Import.findByIdAndUpdate(importId, {
+            importStatus: "Đã hủy"
+        });
+
+        if (!imp)
+            return next(new ErrorResponse("No import found", 404));
+        
+        res.status(200).json({
+            success: true,
+            message: "Cancel import successfully",
             data: imp
         });
     } catch (error) {
