@@ -190,6 +190,12 @@ exports.saveProductImage = async (req, res, next) => {
         return next(new ErrorResponse("Please provide valid product's ID", 400));
     }
 
+    const { productColorId } = req.body;
+
+    if (!productColorId || !mongoose.Types.ObjectId.isValid(productColorId)) {
+        return next(new ErrorResponse("Please provide valid product color's ID", 400));
+    }
+
     let attachmentsList = req.files
 		? req.files.map((file) => {
 				return {
@@ -210,6 +216,7 @@ exports.saveProductImage = async (req, res, next) => {
             Array.from(attachment, (att) => {
                 return {
                     productId: productId,
+                    productColorId: productColorId,
                     productImage: att._id.toString()
                 };
             })
@@ -240,6 +247,36 @@ exports.deleteProductImage = async (req, res, next) => {
         res.status(200).json({
             success: true,
             message: "Product image deleted successfully"
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.deleteProductImageByColor = async (req, res, next) => {
+    const { productColorId } = req.params;
+
+    if (!productColorId || !mongoose.Types.ObjectId.isValid(productColorId)) {
+        return next(new ErrorResponse("Please provide valid product color's ID", 400));
+    }
+
+    try {
+        const productImages = await ProductImage.find({ productColorId: productColorId });
+
+        const deleteProductImagesPromise = productImages.map(async (item) => {
+
+            const prodImg = await ProductImage.findByIdAndDelete(item._id);
+            const attachment = await Attachment.findByIdAndDelete(prodImg.productImage);
+            await deleteObject(ref(firebaseStorage, `attachments/${attachment.attachmentName}`));
+
+        });
+
+        await Promise.all(deleteProductImagesPromise);
+
+        res.status(200).json({
+            success: true,
+            message: "Product color deleted successfully",
+            data: productImages
         });
     } catch (error) {
         next(error);

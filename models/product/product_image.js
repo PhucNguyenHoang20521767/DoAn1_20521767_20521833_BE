@@ -9,6 +9,12 @@ var productImageSchema = new Schema(
             required: [true, "Please provide product's ID"],
 			trim: true
         },
+        productColorId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "ProductColor",
+            required: [true, "Please provide product color's ID"],
+			trim: true
+        },
         productImage: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Attachment",
@@ -30,9 +36,12 @@ module.exports = ProductImage;
  *       type: object
  *       required:
  *         - productId
+ *         - productColorId
  *         - productImage
  *       properties:
  *         productId:
+ *           type: string
+ *         productColorId:
  *           type: string
  *         productImage:
  *           type: string

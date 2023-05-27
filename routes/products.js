@@ -4,7 +4,7 @@ const router = express.Router();
 const { uploadMemoryStorage } = require("../config/attachment");
 const { protect, staffAndAdminProtect, adminProtect } = require("../middleware/auth");
 const { getAllProducts, getProductById, createProduct, updateProduct, deleteProduct, activeOrInactiveProduct,
-    getAllProductImages, saveProductImage, deleteProductImage,
+    getAllProductImages, saveProductImage, deleteProductImage, deleteProductImageByColor,
     getAllProductColors, addProductColor, updateProductColor, deleteProductColor,
     getProductDimension, addProductDimension, updateProductDimension, deleteProductDimension } = require("../controllers/productController");
 
@@ -222,8 +222,11 @@ router.route("/getAllProductImages/:productId").get(getAllProductImages);
  *           schema:
  *             type: object
  *             required:
+ *               - productColorId
  *               - Files[]
  *             properties:
+ *               productColorId:
+ *                 type: string
  *               Files[]:
  *                 type: array
  *                 items:
@@ -273,6 +276,31 @@ router.route("/saveProductImage/:productId").post(staffAndAdminProtect, protect,
  *         description: Not Found
  */
 router.route("/deleteProductImage/:productImageId").delete(staffAndAdminProtect, protect, deleteProductImage);
+
+/**
+ * @swagger
+ * /api/products/deleteProductImageByColor/{id}:
+ *   delete:
+ *     tags: [Product Image]
+ *     operatorId: deleteProductImageByColor
+ *     description: Delete product image by color
+ *     security:
+ *       - bearer: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Product Color ID
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: Bad Request
+ *       404:
+ *         description: Not Found
+ */
+router.route("/deleteProductImageByColor/:productColorId").delete(staffAndAdminProtect, protect, deleteProductImageByColor);
 
 /**
  * @swagger
