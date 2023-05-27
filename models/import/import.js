@@ -9,12 +9,6 @@ var importSchema = new Schema(
             required: [true, "Please provide staff's ID"],
             trim: true
         },
-        supplierId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Supplier",
-            required: [true, "Please provide supplier's ID"],
-            trim: true
-        },
         importDate: {
             type: Date,
             required: [true, "Please provide import date"]
@@ -46,13 +40,10 @@ module.exports = Import;
  *       type: object
  *       required:
  *         - staffId
- *         - supplierId
  *         - importDate
  *         - importStatus
  *       properties:
  *         staffId:
- *           type: string
- *         supplierId:
  *           type: string
  *         importDate:
  *           type: string

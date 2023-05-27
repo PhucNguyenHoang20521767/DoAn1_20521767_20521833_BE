@@ -15,6 +15,18 @@ var importDetailSchema = new Schema(
             required: [true, "Please provide product's ID"],
             trim: true
         },
+        supplierId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Supplier",
+            required: [true, "Please provide supplier's ID"],
+            trim: true
+        },
+        productColorId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "ProductColor",
+            required: [true, "Please provide product color's ID"],
+			trim: true
+        },
         productQuantity: {
             type: Number,
             required: [true, "Please provide product's quantity"]
@@ -35,11 +47,17 @@ module.exports = ImportDetail;
  *       required:
  *         - importId
  *         - productId
+ *         - supplierId
+ *         - productColorId
  *         - productQuantity
  *       properties:
  *         importId:
  *           type: string
  *         productId:
+ *           type: string
+ *         supplierId:
+ *           type: string
+ *         productColorId:
  *           type: string
  *         productQuantity:
  *           type: number
