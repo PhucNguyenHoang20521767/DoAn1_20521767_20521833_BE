@@ -52,12 +52,11 @@ exports.getImportById = async (req, res, next) => {
 };
 
 exports.createImport = async (req, res, next) => {
-    const { staffId, supplierId, importDate } = req.body;
+    const { staffId, importDate } = req.body;
 
     try {
         const imp = await Import.create({
             staffId,
-            supplierId,
             importDate,
             importStatus: "Chờ xác nhận"
         });
@@ -78,12 +77,11 @@ exports.updateImport = async (req, res, next) => {
     if (!importId || !mongoose.Types.ObjectId.isValid(importId))
         return next(new ErrorResponse("Please provide valid import's ID", 400));
 
-    const { staffId, supplierId, importDate } = req.body;
+    const { staffId, importDate } = req.body;
 
     try {
         const imp = await Import.findByIdAndUpdate(importId, {
             staffId,
-            supplierId,
             importDate
         });
 
@@ -140,14 +138,29 @@ exports.confirmImport = async (req, res, next) => {
             importId: importId
         });
 
-        const updateProductPromises = impDetails.map(async (item) => {
-            const product = await Product.findOne({
-                _id: item.productId,
+        const productQuantityMap = new Map();
+
+        // Aggregate the quantities for the same product
+        impDetails.forEach((item) => {
+            const productId = item.productId.toString();
+            const productQuantity = item.productQuantity;
+
+            if (productQuantityMap.has(productId)) {
+                productQuantityMap.set(productId, productQuantityMap.get(productId) + productQuantity);
+            } else {
+                productQuantityMap.set(productId, productQuantity);
+            }
+        });
+
+        const updateProductPromises = Array.from(productQuantityMap.entries()).map(async ([productId, productQuantity]) => {
+            let product = await Product.findOne({
+                _id: productId,
                 productStatus: true,
             });
+
             if (!product) throw new ErrorResponse("No product found", 404);
-          
-            await product.updateProductQuantity(item.productQuantity);
+
+            await product.updateProductQuantity(productQuantity);
         });
           
         await Promise.all(updateProductPromises);
@@ -258,12 +271,14 @@ exports.getImportDetailById = async (req, res, next) => {
 };
 
 exports.createImportDetail = async (req, res, next) => {
-    const { importId, productId, productQuantity } = req.body;
+    const { importId, productId, supplierId, productColorId, productQuantity } = req.body;
 
     try {
         const importDetail = await ImportDetail.create({
             importId,
             productId,
+            supplierId,
+            productColorId,
             productQuantity
         });
 
@@ -283,12 +298,14 @@ exports.updateImportDetail = async (req, res, next) => {
     if (!importDetailId || !mongoose.Types.ObjectId.isValid(importDetailId))
         return next(new ErrorResponse("Please provide valid import detail's ID", 400));
 
-    const { importId, productId, productQuantity } = req.body;
+    const { importId, productId, supplierId, productColorId, productQuantity } = req.body;
 
     try {
         const importDetail = await ImportDetail.findByIdAndUpdate(importDetailId, {
             importId,
             productId,
+            supplierId,
+            productColorId,
             productQuantity
         });
 

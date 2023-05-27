@@ -64,8 +64,6 @@ router.route("/getImportById/:importId").get(staffAndAdminProtect, protect, getI
  *             properties:
  *               staffId:
  *                 type: string
- *               supplierId:
- *                 type: string
  *               importDate:
  *                 type: string
  *     responses:
@@ -98,8 +96,6 @@ router.route("/createImport").post(staffAndAdminProtect, protect, createImport);
  *           schema:
  *             properties:
  *               staffId:
- *                 type: string
- *               supplierId:
  *                 type: string
  *               importDate:
  *                 type: string
@@ -276,6 +272,10 @@ router.route("/getImportDetailById/:importDetailId").get(staffAndAdminProtect, p
  *                 type: string
  *               productId:
  *                 type: string
+ *               supplierId:
+ *                 type: string
+ *               productColorId:
+ *                 type: string
  *               productQuantity:
  *                 type: number
  *     responses:
@@ -310,6 +310,10 @@ router.route("/createImportDetail").post(staffAndAdminProtect, protect, createIm
  *               importId:
  *                 type: string
  *               productId:
+ *                 type: string
+ *               supplierId:
+ *                 type: string
+ *               productColorId:
  *                 type: string
  *               productQuantity:
  *                 type: number
