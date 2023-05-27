@@ -183,6 +183,33 @@ exports.getAllProductImages = async (req, res, next) => {
     }
 };
 
+exports.getAllProductImagesByColor = async (req, res, next) => {
+    const { productId, productColorId } = req.params;
+
+    if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
+        return next(new ErrorResponse("Please provide valid product's ID", 400));
+    }
+
+    if (!productColorId || !mongoose.Types.ObjectId.isValid(productColorId)) {
+        return next(new ErrorResponse("Please provide valid product color's ID", 400));
+    }
+
+    try {
+        const prodImgs = await ProductImage.find({
+            productId: productId,
+            productColorId: productColorId
+        }).select("-productId").select("-productColorId");
+
+        res.status(200).json({
+            success: true,
+            message: "List of product images by color fetched successfully",
+            data: prodImgs
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 exports.saveProductImage = async (req, res, next) => {
     const { productId } = req.params;
 
@@ -253,7 +280,7 @@ exports.deleteProductImage = async (req, res, next) => {
     }
 };
 
-exports.deleteProductImageByColor = async (req, res, next) => {
+exports.deleteProductImagesByColor = async (req, res, next) => {
     const { productColorId } = req.params;
 
     if (!productColorId || !mongoose.Types.ObjectId.isValid(productColorId)) {
