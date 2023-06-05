@@ -7,7 +7,7 @@ const ProductDimension = require("../models/product/product_dimension");
 const ErrorResponse = require("../utils/errorResponse");
 
 const firebaseStorage = require("../config/firebase");
-const { ref, deleteObject } = require("firebase/storage");
+const { ref, getDownloadURL, deleteObject } = require("firebase/storage");
 
 // CRUD Product
 exports.getAllProducts = async (req, res, next) => {
@@ -183,6 +183,37 @@ exports.getAllProductImages = async (req, res, next) => {
     }
 };
 
+exports.getAllProductImageURLs = async (req, res, next) => {
+    const { productId } = req.params;
+
+    if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
+        return next(new ErrorResponse("Please provide valid product's ID", 400));
+    }
+
+    try {
+        const prodImgs = await ProductImage.find({
+            productId: productId,
+        }).select("-productId");
+
+        const promises = prodImgs.map(async (img) => {
+            const att = await Attachment.findById(img.productImage);
+            const attURL = await getDownloadURL(ref(firebaseStorage, `attachments/${att.attachmentName}`));
+
+            return { productId: productId, productColorId: img.productColorId, imageURL: attURL };
+        });
+
+        const prodImgURLs = await Promise.all(promises);
+
+        res.status(200).json({
+            success: true,
+            message: "List of product image URL fetched successfully",
+            data: prodImgURLs
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 exports.getAllProductImagesByColor = async (req, res, next) => {
     const { productId, productColorId } = req.params;
 
@@ -204,6 +235,42 @@ exports.getAllProductImagesByColor = async (req, res, next) => {
             success: true,
             message: "List of product images by color fetched successfully",
             data: prodImgs
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.getAllProductImageURLsByColor = async (req, res, next) => {
+    const { productId, productColorId } = req.params;
+
+    if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
+        return next(new ErrorResponse("Please provide valid product's ID", 400));
+    }
+
+    if (!productColorId || !mongoose.Types.ObjectId.isValid(productColorId)) {
+        return next(new ErrorResponse("Please provide valid product color's ID", 400));
+    }
+
+    try {
+        const prodImgs = await ProductImage.find({
+            productId: productId,
+            productColorId: productColorId
+        }).select("-productId").select("-productColorId");
+
+        const promises = prodImgs.map(async (img) => {
+            const att = await Attachment.findById(img.productImage);
+            const attURL = await getDownloadURL(ref(firebaseStorage, `attachments/${att.attachmentName}`));
+
+            return { productId: productId, productColorId: productColorId, imageURL: attURL };
+        });
+
+        const prodImgURLs = await Promise.all(promises);
+
+        res.status(200).json({
+            success: true,
+            message: "List of product image URLs by color fetched successfully",
+            data: prodImgURLs
         });
     } catch (error) {
         next(error);
