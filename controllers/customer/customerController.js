@@ -4,7 +4,7 @@ const Attachment = require("../../models/attachment");
 const ErrorResponse = require("../../utils/errorResponse");
 
 const firebaseStorage = require("../../config/firebase");
-const { ref, deleteObject } = require("firebase/storage");
+const { ref, getDownloadURL, deleteObject } = require("firebase/storage");
 
 exports.getAllCustomers = async (req, res, next) => {
     let options = {};
@@ -66,6 +66,27 @@ exports.getCustomerAvatar = async (req, res, next) => {
             success: true,
             message: "Get avatar successfully",
             data: customerAvatar
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.getCustomerAvatarURL = async (req, res, next) => {
+    const currentCustomer = req.user;
+
+    try {
+        const customerAvatar = await Attachment.findById(currentCustomer.customerAvatar);
+
+        if (!customerAvatar)
+            return next(new ErrorResponse("No avatar found", 404));
+
+        const avaURL = await getDownloadURL(ref(firebaseStorage, `attachments/${customerAvatar.attachmentName}`));
+
+        res.status(200).json({
+            success: true,
+            message: "Get avatar successfully",
+            data: avaURL
         });
     } catch (error) {
         next(error);
