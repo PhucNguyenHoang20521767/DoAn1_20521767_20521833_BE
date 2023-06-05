@@ -4,7 +4,7 @@ const router = express.Router();
 const { uploadMemoryStorage } = require("../config/attachment");
 const { protect, staffAndAdminProtect, adminProtect } = require("../middleware/auth");
 const { getAllProducts, getProductById, createProduct, updateProduct, deleteProduct, activeOrInactiveProduct,
-    getAllProductImages, getAllProductImagesByColor, saveProductImage, deleteProductImage, deleteProductImagesByColor,
+    getAllProductImages, getAllProductImageURLs, getAllProductImagesByColor, getAllProductImageURLsByColor, saveProductImage, deleteProductImage, deleteProductImagesByColor,
     getAllProductColors, addProductColor, updateProductColor, deleteProductColor,
     getProductDimension, addProductDimension, updateProductDimension, deleteProductDimension } = require("../controllers/productController");
 
@@ -202,6 +202,27 @@ router.route("/getAllProductImages/:productId").get(getAllProductImages);
 
 /**
  * @swagger
+ * /api/products/getAllProductImageURLs/{id}:
+ *   get:
+ *     tags: [Product Image]
+ *     operatorId: getAllProductImageURLs
+ *     description: Get all product image URLs
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Product ID
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: Bad Request
+ */
+router.route("/getAllProductImageURLs/:productId").get(getAllProductImageURLs);
+
+/**
+ * @swagger
  * /api/products/getAllProductImagesByColor/{id}/{colorId}:
  *   get:
  *     tags: [Product Image]
@@ -225,6 +246,32 @@ router.route("/getAllProductImages/:productId").get(getAllProductImages);
  *         description: Bad Request
  */
 router.route("/getAllProductImagesByColor/:productId/:productColorId").get(getAllProductImagesByColor);
+
+/**
+ * @swagger
+ * /api/products/getAllProductImageURLsByColor/{id}/{colorId}:
+ *   get:
+ *     tags: [Product Image]
+ *     operatorId: getAllProductImageURLsByColor
+ *     description: Get all product image URLs by color
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Product ID
+ *       - in: path
+ *         name: colorId
+ *         required: true
+ *         type: string
+ *         description: Product Color ID
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: Bad Request
+ */
+router.route("/getAllProductImageURLsByColor/:productId/:productColorId").get(getAllProductImageURLsByColor);
 
 /**
  * @swagger
