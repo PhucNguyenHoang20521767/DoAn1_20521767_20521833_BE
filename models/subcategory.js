@@ -7,6 +7,11 @@ var subcategorySchema = new Schema(
             type: String,
             required: [true, "Please provide subcategory's name"],
             trim: true
+        },
+        subcategorySlug: {
+            type: String,
+            required: [true, "Please provide subcategory's slug"],
+            trim: true
         }
     },
     { timestamps: true }
@@ -23,7 +28,10 @@ module.exports = Subcategory;
  *       type: object
  *       required:
  *         - subcategoryName
+ *         - subcategorySlug
  *       properties:
  *         subcategoryName:
+ *           type: string
+ *         subcategorySlug:
  *           type: string
  */

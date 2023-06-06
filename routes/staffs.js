@@ -137,7 +137,7 @@ router.route("/getAllStaffs").get(adminProtect, protect, getAllStaffs);
  *       404:
  *         description: Not Found
  */
-router.route("/getStaffById/:staffId").get(adminProtect, protect, getStaffById);
+router.route("/getStaffById/:staffId").get(staffAndAdminProtect, protect, getStaffById);
 
 /**
  * @swagger
