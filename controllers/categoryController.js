@@ -59,12 +59,12 @@ exports.getCategoryById = async (req, res, next) => {
 };
 
 exports.createCategory = async (req, res, next) => {
-    const { categoryName, categoryDescription } = req.body;
+    const { categoryName, categorySlug } = req.body;
 
     try {
         const category = await Category.create({
             categoryName,
-            categoryDescription
+            categorySlug
         });
 
         res.status(201).json({
@@ -83,14 +83,14 @@ exports.updateCategory = async (req, res, next) => {
     if (!categoryId || !mongoose.Types.ObjectId.isValid(categoryId))
         return next(new ErrorResponse("Please provide valid category's ID", 400));
 
-    const { categoryName, categoryDescription } = req.body;
+    const { categoryName, categorySlug } = req.body;
 
     try {
         const category = await Category.findByIdAndUpdate(
             categoryId,
             { 
                 categoryName,
-                categoryDescription 
+                categorySlug 
             },
             { new: true }
         );

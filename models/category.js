@@ -8,8 +8,9 @@ var categorySchema = new Schema(
             required: [true, "Please provide category's name"],
             trim: true
         },
-        categoryDescription: {
+        categorySlug: {
             type: String,
+            required: [true, "Please provide category's slug"],
             trim: true
         }
     },
@@ -27,9 +28,10 @@ module.exports = Category;
  *       type: object
  *       required:
  *         - categoryName
+ *         - categorySlug
  *       properties:
  *         categoryName:
  *           type: string
- *         categoryDescription:
+ *         categorySlug:
  *           type: string
  */
