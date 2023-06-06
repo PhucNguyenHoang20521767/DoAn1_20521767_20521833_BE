@@ -59,11 +59,12 @@ exports.getSubcategoryById = async (req, res, next) => {
 };
 
 exports.createSubcategory = async (req, res, next) => {
-    const { subcategoryName } = req.body;
+    const { subcategoryName, subcategorySlug } = req.body;
 
     try {
         const subcategory = await Subcategory.create({
-            subcategoryName
+            subcategoryName,
+            subcategorySlug
         });
 
         res.status(201).json({
@@ -82,12 +83,12 @@ exports.updateSubcategory = async (req, res, next) => {
     if (!subcategoryId || !mongoose.Types.ObjectId.isValid(subcategoryId))
         return next(new ErrorResponse("Please provide valid subcategory's ID", 400));
 
-    const { subcategoryName } = req.body;
+    const { subcategoryName, subcategorySlug } = req.body;
 
     try {
         const subcategory = await Subcategory.findByIdAndUpdate(
             subcategoryId,
-            { subcategoryName },
+            { subcategoryName, subcategorySlug },
             { new: true }
         );
 
