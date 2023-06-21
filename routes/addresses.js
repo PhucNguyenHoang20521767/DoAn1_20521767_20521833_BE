@@ -68,7 +68,7 @@ router.route("/getAllCustomerAddresses/:customerId").get(protect, getAllCustomer
  *       404:
  *         description: Not Found
  */
-router.route("/getAddressById/:addressId").get(protect, getAddressById);
+router.route("/getAddressById/:addressId").get(getAddressById);
 
 /**
  * @swagger

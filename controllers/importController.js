@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const Import = require("../models/import/import");
 const ImportDetail = require("../models/import/import_detail");
 const Product = require("../models/product/product");
+const ProductColor = require("../models/product/product_color");
+
 const ErrorResponse = require("../utils/errorResponse");
 
 exports.getAllImports = async (req, res, next) => {
@@ -139,10 +141,12 @@ exports.confirmImport = async (req, res, next) => {
         });
 
         const productQuantityMap = new Map();
+        const productQuantityMapByColor = new Map();
 
         // Aggregate the quantities for the same product
         impDetails.forEach((item) => {
             const productId = item.productId.toString();
+            const productColorId = item.productColorId.toString();
             const productQuantity = item.productQuantity;
 
             if (productQuantityMap.has(productId)) {
@@ -150,20 +154,34 @@ exports.confirmImport = async (req, res, next) => {
             } else {
                 productQuantityMap.set(productId, productQuantity);
             }
+
+            if (productQuantityMapByColor.has(productColorId)) {
+                productQuantityMapByColor.set(productColorId, productQuantityMapByColor.get(productColorId) + productQuantity);
+            } else {
+                productQuantityMapByColor.set(productColorId, productQuantity);
+            }
         });
 
         const updateProductPromises = Array.from(productQuantityMap.entries()).map(async ([productId, productQuantity]) => {
             let product = await Product.findOne({
                 _id: productId,
-                productStatus: true,
+                productStatus: true
             });
 
             if (!product) throw new ErrorResponse("No product found", 404);
 
             await product.updateProductQuantity(productQuantity);
         });
-          
         await Promise.all(updateProductPromises);
+
+        const updateProductByColorPromises = Array.from(productQuantityMapByColor.entries()).map(async ([productColorId, productQuantity]) => {
+            let productColor = await ProductColor.findById(productColorId);
+
+            if (!productColor) throw new ErrorResponse("No product color found", 404);
+
+            await productColor.updateProductQuantityByColor(productQuantity);
+        });
+        await Promise.all(updateProductByColorPromises);
 
         res.status(200).json({
             success: true,

@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { protect, staffAndAdminProtect } = require("../middleware/auth");
 
-const { getAllOrders, getAllOrdersForCustomer, getOrderById, createOrder, updateOrder, deleteOrder,
+const { getAllOrders, getAllOrdersForCustomer, getOrderById, createOrder, updateOrder, deleteOrder, updateOrderStatus, completeOrder,
         getAllOrderItems, getOrderItemsForOrder, getOrderItemById, createOrderItem, updateOrderItem, deleteOrderItem } = require("../controllers/orderController");
 
 /**
@@ -176,6 +176,76 @@ router.route("/deleteOrder/:orderId").delete(staffAndAdminProtect, protect, dele
 
 /**
  * @swagger
+ * /api/orders/updateOrderStatus/{id}:
+ *   put:
+ *     tags: [Order]
+ *     operatorId: updateOrderStatus
+ *     description: Update order status
+ *     security:
+ *       - bearer: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Order ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             properties:
+ *               staffId:
+ *                 type: string
+ *               orderStatus:
+ *                 type: string
+ *               cancelReason:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Updated
+ *       400:
+ *         description: Bad Request
+ *       404:
+ *         description: Not Found
+ */
+router.route("/updateOrderStatus/:orderId").put(staffAndAdminProtect, protect, updateOrderStatus);
+
+/**
+ * @swagger
+ * /api/orders/completeOrder/{id}:
+ *   put:
+ *     tags: [Order]
+ *     operatorId: completeOrder
+ *     description: Complete order
+ *     security:
+ *       - bearer: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Order ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             properties:
+ *               orderCompleteDay:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Updated
+ *       400:
+ *         description: Bad Request
+ *       404:
+ *         description: Not Found
+ */
+router.route("/completeOrder/:orderId").put(staffAndAdminProtect, protect, completeOrder);
+
+/**
+ * @swagger
  * /api/orders/getAllOrderItems:
  *   get:
  *     tags: [Order Item]
@@ -257,6 +327,8 @@ router.route("/getOrderItemById/:orderItemId").get(getOrderItemById);
  *                 type: string
  *               productId:
  *                 type: string
+ *               productColorId:
+ *                 type: string
  *               productQuantity:
  *                 type: number
  *               productPrice:
@@ -295,6 +367,8 @@ router.route("/createOrderItem").post(protect, createOrderItem);
  *               orderId:
  *                 type: string
  *               productId:
+ *                 type: string
+ *               productColorId:
  *                 type: string
  *               productQuantity:
  *                 type: number

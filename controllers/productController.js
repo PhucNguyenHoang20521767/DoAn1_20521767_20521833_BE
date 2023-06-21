@@ -3,6 +3,7 @@ const Product = require("../models/product/product");
 const Attachment = require("../models/attachment");
 const ProductImage = require("../models/product/product_image");
 const ProductColor = require("../models/product/product_color");
+const Color = require("../models/color");
 const ProductDimension = require("../models/product/product_dimension");
 const ErrorResponse = require("../utils/errorResponse");
 
@@ -394,6 +395,29 @@ exports.getAllProductColors = async (req, res, next) => {
             success: true,
             message: "List of product colors fetched successfully",
             data: productColors
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.getProductColorById = async (req, res, next) => {
+    const { productColorId } = req.params;
+
+    if (!productColorId || !mongoose.Types.ObjectId.isValid(productColorId)) {
+        return next(new ErrorResponse("Please provide valid product color's ID", 400));
+    }
+
+    try {
+        const productColor = await ProductColor.findById(productColorId);
+
+        const color = await Color.findById(productColor.colorId);
+
+        res.status(200).json({
+            success: true,
+            message: "Get product color successfully",
+            productColor: productColor,
+            color: color
         });
     } catch (error) {
         next(error);
