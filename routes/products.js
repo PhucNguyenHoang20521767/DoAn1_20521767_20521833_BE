@@ -5,7 +5,7 @@ const { uploadMemoryStorage } = require("../config/attachment");
 const { protect, staffAndAdminProtect, adminProtect } = require("../middleware/auth");
 const { getAllProducts, getProductById, createProduct, updateProduct, deleteProduct, activeOrInactiveProduct,
     getAllProductImages, getAllProductImageURLs, getAllProductImagesByColor, getAllProductImageURLsByColor, saveProductImage, deleteProductImage, deleteProductImagesByColor,
-    getAllProductColors, addProductColor, updateProductColor, deleteProductColor,
+    getAllProductColors, getProductColorById, addProductColor, updateProductColor, deleteProductColor,
     getProductDimension, addProductDimension, updateProductDimension, deleteProductDimension } = require("../controllers/productController");
 
 const firebaseStorage = require("../config/firebase");
@@ -395,6 +395,27 @@ router.route("/deleteProductImagesByColor/:productColorId").delete(staffAndAdmin
  *         description: Bad Request
  */
 router.route("/getAllProductColors/:productId").get(getAllProductColors);
+
+/**
+ * @swagger
+ * /api/products/getProductColorById/{id}:
+ *   get:
+ *     tags: [Product Color]
+ *     operatorId: getProductColorById
+ *     description: Get product color
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Product Color ID
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: Bad Request
+ */
+router.route("/getProductColorById/:productColorId").get(getProductColorById);
 
 /**
  * @swagger

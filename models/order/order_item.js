@@ -15,6 +15,12 @@ var orderItemSchema = new Schema(
             required: [true, "Please provide product's ID"],
 			trim: true
         },
+        productColorId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "ProductColor",
+            required: [true, "Please provide product color's ID"],
+			trim: true
+        },
         productQuantity: {
             type: Number,
             required: [true, "Please provide product's quantity"]
@@ -43,12 +49,15 @@ module.exports = OrderItem;
  *       required:
  *         - orderId
  *         - productId
+ *         - productColorId
  *         - productQuantity
  *         - productPrice
  *       properties:
  *         orderId:
  *           type: string
  *         productId:
+ *           type: string
+ *         productColorId:
  *           type: string
  *         productQuantity:
  *           type: number

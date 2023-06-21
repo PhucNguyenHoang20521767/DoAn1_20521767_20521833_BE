@@ -24,8 +24,7 @@ exports.sendEmail = async (to, subject, body) => {
     });
 
     try {
-        const response = await axios.post("https://api.mailjet.com/v3.1/send", data, { headers });
-        console.log(response.data);
+        await axios.post("https://api.mailjet.com/v3.1/send", data, { headers });
     } catch (error) {
         console.error(error);
         throw new ErrorResponse("Error sending email", 500);
