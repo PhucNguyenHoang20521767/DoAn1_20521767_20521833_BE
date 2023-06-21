@@ -26,9 +26,11 @@ var orderSchema = new Schema(
             enum: {
                 values: [
                     "Đặt hàng",
-                    "Đang giao dịch",
-                    "Hoàn thành",
-                    "Đã hủy"
+                    "Đã xác nhận",
+                    "Đang vận chuyển",
+                    "Đã hoàn tất",
+                    "Đã hủy",
+                    "Bị trả lại"
                 ],
                 message: "{VALUE} is not supported as order's status"
             }

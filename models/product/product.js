@@ -47,8 +47,18 @@ var productSchema = new Schema(
     { timestamps: true }
 );
 
+productSchema.methods.updateProductSold = async function (productQuantity) {
+    this.productSold += productQuantity;
+    await this.save();
+};
+
 productSchema.methods.updateProductQuantity = async function (productQuantity) {
     this.productQuantity += productQuantity;
+    await this.save();
+};
+
+productSchema.methods.reduceProductQuantity = async function (productQuantity) {
+    this.productQuantity -= productQuantity;
     await this.save();
 };
 

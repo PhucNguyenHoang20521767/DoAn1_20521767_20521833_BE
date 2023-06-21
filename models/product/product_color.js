@@ -14,10 +14,24 @@ var productColorSchema = new Schema(
             ref: "Color",
             required: [true, "Please provide color's ID"],
 			trim: true
+        },
+        productQuantity: {
+            type: Number,
+            default: 0
         }
     },
     { timestamps: true }
 );
+
+productColorSchema.methods.updateProductQuantityByColor = async function (productQuantity) {
+    this.productQuantity += productQuantity;
+    await this.save();
+};
+
+productColorSchema.methods.reduceProductQuantityByColor = async function (productQuantity) {
+    this.productQuantity -= productQuantity;
+    await this.save();
+};
 
 const ProductColor = mongoose.model("ProductColor", productColorSchema);
 module.exports = ProductColor;
@@ -35,5 +49,7 @@ module.exports = ProductColor;
  *         productId:
  *           type: string
  *         colorId:
+ *           type: string
+ *         productQuantity:
  *           type: string
  */
