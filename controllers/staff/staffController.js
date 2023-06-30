@@ -15,7 +15,7 @@ exports.getCurrentStaff = async (req, res, next) => {
 };
 
 exports.getAllStaffs = async (req, res, next) => {
-    let options = { privilege: { $gte: 1 } };
+    let options = { privilege: { $gte: 0 } };
 
     let total = Staff.countDocuments(options);
     let page = parseInt(req.query.page) || 1;
@@ -67,11 +67,10 @@ exports.updateStaff = async (req, res, next) => {
     if (!staffId)
         return next(new ErrorResponse("Please provide valid staff's ID", 400));
 
-    const { staffPassword, staffFirstName, staffLastName, staffEmail, staffPhone, staffGender, privilege } = req.body;
+    const { staffFirstName, staffLastName, staffEmail, staffPhone, staffGender, privilege } = req.body;
 
     try {
         const staff = await Staff.findByIdAndUpdate(staffId, {
-            staffPassword,
             staffFirstName,
             staffLastName,
             staffEmail,
@@ -89,6 +88,30 @@ exports.updateStaff = async (req, res, next) => {
         } else {
             return next(new ErrorResponse("Staff not found", 404));
         }
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.changeStaffPassword = async (req, res, next) => {
+    const { staffId } = req.params;
+    const { staffOldPassword, staffNewPassword } = req.body;
+
+    try {
+        const staff = await Staff.findById(staffId).select("+staffPassword");
+
+        if (!staff) return next(new ErrorResponse("No staff found", 404));
+
+        const passwordValid = await staff.checkPassword(staffOldPassword);
+        if (!passwordValid)
+            return next(new ErrorResponse("Incorrect old password", 401));
+
+        await staff.updatePassword(staffNewPassword);
+
+        res.status(201).json({
+            success: true,
+            message: "Change password successfully",
+        });
     } catch (error) {
         next(error);
     }

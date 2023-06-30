@@ -33,6 +33,59 @@ exports.getAllFeedbacks = async (req, res, next) => {
     }
 };
 
+exports.getAllProductFeedbacks = async (req, res, next) => {
+    const { productId } = req.params;
+
+    if (!productId || !mongoose.Types.ObjectId.isValid(productId))
+        return next(new ErrorResponse("Please provide valid product's ID", 400));
+
+    try {
+        const feedbacks = await Feedback.find({
+            productId: productId
+        });
+        
+        res.status(200).json({
+            success: true,
+            message: "Feedbacks list of this product fetched successfully",
+            data: feedbacks
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.getProductRating = async (req, res, next) => {
+    const { productId } = req.params;
+
+    if (!productId || !mongoose.Types.ObjectId.isValid(productId))
+        return next(new ErrorResponse("Please provide valid product's ID", 400));
+
+    try {
+        const feedbacks = await Feedback.find({
+            productId: productId
+        });
+
+        let averageRating = 0;
+        let rating = 0;
+
+        if (feedbacks.length > 0) {
+            await Promise.all(feedbacks.map((feedback) => {
+                rating += feedback.feedbackRating;
+            }));
+
+            averageRating = rating / feedbacks.length;
+        }
+        
+        res.status(200).json({
+            success: true,
+            productId: productId,
+            averageRating: averageRating
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 exports.getFeedbackById = async (req, res, next) => {
     const { feedbackId } = req.params;
 
