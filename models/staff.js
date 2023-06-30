@@ -84,6 +84,11 @@ staffSchema.methods.checkPassword = async function (staffPassword) {
     return await bcrypt.compare(staffPassword, this.staffPassword);
 };
 
+staffSchema.methods.updatePassword = async function (staffPassword) {
+    this.staffPassword = staffPassword;
+    await this.save();
+};
+
 // Get JSON Web Token
 staffSchema.methods.getSignedTokenStaff = function (privilege) {
     return jwt.sign(
