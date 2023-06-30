@@ -3,7 +3,7 @@ const router = express.Router();
 const { protect, staffAndAdminProtect, adminProtect } = require("../middleware/auth");
 
 const { registerStaff, loginStaff } = require("../controllers/staff/auth_staff");
-const { getCurrentStaff, getAllStaffs, getStaffById, updateStaff, deleteStaff, activeOrInactiveStaff } = require("../controllers/staff/staffController");
+const { getCurrentStaff, getAllStaffs, getStaffById, updateStaff, changeStaffPassword, deleteStaff, activeOrInactiveStaff } = require("../controllers/staff/staffController");
 
 /**
  * @swagger
@@ -160,8 +160,6 @@ router.route("/getStaffById/:staffId").get(staffAndAdminProtect, protect, getSta
  *         application/json:
  *           schema:
  *             properties:
- *               staffPassword:
- *                 type: string
  *               staffFirstName:
  *                 type: string
  *               staffLastName:
@@ -183,6 +181,45 @@ router.route("/getStaffById/:staffId").get(staffAndAdminProtect, protect, getSta
  *         description: Not Found
  */
 router.route("/updateStaff/:staffId").put(adminProtect, protect, updateStaff);
+
+/**
+ * @swagger
+ * /api/staffs/changeStaffPassword/{id}:
+ *   post:
+ *     tags: [Staff]
+ *     operatorId: changeStaffPassword
+ *     description: Change staff's password
+ *     security:
+ *       - bearer: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Staff ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - staffOldPassword
+ *               - staffNewPassword
+ *             properties:
+ *               staffOldPassword:
+ *                 type: string
+ *               staffNewPassword:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Success
+ *       401:
+ *         description: Invalid Credentials
+ *       404:
+ *         description: Not Found
+ */
+router.route("/changeStaffPassword/:staffId").post(staffAndAdminProtect, protect, changeStaffPassword);
 
 /**
  * @swagger

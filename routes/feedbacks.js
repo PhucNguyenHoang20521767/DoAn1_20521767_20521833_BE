@@ -3,7 +3,7 @@ const router = express.Router();
 const { protect } = require("../middleware/auth");
 const { uploadMemoryStorage } = require("../config/attachment");
 
-const { getAllFeedbacks, getFeedbackById, createFeedback, updateFeedback, deleteFeedback,
+const { getAllFeedbacks, getAllProductFeedbacks, getProductRating, getFeedbackById, createFeedback, updateFeedback, deleteFeedback,
         getAllFeedbackImages, saveFeedbackImage, deleteFeedbackImage } = require("../controllers/feedbackController");
 
 const firebaseStorage = require("../config/firebase");
@@ -23,6 +23,48 @@ const { ref, uploadBytesResumable } = require("firebase/storage");
  *         description: Bad Request
  */
 router.route("/getAllFeedbacks").get(getAllFeedbacks);
+
+/**
+ * @swagger
+ * /api/feedbacks/getAllProductFeedbacks/{id}:
+ *   get:
+ *     tags: [Feedback]
+ *     operatorId: getAllProductFeedbacks
+ *     description: Get all product feedbacks
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Product ID
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: Bad Request
+ */
+router.route("/getAllProductFeedbacks/:productId").get(getAllProductFeedbacks);
+
+/**
+ * @swagger
+ * /api/feedbacks/getProductRating/{id}:
+ *   get:
+ *     tags: [Feedback]
+ *     operatorId: getProductRating
+ *     description: Get product rating
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Product ID
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: Bad Request
+ */
+router.route("/getProductRating/:productId").get(getProductRating);
 
 /**
  * @swagger
