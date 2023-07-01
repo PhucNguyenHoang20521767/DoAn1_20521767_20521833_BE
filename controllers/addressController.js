@@ -50,6 +50,29 @@ exports.getAllCustomerAddresses = async (req, res, next) => {
     }
 };
 
+exports.getCustomerDefaultAddress = async (req, res, next) => {
+    const { customerId } = req.params;
+
+    if (!customerId || !mongoose.Types.ObjectId.isValid(customerId)) {
+        return next(new ErrorResponse("Please provide valid customer's ID", 400));
+    }
+
+    try {
+        const customerAddress = await Address.findOne({
+            customerId: customerId,
+            isDefault: true
+        });
+
+        res.status(200).json({
+            success: true,
+            message: "Get customer default address successfully",
+            data: customerAddress
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 exports.getAddressById = async (req, res, next) => {
     const { addressId } = req.params;
 

@@ -3,18 +3,6 @@ const Schema = mongoose.Schema;
 
 var discountSchema = new Schema(
     {
-        productId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Product",
-            required: [true, "Please provide product's ID"],
-			trim: true
-        },
-        campaignId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Campaign",
-            required: [true, "Please provide campaign's ID"],
-			trim: true
-        },
         discountName: {
             type: String,
             required: [true, "Please provide discount's name"],
@@ -51,17 +39,11 @@ module.exports = Discount;
  *     Discount:
  *       type: object
  *       required:
- *         - productId
- *         - campaignId
  *         - discountName
  *         - discountPercent
  *         - discountStartDate
  *         - discountEndDate
  *       properties:
- *         productId:
- *           type: string
- *         campaignId:
- *           type: string
  *         discountName:
  *           type: string
  *         discountDescription:
