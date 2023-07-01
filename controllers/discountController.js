@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Discount = require("../models/discount");
+const Product = require("../models/product/product");
 const ErrorResponse = require("../utils/errorResponse");
 
 exports.getAllDiscounts = async (req, res, next) => {
@@ -49,13 +50,40 @@ exports.getDiscountById = async (req, res, next) => {
     }
 };
 
+exports.applyDiscountForProduct = async (req, res, next) => {
+    const { productId, discountId } = req.params;
+
+    if (!productId || !mongoose.Types.ObjectId.isValid(productId))
+        return next(new ErrorResponse("Please provide valid product's ID", 400));
+
+    if (!discountId || !mongoose.Types.ObjectId.isValid(discountId))
+        return next(new ErrorResponse("Please provide valid discount's ID", 400));
+
+    try {
+        const product = await Product.findById(productId);
+
+        if (!product)
+            return next(new ErrorResponse("No product found", 404));
+
+        await product.updateOne({
+            productDiscountId: discountId
+        })
+        
+        res.status(200).json({
+            success: true,
+            message: "Apply discount successfully",
+            data: product
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 exports.createDiscount = async (req, res, next) => {
-    const { productId, campaignId, discountName, discountDescription, discountPercent, discountStartDate, discountEndDate } = req.body;
+    const { discountName, discountDescription, discountPercent, discountStartDate, discountEndDate } = req.body;
 
     try {
         const discount = await Discount.create({
-            productId,
-            campaignId,
             discountName,
             discountDescription,
             discountPercent,
@@ -79,12 +107,10 @@ exports.updateDiscount = async (req, res, next) => {
     if (!discountId || !mongoose.Types.ObjectId.isValid(discountId))
         return next(new ErrorResponse("Please provide valid discount's ID", 400));
 
-    const { productId, campaignId, discountName, discountDescription, discountPercent, discountStartDate, discountEndDate } = req.body;
+    const { discountName, discountDescription, discountPercent, discountStartDate, discountEndDate } = req.body;
 
     try {
         const discount = await Discount.findByIdAndUpdate(discountId, {
-            productId,
-            campaignId,
             discountName,
             discountDescription,
             discountPercent,

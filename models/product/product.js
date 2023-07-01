@@ -26,6 +26,11 @@ var productSchema = new Schema(
             ref: "Subcategory",
             required: [true, "Please provide product's subcategory."]
         },
+        productDiscountId: {
+            type: Schema.Types.ObjectId,
+            ref: "Discount",
+            default: null
+        },
         productQuantity: {
             type: Number,
             default: 0
@@ -89,6 +94,9 @@ module.exports = Product;
  *         productSubcategoryId:
  *           type: string
  *           description: Subcategory ID
+ *         productDiscountId:
+ *           type: string
+ *           description: Discount ID
  *         productQuantity:
  *           type: number
  *         productSold:
