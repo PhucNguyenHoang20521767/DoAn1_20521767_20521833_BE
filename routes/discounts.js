@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { protect, staffAndAdminProtect } = require("../middleware/auth");
+const { protect, staffAndAdminProtect, adminProtect } = require("../middleware/auth");
 
-const { getAllDiscounts, getDiscountById, createDiscount, updateDiscount, deleteDiscount } = require("../controllers/discountController");
+const { getAllDiscounts, getDiscountById, applyDiscountForProduct, createDiscount, updateDiscount, deleteDiscount } = require("../controllers/discountController");
 
 /**
  * @swagger
@@ -41,6 +41,36 @@ router.route("/getAllDiscounts").get(getAllDiscounts);
  *         description: Not Found
  */
 router.route("/getDiscountById/:discountId").get(getDiscountById);
+
+/**
+ * @swagger
+ * /api/discounts/applyDiscountForProduct/{id}/{discountId}:
+ *   get:
+ *     tags: [Discount]
+ *     operatorId: applyDiscountForProduct
+ *     description: Apply discount for product
+ *     security:
+ *       - bearer: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Product ID
+ *       - in: path
+ *         name: discountId
+ *         required: true
+ *         type: string
+ *         description: Discount ID
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: Bad Request
+ *       404:
+ *         description: Not Found
+ */
+router.route("/applyDiscountForProduct/:productId/:discountId").get(adminProtect, protect, applyDiscountForProduct);
 
 /**
  * @swagger

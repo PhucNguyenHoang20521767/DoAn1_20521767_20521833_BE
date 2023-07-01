@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { protect } = require("../middleware/auth");
 
-const { getAllAddresses, getAllCustomerAddresses, getAddressById, createAddress, updateAddress, deleteAddress, setDefaultAddress } = require("../controllers/addressController");
+const { getAllAddresses, getAllCustomerAddresses, getCustomerDefaultAddress, getAddressById, createAddress, updateAddress, deleteAddress, setDefaultAddress } = require("../controllers/addressController");
 
 /**
  * @swagger
@@ -43,6 +43,27 @@ router.route("/getAllAddresses").get(protect, getAllAddresses);
  *         description: Bad Request
  */
 router.route("/getAllCustomerAddresses/:customerId").get(protect, getAllCustomerAddresses);
+
+/**
+ * @swagger
+ * /api/addresses/getCustomerDefaultAddress/{id}:
+ *   get:
+ *     tags: [Address]
+ *     operatorId: getCustomerDefaultAddress
+ *     description: Get customer default address
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Customer ID
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: Bad Request
+ */
+router.route("/getCustomerDefaultAddress/:customerId").get(getCustomerDefaultAddress);
 
 
 /**
