@@ -50,6 +50,60 @@ exports.getDiscountById = async (req, res, next) => {
     }
 };
 
+exports.getAllProductsForDiscount = async (req, res, next) => {
+    const { discountId } = req.params;
+
+    if (!discountId || !mongoose.Types.ObjectId.isValid(discountId))
+        return next(new ErrorResponse("Please provide valid discount's ID", 400));
+
+    try {
+        const productsList = await Product.find({
+            productDiscountId: discountId
+        });
+
+        if (!productsList)
+            return next(new ErrorResponse("No product found", 404));
+        
+        res.status(200).json({
+            success: true,
+            message: "Products list for discount",
+            data: productsList
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.resetDiscount = async (req, res, next) => {
+    const { discountId } = req.params;
+
+    if (!discountId || !mongoose.Types.ObjectId.isValid(discountId))
+        return next(new ErrorResponse("Please provide valid discount's ID", 400));
+
+    try {
+        const productsList = await Product.find({
+            productDiscountId: discountId
+        });
+
+        if (!productsList)
+            return next(new ErrorResponse("No product found", 404));
+
+
+        await Promise.all(productsList.map(async (product) => {
+            await product.updateOne({
+                productDiscountId: null
+            })
+        }));
+        
+        res.status(200).json({
+            success: true,
+            message: "Successful"
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 exports.applyDiscountForProduct = async (req, res, next) => {
     const { productId, discountId } = req.params;
 
