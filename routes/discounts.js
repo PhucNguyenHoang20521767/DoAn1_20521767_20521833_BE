@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { protect, staffAndAdminProtect, adminProtect } = require("../middleware/auth");
 
-const { getAllDiscounts, getDiscountById, applyDiscountForProduct, createDiscount, updateDiscount, deleteDiscount } = require("../controllers/discountController");
+const { getAllDiscounts, getDiscountById, getAllProductsForDiscount, resetDiscount, applyDiscountForProduct, createDiscount, updateDiscount, deleteDiscount } = require("../controllers/discountController");
 
 /**
  * @swagger
@@ -44,8 +44,58 @@ router.route("/getDiscountById/:discountId").get(getDiscountById);
 
 /**
  * @swagger
- * /api/discounts/applyDiscountForProduct/{id}/{discountId}:
+ * /api/discounts/getAllProductsForDiscount/{id}:
  *   get:
+ *     tags: [Discount]
+ *     operatorId: getAllProductsForDiscount
+ *     description: Get all products for discount
+ *     security:
+ *       - bearer: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Discount ID
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: Bad Request
+ *       404:
+ *         description: Not Found
+ */
+router.route("/getAllProductsForDiscount/:discountId").get(adminProtect, protect, getAllProductsForDiscount);
+
+/**
+ * @swagger
+ * /api/discounts/resetDiscount/{id}:
+ *   put:
+ *     tags: [Discount]
+ *     operatorId: resetDiscount
+ *     description: Reset discount
+ *     security:
+ *       - bearer: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Discount ID
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: Bad Request
+ *       404:
+ *         description: Not Found
+ */
+router.route("/resetDiscount/:discountId").put(adminProtect, protect, resetDiscount);
+
+/**
+ * @swagger
+ * /api/discounts/applyDiscountForProduct/{id}/{discountId}:
+ *   put:
  *     tags: [Discount]
  *     operatorId: applyDiscountForProduct
  *     description: Apply discount for product
@@ -70,7 +120,7 @@ router.route("/getDiscountById/:discountId").get(getDiscountById);
  *       404:
  *         description: Not Found
  */
-router.route("/applyDiscountForProduct/:productId/:discountId").get(adminProtect, protect, applyDiscountForProduct);
+router.route("/applyDiscountForProduct/:productId/:discountId").put(adminProtect, protect, applyDiscountForProduct);
 
 /**
  * @swagger
