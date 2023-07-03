@@ -15,6 +15,12 @@ var feedbackSchema = new Schema(
             required: [true, "Please provide product's ID"],
 			trim: true
         },
+        productColorId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "ProductColor",
+            required: [true, "Please provide product's ID"],
+			trim: true
+        },
         orderId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Order",
@@ -52,6 +58,7 @@ module.exports = Feedback;
  *       required:
  *         - customerId
  *         - productId
+ *         - productColorId
  *         - orderId
  *         - feedbackRating
  *         - feedbackContent
@@ -59,6 +66,8 @@ module.exports = Feedback;
  *         customerId:
  *           type: string
  *         productId:
+ *           type: string
+ *         productColorId:
  *           type: string
  *         orderId:
  *           type: string
