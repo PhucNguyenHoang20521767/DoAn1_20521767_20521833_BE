@@ -108,12 +108,13 @@ exports.getFeedbackById = async (req, res, next) => {
 };
 
 exports.createFeedback = async (req, res, next) => {
-    const { customerId, productId, orderId, feedbackRating, feedbackTitle, feedbackContent } = req.body;
+    const { customerId, productId, productColorId, orderId, feedbackRating, feedbackTitle, feedbackContent } = req.body;
 
     try {
         const feedback = await Feedback.create({
             customerId,
             productId,
+            productColorId,
             orderId,
             feedbackRating,
             feedbackTitle,
@@ -136,12 +137,13 @@ exports.updateFeedback = async (req, res, next) => {
     if (!feedbackId || !mongoose.Types.ObjectId.isValid(feedbackId))
         return next(new ErrorResponse("Please provide valid feedback's ID", 400));
 
-    const { customerId, productId, orderId, feedbackRating, feedbackTitle, feedbackContent } = req.body;
+    const { customerId, productId, productColorId, orderId, feedbackRating, feedbackTitle, feedbackContent } = req.body;
 
     try {
         const feedback = await Feedback.findByIdAndUpdate(feedbackId, {
             customerId,
             productId,
+            productColorId,
             orderId,
             feedbackRating,
             feedbackTitle,

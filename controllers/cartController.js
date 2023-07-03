@@ -109,10 +109,13 @@ exports.addItemToCart = async (req, res, next) => {
     if (!cartId || !mongoose.Types.ObjectId.isValid(cartId))
         return next(new ErrorResponse("Please provide valid cart's ID", 400));
 
-    const { productId, productQuantity } = req.body;
+    const { productId, productColorId, productQuantity } = req.body;
 
     if (!productId || !mongoose.Types.ObjectId.isValid(productId))
         return next(new ErrorResponse("Please provide valid product's ID", 400));
+
+    if (!productColorId || !mongoose.Types.ObjectId.isValid(productColorId))
+        return next(new ErrorResponse("Please provide valid product color's ID", 400));
 
     if (productQuantity <= 0)
         return next(new ErrorResponse("Product quantity must be greater than 0", 400));
@@ -121,6 +124,7 @@ exports.addItemToCart = async (req, res, next) => {
         const cartItem = await CartItem.create({
             cartId,
             productId,
+            productColorId,
             productQuantity
         });
 
@@ -140,10 +144,13 @@ exports.updateItemInCart = async (req, res, next) => {
     if (!cartId || !mongoose.Types.ObjectId.isValid(cartId))
         return next(new ErrorResponse("Please provide valid cart's ID", 400));
 
-    const { productId, productQuantity } = req.body;
+    const { productId, productColorId, productQuantity } = req.body;
 
     if (!productId || !mongoose.Types.ObjectId.isValid(productId))
         return next(new ErrorResponse("Please provide valid product's ID", 400));
+
+    if (!productColorId || !mongoose.Types.ObjectId.isValid(productColorId))
+        return next(new ErrorResponse("Please provide valid product color's ID", 400));
 
     if (productQuantity <= 0)
         return next(new ErrorResponse("Product quantity must be greater than 0", 400));
@@ -152,7 +159,8 @@ exports.updateItemInCart = async (req, res, next) => {
         const cartItem = await CartItem.updateOne(
             {
                 cartId: cartId,
-                productId: productId
+                productId: productId,
+                productColorId: productColorId,
             },
             { productQuantity: productQuantity }
         );
@@ -176,14 +184,19 @@ exports.removeItemFromCart = async (req, res, next) => {
     if (!cartId || !mongoose.Types.ObjectId.isValid(cartId))
         return next(new ErrorResponse("Please provide valid cart's ID", 400));
 
-    const { productId } = req.body;
+    const { productId, productColorId } = req.body;
 
     if (!productId || !mongoose.Types.ObjectId.isValid(productId))
         return next(new ErrorResponse("Please provide valid product's ID", 400));
+
+    if (!productColorId || !mongoose.Types.ObjectId.isValid(productColorId))
+        return next(new ErrorResponse("Please provide valid product color's ID", 400));
+
     try {
         const cartItem = await CartItem.deleteOne({
             cartId: cartId,
-            productId: productId
+            productId: productId,
+            productColorId: productColorId
         });
 
         if (!cartItem)

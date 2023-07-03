@@ -108,6 +108,8 @@ router.route("/getFeedbackById/:feedbackId").get(getFeedbackById);
  *                 type: string
  *               productId:
  *                 type: string
+ *               productColorId:
+ *                 type: string
  *               orderId:
  *                 type: string
  *               feedbackRating:
@@ -148,6 +150,8 @@ router.route("/createFeedback").post(protect, createFeedback);
  *               customerId:
  *                 type: string
  *               productId:
+ *                 type: string
+ *               productColorId:
  *                 type: string
  *               orderId:
  *                 type: string

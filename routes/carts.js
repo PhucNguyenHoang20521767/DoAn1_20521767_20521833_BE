@@ -119,6 +119,8 @@ router.route("/getAllCartItems/:cartId").get(protect, getAllCartItems);
  *             properties:
  *               productId:
  *                 type: string
+ *               productColorId:
+ *                 type: string
  *               productQuantity:
  *                 type: number
  *     responses:
@@ -151,6 +153,8 @@ router.route("/addItemToCart/:cartId").post(protect, addItemToCart);
  *           schema:
  *             properties:
  *               productId:
+ *                 type: string
+ *               productColorId:
  *                 type: string
  *               productQuantity:
  *                 type: number
@@ -186,6 +190,8 @@ router.route("/updateItemInCart/:cartId").put(protect, updateItemInCart);
  *           schema:
  *             properties:
  *               productId:
+ *                 type: string
+ *               productColorId:
  *                 type: string
  *     responses:
  *       200:

@@ -70,6 +70,7 @@ app.use("/api/wishlist", require("./routes/wishlist"));
 app.use("/api/attachments", require("./routes/attachments"));
 app.use("/api/attachments", require("./routes/attachments"));
 app.use("/api/colors", require("./routes/colors"));
+app.use("/api/statistics", require("./routes/statistics"));
 
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerJsDoc(swaggerOptions)));
 
