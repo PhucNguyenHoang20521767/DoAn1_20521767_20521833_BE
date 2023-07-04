@@ -26,7 +26,7 @@ router.route("/google").get(passport.authenticate("google", ["profile", "email"]
 
 router.route("/google/callback").get(
 	passport.authenticate("google", {
-		successRedirect: "/api/auth/google/login/success",
+		successRedirect: "https://do-an1-20521767-20521833.vercel.app/", // /api/auth/google/login/success
 		failureRedirect: "/api/auth/google/login/failed",
 	})
 );
