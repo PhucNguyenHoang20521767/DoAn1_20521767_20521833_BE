@@ -117,21 +117,31 @@ exports.addItemToCart = async (req, res, next) => {
     if (!productColorId || !mongoose.Types.ObjectId.isValid(productColorId))
         return next(new ErrorResponse("Please provide valid product color's ID", 400));
 
-    if (productQuantity <= 0)
-        return next(new ErrorResponse("Product quantity must be greater than 0", 400));
-
     try {
-        const cartItem = await CartItem.create({
-            cartId,
-            productId,
-            productColorId,
-            productQuantity
+        const findCartItem = await CartItem.findOne({
+            cartId: cartId,
+            productId: productId,
+            productColorId: productColorId
         });
+
+        if (findCartItem) {
+            await findCartItem.updateOne({
+                productQuantity: findCartItem.productQuantity + productQuantity
+            });
+
+            await findCartItem.save();
+        } else {
+            await CartItem.create({
+                cartId,
+                productId,
+                productColorId,
+                productQuantity
+            });
+        }
 
         res.status(200).json({
             success: true,
-            message: "Add item to cart successfully",
-            data: cartItem
+            message: `Add item ${productId} to cart successfully`
         });
     } catch (error) {
         next(error);
