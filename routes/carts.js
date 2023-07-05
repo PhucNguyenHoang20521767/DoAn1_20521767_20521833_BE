@@ -171,7 +171,7 @@ router.route("/updateItemInCart/:cartId").put(protect, updateItemInCart);
 /**
  * @swagger
  * /api/carts/removeItemFromCart/{id}:
- *   delete:
+ *   put:
  *     tags: [Cart Item]
  *     operatorId: removeItemFromCart
  *     description: Remove item from cart
@@ -195,13 +195,13 @@ router.route("/updateItemInCart/:cartId").put(protect, updateItemInCart);
  *                 type: string
  *     responses:
  *       200:
- *         description: Deleted
+ *         description: Removed
  *       400:
  *         description: Bad Request
  *       404:
  *         description: Not Found
  */
-router.route("/removeItemFromCart/:cartId").delete(protect, removeItemFromCart);
+router.route("/removeItemFromCart/:cartId").put(protect, removeItemFromCart);
 
 /**
  * @swagger
@@ -220,7 +220,7 @@ router.route("/removeItemFromCart/:cartId").delete(protect, removeItemFromCart);
  *         description: Cart ID
  *     responses:
  *       200:
- *         description: Deleted
+ *         description: Removed
  *       400:
  *         description: Bad Request
  *       404:
