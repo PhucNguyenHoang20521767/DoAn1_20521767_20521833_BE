@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const Customer = require("../../models/customer");
+const Cart = require("../../models/cart/cart");
+
 const ErrorResponse = require("../../utils/errorResponse");
 const base32 = require("base32");
 const { sendEmail } = require("../../config/sendEmail");
@@ -29,6 +31,7 @@ exports.loginGoogleAndFacebookCustomer = async (req, res, next) => {
     try {
         const customer = await Customer.findOne({
             customerEmail,
+            customerProvider,
             isVerified: true,
             isActive: true
         });
@@ -42,11 +45,17 @@ exports.loginGoogleAndFacebookCustomer = async (req, res, next) => {
                 customerEmail,
                 customerGender,
                 customerProvider,
-                isVerified: true
+                isVerified: true,
+                customerStatus: true
             });
-    
-            sendTokenCustomer(newCustomer, 201, res);
+
+            sendTokenCustomerAndCreateCart(newCustomer, 201, res);
         } else {
+            await customer.updateOne({
+                customerStatus: true
+            });
+            await customer.save();
+
             sendTokenCustomer(customer, 201, res);
         }
     } catch (error) {
@@ -223,6 +232,20 @@ const sendTokenCustomer = async (customer, statusCode, res) => {
 		success: true,
 		token: customer.getSignedTokenCustomer(),
         customerIdToken: await customer.getBase32Id(),
+        data: customer
+	});
+};
+
+const sendTokenCustomerAndCreateCart = async (customer, statusCode, res) => {
+    const signedToken = customer.getSignedTokenCustomer();
+    const idToken = await customer.getBase32Id();
+
+    await Cart.create({ customerId: customer._id });
+
+	res.status(statusCode).json({
+		success: true,
+		token: signedToken,
+        customerIdToken: idToken,
         data: customer
 	});
 };
