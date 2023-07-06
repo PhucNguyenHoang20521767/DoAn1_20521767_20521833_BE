@@ -26,7 +26,7 @@ router.route("/google").get(passport.authenticate("google", ["profile", "email"]
 
 router.route("/google/callback").get(
 	passport.authenticate("google", {
-		successRedirect: "https://do-an1-20521767-20521833.vercel.app/", // /api/auth/google/login/success
+		successRedirect: process.env.CLIENT_URL,
 		failureRedirect: "/api/auth/google/login/failed",
 	})
 );
@@ -60,7 +60,7 @@ router.route("/facebook").get(passport.authenticate("facebook", ["public_profile
 
 router.route("/facebook/callback").get(
 	passport.authenticate("facebook", {
-		successRedirect: "/api/auth/facebook/login/success",
+		successRedirect: process.env.CLIENT_URL,
 		failureRedirect: "/api/auth/facebook/login/failed",
 	})
 );
