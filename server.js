@@ -32,6 +32,13 @@ app.use("/", (req, res, next) => {
 	next();
 });
 
+app.use("/api/auth/google/login/success", (req, res, next) => {
+	res.header("Access-Control-Allow-Origin", process.env.CLIENT_ORIGIN_URL);
+	res.header("Access-Control-Allow-Credentials", true);
+	res.header("Access-Control-Allow-Headers", "X-Requested-With");
+	next();
+});
+
 passport.serializeUser((user, done) => {
 	done(null, user);
 });
