@@ -21,7 +21,7 @@ app.use(
 	})
 );
 
-app.use(cors());
+app.use(cors({ origin: process.env.CLIENT_ORIGIN_URL }));
 app.use(express.json());
 app.use(passport.initialize());
 app.use(passport.session());
