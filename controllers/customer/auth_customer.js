@@ -4,7 +4,7 @@ const Cart = require("../../models/cart/cart");
 
 const ErrorResponse = require("../../utils/errorResponse");
 const base32 = require("base32");
-const { sendEmail } = require("../../config/sendEmail");
+const { sendEmail, sendEmailToResetPassword } = require("../../config/sendEmail");
 
 exports.registerCustomer = async (req, res, next) => {
     const { customerPassword, customerFirstName, customerLastName, customerBirthday, customerEmail, customerGender } = req.body;
@@ -250,11 +250,25 @@ const sendTokenCustomerAndCreateCart = async (customer, statusCode, res) => {
 	});
 };
 
+// const sendOTPToCustomerEmail = async (customer, statusCode, res) => {
+//     await sendEmail(
+//         customer.customerEmail,
+//         "Xác thực địa chỉ email của bạn",
+//         `Xin chào ${customer.customerFirstName}, cảm ơn bạn vì đã lựa chọn thương hiệu của chúng tôi.\nVui lòng sử dụng mã OTP này để hoàn tất việc đăng ký: ${await customer.getOTPToSend()}.\nNGUYEN'S HOME Furniture`
+//     );
+
+//     res.status(statusCode).json({
+//         success: true,
+//         customerIdToken: await customer.getBase32Id()
+//     });
+// };
+
 const sendOTPToCustomerEmail = async (customer, statusCode, res) => {
     await sendEmail(
         customer.customerEmail,
         "Xác thực địa chỉ email của bạn",
-        `Xin chào ${customer.customerFirstName}, cảm ơn bạn vì đã lựa chọn thương hiệu của chúng tôi.\nVui lòng sử dụng mã OTP này để hoàn tất việc đăng ký: ${await customer.getOTPToSend()}.\nNGUYEN'S HOME Furniture`
+        customer.customerFirstName,
+        await customer.getOTPToSend()
     );
 
     res.status(statusCode).json({
@@ -264,10 +278,11 @@ const sendOTPToCustomerEmail = async (customer, statusCode, res) => {
 };
 
 const sendOTPToResetPassword = async (customer, statusCode, res) => {
-    await sendEmail(
+    await sendEmailToResetPassword(
         customer.customerEmail,
         "Reset mật khẩu của bạn",
-        `Xin chào ${customer.customerFirstName}, chúng tôi đã nhận được yêu cầu reset mật khẩu.\nNếu đó là bạn, vui lòng sử dụng mã OTP này để hoàn tất quá trình: ${await customer.getOTPToSend()}.\nNGUYEN'S HOME Furniture`
+        customer.customerFirstName,
+        await customer.getOTPToSend()
     );
 
     res.status(statusCode).json({
