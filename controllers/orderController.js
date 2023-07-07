@@ -5,7 +5,7 @@ const Customer = require("../models/customer");
 const Product = require("../models/product/product");
 const ProductColor = require("../models/product/product_color");
 const ErrorResponse = require("../utils/errorResponse");
-const { sendEmail } = require("../config/sendEmail");
+const { sendEmailToConfirmOrder, sendEmailToCancelOrder } = require("../config/sendEmail");
 
 exports.getAllOrders = async (req, res, next) => {
     let options = {};
@@ -318,16 +318,17 @@ const reduceProductQuantity = async (orderItems) => {
 
 const sendOrderStatusEmail = async (order, orderStatus, customerEmail, cancelReason, statusCode, res) => {
     if (orderStatus === "Đang vận chuyển") {
-        await sendEmail(
+        await sendEmailToConfirmOrder(
             customerEmail,
             "Trạng thái đơn hàng",
-            `Cảm ơn bạn vì đã lựa chọn thương hiệu của chúng tôi.\nChúng tôi xin thông báo đơn hàng #${order.orderCode} của bạn đã được xác nhận và đang trong quá trình vận chuyển.\nNGUYEN'S HOME Furniture`
+            order.orderCode
         );
     } else if (orderStatus === "Đã hủy") {
-        await sendEmail(
+        await sendEmailToCancelOrder(
             customerEmail,
             "Trạng thái đơn hàng",
-            `Cảm ơn bạn vì đã lựa chọn thương hiệu của chúng tôi.\nChúng tôi xin thông báo đơn hàng #${order.orderCode} của bạn đã bị hủy.\nLý do: ${cancelReason}.\nRất xin lỗi vì sự bất tiện này.\nNGUYEN'S HOME Furniture`
+            order.orderCode,
+            cancelReason
         );
     }
 
@@ -336,6 +337,27 @@ const sendOrderStatusEmail = async (order, orderStatus, customerEmail, cancelRea
         message: "Successful"
     });
 };
+
+// const sendOrderStatusEmail = async (order, orderStatus, customerEmail, cancelReason, statusCode, res) => {
+//     if (orderStatus === "Đang vận chuyển") {
+//         await sendEmail(
+//             customerEmail,
+//             "Trạng thái đơn hàng",
+//             `Cảm ơn bạn vì đã lựa chọn thương hiệu của chúng tôi.\nChúng tôi xin thông báo đơn hàng #${order.orderCode} của bạn đã được xác nhận và đang trong quá trình vận chuyển.\nNGUYEN'S HOME Furniture`
+//         );
+//     } else if (orderStatus === "Đã hủy") {
+//         await sendEmail(
+//             customerEmail,
+//             "Trạng thái đơn hàng",
+//             `Cảm ơn bạn vì đã lựa chọn thương hiệu của chúng tôi.\nChúng tôi xin thông báo đơn hàng #${order.orderCode} của bạn đã bị hủy.\nLý do: ${cancelReason}.\nRất xin lỗi vì sự bất tiện này.\nNGUYEN'S HOME Furniture`
+//         );
+//     }
+
+//     res.status(statusCode).json({
+//         success: true,
+//         message: "Successful"
+//     });
+// };
 
 exports.completeOrder = async (req, res, next) => {
     const { orderId } = req.params;
