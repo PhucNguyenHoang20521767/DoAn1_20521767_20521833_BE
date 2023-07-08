@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Color = require("../models/color");
+const ProductColor = require("../models/product/product_color");
 const ErrorResponse = require("../utils/errorResponse");
 
 exports.getAllColors = async (req, res, next) => {
@@ -53,16 +54,24 @@ exports.createColor = async (req, res, next) => {
     const { colorName, colorHex } = req.body;
 
     try {
-        const color = await Color.create({
-            colorName,
-            colorHex
+        const col = await Color.findOne({
+            colorHex: colorHex
         });
 
-        res.status(201).json({
-            success: true,
-            message: "Color created successfully",
-            data: color
-        });
+        if (col)
+            return next(new ErrorResponse("Color existed in database", 400));
+        else {
+            const color = await Color.create({
+                colorName,
+                colorHex
+            });
+
+            res.status(201).json({
+                success: true,
+                message: "Color created successfully",
+                data: color
+            });
+        }
     } catch (error) {
         next(error);
     }
@@ -77,19 +86,29 @@ exports.updateColor = async(req, res, next) => {
     const { colorName, colorHex } = req.body;
 
     try {
-        const color = await Color.findByIdAndUpdate(colorId, {
-            colorName,
-            colorHex
+        const col = await Color.findOne({
+            _id: { $ne: colorId },
+            colorHex: colorHex
         });
 
-        if (color) {
-            res.status(200).json({
-                success: true,
-                message: "Color updated successfully",
-                data: color
+        if (col) {
+            return next(new ErrorResponse("Color existed in database", 400));
+        }
+        else {
+            const color = await Color.findByIdAndUpdate(colorId, {
+                colorName,
+                colorHex
             });
-        } else {
-            return next(new ErrorResponse("Color not found", 404));
+    
+            if (color) {
+                res.status(200).json({
+                    success: true,
+                    message: "Color updated successfully",
+                    data: color
+                });
+            } else {
+                return next(new ErrorResponse("Color not found", 404));
+            }
         }
     } catch (error) {
         next(error);
@@ -103,16 +122,25 @@ exports.deleteColor = async (req, res, next) => {
         return next(new ErrorResponse("Please provide valid color's ID", 400));
 
     try {
-        const color = await Color.findByIdAndDelete(colorId);
-
-        if (!color)
-            return next(new ErrorResponse("No color found", 404));
-
-        res.status(200).json({
-            success: true,
-            message: "Color deleted successfully",
-            data: color
+        const colorsList = await ProductColor.find({
+            colorId: colorId
         });
+
+        if (colorsList.length > 0) {
+            return next(new ErrorResponse("This color can't be deleted", 400));
+        }
+        else {
+            const color = await Color.findByIdAndDelete(colorId);
+    
+            if (!color)
+                return next(new ErrorResponse("No color found", 404));
+    
+            res.status(200).json({
+                success: true,
+                message: "Color deleted successfully",
+                data: color
+            });
+        }
     } catch (error) {
         next(error);
     }
