@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Subcategory = require("../models/subcategory");
+const Product = require("../models/product/product");
 const ErrorResponse = require("../utils/errorResponse");
 
 exports.getAllSubcategories = async (req, res, next) => {
@@ -62,16 +63,24 @@ exports.createSubcategory = async (req, res, next) => {
     const { subcategoryName, subcategorySlug } = req.body;
 
     try {
-        const subcategory = await Subcategory.create({
-            subcategoryName,
-            subcategorySlug
+        const slug = await Subcategory.findOne({
+            subcategorySlug: subcategorySlug
         });
 
-        res.status(201).json({
-            success: true,
-            message: "Subcategory created successfully",
-            data: subcategory
-        });
+        if (slug)
+            return next(new ErrorResponse("Subcategory slug existed in database", 400));
+        else {
+            const subcategory = await Subcategory.create({
+                subcategoryName,
+                subcategorySlug
+            });
+    
+            res.status(201).json({
+                success: true,
+                message: "Subcategory created successfully",
+                data: subcategory
+            });
+        }
     } catch (error) {
         next(error);
     }
@@ -86,20 +95,30 @@ exports.updateSubcategory = async (req, res, next) => {
     const { subcategoryName, subcategorySlug } = req.body;
 
     try {
-        const subcategory = await Subcategory.findByIdAndUpdate(
-            subcategoryId,
-            { subcategoryName, subcategorySlug },
-            { new: true }
-        );
-
-        if (!subcategory)
-            return next(new ErrorResponse("No subcategory found", 404));
-        
-        res.status(200).json({
-            success: true,
-            message: "Subcategory updated successfully",
-            data: subcategory
+        const slug = await Subcategory.findOne({
+            _id: { $ne: subcategoryId },
+            subcategorySlug: subcategorySlug
         });
+
+        if (slug) {
+            return next(new ErrorResponse("Subcategory slug existed in database", 400));
+        }
+        else {
+            const subcategory = await Subcategory.findByIdAndUpdate(
+                subcategoryId,
+                { subcategoryName, subcategorySlug },
+                { new: true }
+            );
+    
+            if (!subcategory)
+                return next(new ErrorResponse("No subcategory found", 404));
+            
+            res.status(200).json({
+                success: true,
+                message: "Subcategory updated successfully",
+                data: subcategory
+            });
+        }
     } catch (error) {
         next(error);
     }
@@ -112,16 +131,25 @@ exports.deleteSubcategory = async (req, res, next) => {
         return next(new ErrorResponse("Please provide valid subcategory's ID", 400));
 
     try {
-        const subcategory = await Subcategory.findByIdAndDelete(subcategoryId);
-
-        if (!subcategory)
-            return next(new ErrorResponse("No subcategory found", 404));
-        
-        res.status(200).json({
-            success: true,
-            message: "Subcategory deleted successfully",
-            data: subcategory
+        const prodsList = await Product.find({
+            productSubcategoryId: subcategoryId
         });
+
+        if (prodsList.length > 0) {
+            return next(new ErrorResponse("This subcategory can't be deleted", 400));
+        }
+        else {
+            const subcategory = await Subcategory.findByIdAndDelete(subcategoryId);
+
+            if (!subcategory)
+                return next(new ErrorResponse("No subcategory found", 404));
+            
+            res.status(200).json({
+                success: true,
+                message: "Subcategory deleted successfully",
+                data: subcategory
+            });
+        }
     } catch (error) {
         next(error);
     }
