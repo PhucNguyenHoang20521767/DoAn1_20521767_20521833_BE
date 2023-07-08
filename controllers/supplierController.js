@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Supplier = require("../models/supplier");
+const Product = require("../models/product/product");
 const ErrorResponse = require("../utils/errorResponse");
 
 exports.getAllSuppliers = async (req, res, next) => {
@@ -104,16 +105,25 @@ exports.deleteSupplier = async (req, res, next) => {
         return next(new ErrorResponse("Please provide valid supplier's ID", 400));
 
     try {
-        const supplier = await Supplier.findByIdAndDelete(supplierId);
-
-        if (!supplier)
-            return next(new ErrorResponse("No supplier found", 404));
-        
-        res.status(200).json({
-            success: true,
-            message: "Supplier deleted successfully",
-            data: supplier
+        const prodsList = await Product.find({
+            productSupplierId: supplierId
         });
+
+        if (prodsList.length > 0) {
+            return next(new ErrorResponse("This supplier can't be deleted", 400));
+        }
+        else {
+            const supplier = await Supplier.findByIdAndDelete(supplierId);
+
+            if (!supplier)
+                return next(new ErrorResponse("No supplier found", 404));
+            
+            res.status(200).json({
+                success: true,
+                message: "Supplier deleted successfully",
+                data: supplier
+            });
+        }
     } catch (error) {
         next(error);
     }
