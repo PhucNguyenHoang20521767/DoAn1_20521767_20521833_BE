@@ -294,6 +294,17 @@ const reduceProductQuantity = async (orderItems) => {
         }
     });
 
+    const reduceProductByColorPromises = Array.from(productQuantityMapByColor.entries()).map(async ([productColorId, productQuantity]) => {
+        let productColor = await ProductColor.findById(productColorId);
+
+        if (!productColor) throw new ErrorResponse("No product color found", 404);
+
+        if(productColor.productQuantity < productQuantity) throw new ErrorResponse("Can't confirm this order because of product quantity", 400);
+
+        await productColor.reduceProductQuantityByColor(productQuantity);
+    });
+    await Promise.all(reduceProductByColorPromises);
+
     const reduceProductPromises = Array.from(productQuantityMap.entries()).map(async ([productId, productQuantity]) => {
         let product = await Product.findOne({
             _id: productId,
@@ -305,15 +316,6 @@ const reduceProductQuantity = async (orderItems) => {
         await product.reduceProductQuantity(productQuantity);
     });
     await Promise.all(reduceProductPromises);
-
-    const reduceProductByColorPromises = Array.from(productQuantityMapByColor.entries()).map(async ([productColorId, productQuantity]) => {
-        let productColor = await ProductColor.findById(productColorId);
-
-        if (!productColor) throw new ErrorResponse("No product color found", 404);
-
-        await productColor.reduceProductQuantityByColor(productQuantity);
-    });
-    await Promise.all(reduceProductByColorPromises);
 };
 
 const sendOrderStatusEmail = async (order, orderStatus, customerEmail, cancelReason, statusCode, res) => {
