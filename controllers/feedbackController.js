@@ -185,6 +185,32 @@ exports.deleteFeedback = async (req, res, next) => {
     }
 };
 
+exports.respondToFeedback = async (req, res, next) => {
+    const { feedbackId } = req.params;
+
+    if (!feedbackId || !mongoose.Types.ObjectId.isValid(feedbackId))
+        return next(new ErrorResponse("Please provide valid feedback's ID", 400));
+
+    const { feedbackResponse } = req.body;
+
+    try {
+        const feedback = await Feedback.findByIdAndUpdate(feedbackId, {
+            feedbackResponse
+        });
+
+        if (!feedback)
+            return next(new ErrorResponse("No feedback found", 404));
+
+        res.status(200).json({
+            success: true,
+            message: "Respond to feedback successfully",
+            data: feedback
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 // Feedback Image
 exports.getAllFeedbackImages = async (req, res, next) => {
     const { feedbackId } = req.params;

@@ -41,6 +41,10 @@ var feedbackSchema = new Schema(
             type: String,
             required: [true, "Please provide feedback's content"],
             trim: true
+        },
+        feedbackResponse: {
+            type: String,
+            trim: true
         }
     },
     { timestamps: true }
@@ -76,5 +80,7 @@ module.exports = Feedback;
  *         feedbackTitle:
  *           type: string
  *         feedbackContent:
+ *           type: string
+ *         feedbackResponse:
  *           type: string
  */

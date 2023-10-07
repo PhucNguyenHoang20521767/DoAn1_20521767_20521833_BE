@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const { protect } = require("../middleware/auth");
+const { protect, staffAndAdminProtect } = require("../middleware/auth");
 const { uploadMemoryStorage } = require("../config/attachment");
 
-const { getAllFeedbacks, getAllProductFeedbacks, getProductRating, getFeedbackById, createFeedback, updateFeedback, deleteFeedback,
+const { getAllFeedbacks, getAllProductFeedbacks, getProductRating, getFeedbackById, createFeedback, updateFeedback, deleteFeedback, respondToFeedback,
         getAllFeedbackImages, saveFeedbackImage, deleteFeedbackImage } = require("../controllers/feedbackController");
 
 const firebaseStorage = require("../config/firebase");
@@ -195,6 +195,39 @@ router.route("/updateFeedback/:feedbackId").put(protect, updateFeedback);
  *         description: Not Found
  */
 router.route("/deleteFeedback/:feedbackId").delete(protect, deleteFeedback);
+
+/**
+ * @swagger
+ * /api/feedbacks/respondToFeedback/{id}:
+ *   put:
+ *     tags: [Feedback]
+ *     operatorId: respondToFeedback
+ *     description: Respond to feedback
+ *     security:
+ *       - bearer: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Feedback ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             properties:
+ *               feedbackResponse:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Responded
+ *       400:
+ *         description: Bad Request
+ *       404:
+ *         description: Not Found
+ */
+router.route("/respondToFeedback/:feedbackId").put(staffAndAdminProtect, respondToFeedback);
 
 /**
  * @swagger
