@@ -5,7 +5,7 @@ const Attachment = require("../models/attachment");
 const ErrorResponse = require("../utils/errorResponse");
 
 const firebaseStorage = require("../config/firebase");
-const { ref, deleteObject } = require("firebase/storage");
+const { ref, getDownloadURL, deleteObject } = require("firebase/storage");
 
 exports.getAllFeedbacks = async (req, res, next) => {
     let options = {};
@@ -228,6 +228,37 @@ exports.getAllFeedbackImages = async (req, res, next) => {
             success: true,
             message: "List of feedback images fetched successfully",
             data: feedImgs
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.getAllFeedbackImageURLs = async (req, res, next) => {
+    const { feedbackId } = req.params;
+
+    if (!feedbackId || !mongoose.Types.ObjectId.isValid(feedbackId)) {
+        return next(new ErrorResponse("Please provide valid feedback's ID", 400));
+    }
+
+    try {
+        const feedbackImgs = await FeedbackImage.find({
+            feedbackId: feedbackId,
+        }).select("-feedbackId");
+
+        const promises = feedbackImgs.map(async (img) => {
+            const att = await Attachment.findById(img.feedbackImage);
+            const attURL = await getDownloadURL(ref(firebaseStorage, `attachments/${att.attachmentName}`));
+
+            return { feedbackId: feedbackId, imageURL: attURL };
+        });
+
+        const feedbackImgURLs = await Promise.all(promises);
+
+        res.status(200).json({
+            success: true,
+            message: "List of feedback image URL fetched successfully",
+            data: feedbackImgURLs
         });
     } catch (error) {
         next(error);
