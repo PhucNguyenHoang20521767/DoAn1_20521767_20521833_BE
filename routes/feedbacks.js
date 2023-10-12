@@ -4,7 +4,7 @@ const { protect, staffAndAdminProtect } = require("../middleware/auth");
 const { uploadMemoryStorage } = require("../config/attachment");
 
 const { getAllFeedbacks, getAllProductFeedbacks, getProductRating, getFeedbackById, createFeedback, updateFeedback, deleteFeedback, respondToFeedback,
-        getAllFeedbackImages, saveFeedbackImage, deleteFeedbackImage } = require("../controllers/feedbackController");
+        getAllFeedbackImages, getAllFeedbackImageURLs, saveFeedbackImage, deleteFeedbackImage } = require("../controllers/feedbackController");
 
 const firebaseStorage = require("../config/firebase");
 const { ref, uploadBytesResumable } = require("firebase/storage");
@@ -249,6 +249,27 @@ router.route("/respondToFeedback/:feedbackId").put(staffAndAdminProtect, respond
  *         description: Bad Request
  */
 router.route("/getAllFeedbackImages/:feedbackId").get(getAllFeedbackImages);
+
+/**
+ * @swagger
+ * /api/feedbacks/getAllFeedbackImageURLs/{id}:
+ *   get:
+ *     tags: [Feedback Image]
+ *     operatorId: getAllFeedbackImageURLs
+ *     description: Get all feedback image URLs
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Feedback ID
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: Bad Request
+ */
+router.route("/getAllFeedbackImageURLs/:feedbackId").get(getAllFeedbackImageURLs);
 
 /**
  * @swagger
