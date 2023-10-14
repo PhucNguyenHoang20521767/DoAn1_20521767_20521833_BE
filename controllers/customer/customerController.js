@@ -93,6 +93,35 @@ exports.getCustomerAvatarURL = async (req, res, next) => {
     }
 };
 
+exports.getCustomerAvatarURLById = async (req, res, next) => {
+    const { customerId } = req.params;
+
+    if (!customerId || !mongoose.Types.ObjectId.isValid(customerId))
+        return next(new ErrorResponse("Please provide valid customer's ID", 400));
+
+    try {
+        const customer = await Customer.findById(customerId);
+
+        if (!customer)
+            return next(new ErrorResponse("No customer found", 404));
+
+        const customerAvatar = await Attachment.findById(customer.customerAvatar);
+
+        if (!customerAvatar)
+            return next(new ErrorResponse("No avatar found", 404));
+
+        const avaURL = await getDownloadURL(ref(firebaseStorage, `attachments/${customerAvatar.attachmentName}`));
+
+        res.status(200).json({
+            success: true,
+            message: "Get avatar successfully",
+            data: avaURL
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 exports.saveCustomerAvatar = async (req, res, next) => {
     const currentCustomer = req.user;
 
