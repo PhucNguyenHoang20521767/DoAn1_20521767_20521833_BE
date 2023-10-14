@@ -4,7 +4,7 @@ const { protect, adminProtect } = require("../middleware/auth");
 const { uploadMemoryStorage } = require("../config/attachment");
 
 const { registerCustomer, loginGoogleAndFacebookCustomer, loginCustomer, logoutCustomer, sendOTPToCustomer, forgetPasswordCustomer, changePasswordCustomer, verifyCustomerAfterSendOTP, resetPasswordCustomer } = require("../controllers/customer/auth_customer");
-const { getAllCustomers, getCustomerById, getCustomerAvatar, getCustomerAvatarURL, saveCustomerAvatar, deleteCustomerAvatar, updateCustomer, updateCustomerByAdmin, deleteCustomer, activeOrInactiveCustomer } = require("../controllers/customer/customerController");
+const { getAllCustomers, getCustomerById, getCustomerAvatar, getCustomerAvatarURL, getCustomerAvatarURLById, saveCustomerAvatar, deleteCustomerAvatar, updateCustomer, updateCustomerByAdmin, deleteCustomer, activeOrInactiveCustomer } = require("../controllers/customer/customerController");
 
 const firebaseStorage = require("../config/firebase");
 const { ref, uploadBytesResumable } = require("firebase/storage");
@@ -361,6 +361,29 @@ router.route("/getCustomerAvatar").get(protect, getCustomerAvatar);
  *         description: Not Found
  */
 router.route("/getCustomerAvatarURL").get(protect, getCustomerAvatarURL);
+
+/**
+ * @swagger
+ * /api/customers/getCustomerAvatarURLById/{id}:
+ *   get:
+ *     tags: [Customer]
+ *     operatorId: getCustomerAvatarURLById
+ *     description: Get customer avatar URL by ID
+ *     security:
+ *       - bearer: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Customer ID
+ *     responses:
+ *       200:
+ *         description: Success
+ *       404:
+ *         description: Not Found
+ */
+router.route("/getCustomerAvatarURLById/:customerId").get(getCustomerAvatarURLById);
 
 /**
  * @swagger
