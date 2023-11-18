@@ -304,6 +304,8 @@ router.route("/getAllFeedbackImageURLs/:feedbackId").get(getAllFeedbackImageURLs
  *       201:
  *         description: Upload Successful
  *       400:
+ *         description: Bad Request
+ *       404:
  *         description: Not Found
  */
 router.route("/saveFeedbackImage/:feedbackId").post(protect, uploadMemoryStorage.array("Files[]"), async (req, res, next) => {
