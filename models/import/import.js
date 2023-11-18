@@ -47,6 +47,6 @@ module.exports = Import;
  *           type: string
  *         importDate:
  *           type: string
- *         importStatus
+ *         importStatus:
  *           type: string
  */
