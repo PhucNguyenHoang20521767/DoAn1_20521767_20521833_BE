@@ -49,7 +49,7 @@ passport.deserializeUser((user, done) => {
 
 const swaggerOptions = {
     swaggerDefinition: swaggerDocument,
-    apis: ["server.js", "./routes/*.js", "./middleware/*.js", "./models/*.js"]
+    apis: ["server.js", "./routes/*.js", "./middleware/*.js", "./models/*.js", "./models/*/*.js"]
 }
 
 app.get("/", function (req, res) {
@@ -70,6 +70,7 @@ app.use("/api/products", require("./routes/products"));
 app.use("/api/imports", require("./routes/imports"));
 app.use("/api/discounts", require("./routes/discounts"));
 app.use("/api/payments", require("./routes/payments"));
+app.use("/api/posts", require("./routes/blog_posts"));
 app.use("/api/suppliers", require("./routes/suppliers"));
 app.use("/api/categories", require("./routes/categories"));
 app.use("/api/subcategories", require("./routes/subcategories"));
