@@ -1,12 +1,16 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const postContentSchema = require("./post_content").schema;
 
 var blogPostSchema = new Schema(
     {
         blogPostTitle: {
             type: String,
             required: [true, "Please provide blog post's title"],
+            trim: true
+        },
+        blogPostAuthor: {
+            type: String,
+            required: [true, "Please provide blog post's author name"],
             trim: true
         },
         blogPostTag: {
@@ -25,9 +29,9 @@ var blogPostSchema = new Schema(
             trim: true
         },
         blogPostContent: {
-            type: [postContentSchema],
+            type: String,
             required: [true, "Please provide blog post's content"],
-            default: []
+            trim: true
         },
         isHidden: {
             type: Boolean,
@@ -48,10 +52,13 @@ module.exports = BlogPost;
  *       type: object
  *       required:
  *         - blogPostTitle
+ *         - blogPostAuthor
  *         - blogPostTag
  *         - blogPostContent
  *       properties:
  *         blogPostTitle:
+ *           type: string
+ *         blogPostAuthor:
  *           type: string
  *         blogPostTag:
  *           type: string
@@ -60,9 +67,15 @@ module.exports = BlogPost;
  *         blogPostThumbnail:
  *           type: string
  *         blogPostContent:
- *           type: array
- *           items:
- *             $ref: '#/components/schemas/PostContent'
+ *           type: string
  *         isHidden:
  *           type: boolean
  */
+
+// const postContentSchema = require("./post_content").schema;
+//
+// blogPostContent: {
+//     type: [postContentSchema],
+//     required: [true, "Please provide blog post's content"],
+//     default: []
+// }
