@@ -70,7 +70,7 @@ exports.createBlogPost = async (req, res, next) => {
     const { blogPostTitle, blogPostAuthor, blogPostTag, blogPostDescription, blogPostContent } = req.body;
 
     try {
-        await BlogPost.create({
+        const blogPost = await BlogPost.create({
             blogPostTitle,
             blogPostAuthor,
             blogPostTag,
@@ -80,7 +80,8 @@ exports.createBlogPost = async (req, res, next) => {
 
         res.status(201).json({
             success: true,
-            message: "Create blog post successfully"
+            message: "Create blog post successfully",
+            data: blogPost
         });
     } catch (error) {
         next(error);
