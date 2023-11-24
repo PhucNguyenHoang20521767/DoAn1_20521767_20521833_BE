@@ -45,6 +45,24 @@ exports.getAllBlogPosts = async (req, res, next) => {
     }
 };
 
+exports.getLatestBlogPosts = async (req, res, next) => {
+    try {
+        const blogPosts =
+            await BlogPost
+                .find()
+                .sort({ createdAt: -1 })
+                .limit(5);
+
+        res.status(200).json({
+            success: true,
+            message: "List of latest blog posts fetched successfully",
+            data: blogPosts
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 exports.getBlogPostById = async (req, res, next) => {
     const { blogPostId } = req.params;
 

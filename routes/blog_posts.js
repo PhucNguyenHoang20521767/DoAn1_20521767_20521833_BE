@@ -4,7 +4,7 @@ const { query } = require("../middleware/query");
 const { protect, adminProtect } = require("../middleware/auth");
 const { uploadMemoryStorage } = require("../config/attachment");
 
-const { getAllBlogPosts, getBlogPostById, createBlogPost, saveBlogPostThumbnail, uploadBlogPostImage, updateBlogPost, hideOrUnhideBlogPost, deleteBlogPost } = require("../controllers/blogPostController");
+const { getAllBlogPosts, getLatestBlogPosts, getBlogPostById, createBlogPost, saveBlogPostThumbnail, uploadBlogPostImage, updateBlogPost, hideOrUnhideBlogPost, deleteBlogPost } = require("../controllers/blogPostController");
 
 const firebaseStorage = require("../config/firebase");
 const { ref, uploadBytesResumable } = require("firebase/storage");
@@ -36,6 +36,21 @@ const { ref, uploadBytesResumable } = require("firebase/storage");
  *         description: Bad Request
  */
 router.route("/getAllBlogPosts").get(query, getAllBlogPosts);
+
+/**
+ * @swagger
+ * /api/posts/getLatestBlogPosts:
+ *   get:
+ *     tags: [Blog Post]
+ *     operatorId: getLatestBlogPosts
+ *     description: Get latest blog posts
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: Bad Request
+ */
+router.route("/getLatestBlogPosts").get(getLatestBlogPosts);
 
 /**
  * @swagger
