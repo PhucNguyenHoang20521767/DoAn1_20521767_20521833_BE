@@ -20,10 +20,7 @@ exports.query = async (req, res, next) => {
 
     req.pagination = {
         page: page && parseInt(page) > 1 ? parseInt(page) : 1,
-        limit: limit && parseInt(limit) ? parseInt(limit) : 10,
-        skip:
-            ((page && parseInt(page) > 1 ? parseInt(page) : 1) - 1) *
-            (limit && parseInt(limit) ? parseInt(limit) : 10)
+        limit: limit && parseInt(limit) ? parseInt(limit) : "TOTAL"
     };
 
     next();
