@@ -49,7 +49,7 @@ exports.getLatestBlogPosts = async (req, res, next) => {
     try {
         const blogPosts =
             await BlogPost
-                .find()
+                .find({ isHidden: { $ne: true } })
                 .sort({ createdAt: -1 })
                 .limit(5);
 
