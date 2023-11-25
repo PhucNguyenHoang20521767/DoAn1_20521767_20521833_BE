@@ -20,6 +20,8 @@ exports.getAllBlogPosts = async (req, res, next) => {
     }
 
     let total = BlogPost.countDocuments(options);
+    let limit = req.pagination.limit === "TOTAL" ? parseInt(await total) : req.pagination.limit;
+    let skip = (req.pagination.page - 1) * limit;
     let lastPage = Math.ceil(parseInt(await total) / req.pagination.limit);
     
     if (lastPage < 1 && total > 0) {
@@ -29,8 +31,8 @@ exports.getAllBlogPosts = async (req, res, next) => {
     try {
         const blogPosts = await BlogPost
             .find(options)
-            .limit(req.pagination.limit)
-            .skip(req.pagination.skip);
+            .limit(limit)
+            .skip(skip);
 
         res.status(200).json({
             success: true,
