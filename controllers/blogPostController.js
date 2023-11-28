@@ -31,6 +31,7 @@ exports.getAllBlogPosts = async (req, res, next) => {
     try {
         const blogPosts = await BlogPost
             .find(options)
+            .sort({ createdAt: -1 })
             .limit(limit)
             .skip(skip);
 
