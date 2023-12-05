@@ -1,8 +1,13 @@
 const express = require("express");
 const router = express.Router();
+const { query } = require("../middleware/query");
 const { protect, staffAndAdminProtect, adminProtect } = require("../middleware/auth");
+const { uploadMemoryStorage } = require("../config/attachment");
 
-const { getAllDiscounts, getDiscountById, getAllProductsForDiscount, resetDiscount, applyDiscountForProduct, createDiscount, updateDiscount, deleteDiscount } = require("../controllers/discountController");
+const { getAllDiscounts, getAllValidDiscounts, getDiscountById, getAllProductsForDiscount, resetDiscount, applyDiscountForProduct, createDiscount, saveDiscountThumbnail, updateDiscount, deleteDiscount } = require("../controllers/discountController");
+
+const firebaseStorage = require("../config/firebase");
+const { ref, uploadBytesResumable } = require("firebase/storage");
 
 /**
  * @swagger
@@ -11,13 +16,54 @@ const { getAllDiscounts, getDiscountById, getAllProductsForDiscount, resetDiscou
  *     tags: [Discount]
  *     operatorId: getAllDiscounts
  *     description: Get all discounts
+ *     parameters:
+ *       - in: query
+ *         name: search
+ *         type: string
+ *         description: Search by discount name
+ *       - in: query
+ *         name: page
+ *         type: string
+ *         description: Specify page number
+ *       - in: query
+ *         name: limit
+ *         type: string
+ *         description: Limit the number of rows returned from a query
  *     responses:
  *       200:
  *         description: Success
  *       400:
  *         description: Bad Request
  */
-router.route("/getAllDiscounts").get(getAllDiscounts);
+router.route("/getAllDiscounts").get(query, getAllDiscounts);
+
+/**
+ * @swagger
+ * /api/discounts/getAllValidDiscounts:
+ *   get:
+ *     tags: [Discount]
+ *     operatorId: getAllValidDiscounts
+ *     description: Get all valid discounts
+ *     parameters:
+ *       - in: query
+ *         name: search
+ *         type: string
+ *         description: Search by discount name
+ *       - in: query
+ *         name: page
+ *         type: string
+ *         description: Specify page number
+ *       - in: query
+ *         name: limit
+ *         type: string
+ *         description: Limit the number of rows returned from a query
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: Bad Request
+ */
+router.route("/getAllValidDiscounts").get(query, getAllValidDiscounts);
 
 /**
  * @swagger
@@ -49,8 +95,6 @@ router.route("/getDiscountById/:discountId").get(getDiscountById);
  *     tags: [Discount]
  *     operatorId: getAllProductsForDiscount
  *     description: Get all products for discount
- *     security:
- *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -65,7 +109,7 @@ router.route("/getDiscountById/:discountId").get(getDiscountById);
  *       404:
  *         description: Not Found
  */
-router.route("/getAllProductsForDiscount/:discountId").get(adminProtect, protect, getAllProductsForDiscount);
+router.route("/getAllProductsForDiscount/:discountId").get(getAllProductsForDiscount);
 
 /**
  * @swagger
@@ -144,6 +188,61 @@ router.route("/applyDiscountForProduct/:productId/:discountId").put(adminProtect
  *         description: Bad Request
  */
 router.route("/createDiscount").post(staffAndAdminProtect, protect, createDiscount);
+
+/**
+ * @swagger
+ * /api/discounts/saveDiscountThumbnail/{id}:
+ *   post:
+ *     tags: [Discount]
+ *     operatorId: saveDiscountThumbnail
+ *     description: Save discount's thumbnail
+ *     security:
+ *       - bearer: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *         description: Discount ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - Files[]
+ *             properties:
+ *               Files[]:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *     responses:
+ *       200:
+ *         description: Saved
+ *       400:
+ *         description: Bad Request
+ *       404:
+ *         description: Not Found
+ */
+router.route("/saveDiscountThumbnail/:discountId").post(staffAndAdminProtect, protect, uploadMemoryStorage.array("Files[]"), async (req, res, next) => {
+    try {
+        if (req.files) {
+            req.files.forEach((file) => {
+                file.originalname = "discountThumbnail_" + file.originalname + "_" + Date.now();
+                req.thumbnailOriginalName = file.originalname;
+                uploadBytesResumable(ref(firebaseStorage, `attachments/${file.originalname}`), file.buffer, { contentType: file.mimetype});
+            });
+        }
+
+        setTimeout(() => {
+            next();
+        }, 10000);
+    } catch (error) {
+        next(error);
+    }
+}, saveDiscountThumbnail);
 
 /**
  * @swagger
