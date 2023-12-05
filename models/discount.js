@@ -12,6 +12,11 @@ var discountSchema = new Schema(
             type: String,
 			trim: true
         },
+        discountThumbnail: {
+            type: String,
+            default: "",
+            trim: true
+        },
         discountPercent: {
             type: Number,
             required: [true, "Please provide discount's percent"],
@@ -47,6 +52,8 @@ module.exports = Discount;
  *         discountName:
  *           type: string
  *         discountDescription:
+ *           type: string
+ *         discountThumbnail:
  *           type: string
  *         discountPercent:
  *           type: number
