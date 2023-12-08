@@ -10,6 +10,8 @@ const passport = require("passport");
 const passportGoogleStrategy = require("./passport_google");
 const passportFacebookStrategy = require("./passport_facebook");
 
+const socket = require("socket.io");
+
 const app = express();
 connectDb();
 
@@ -80,6 +82,9 @@ app.use("/api/attachments", require("./routes/attachments"));
 app.use("/api/colors", require("./routes/colors"));
 app.use("/api/statistics", require("./routes/statistics"));
 
+app.use("/api/conversations", require("./routes/conversations"));
+app.use("/api/messages", require("./routes/messages"));
+
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerJsDoc(swaggerOptions)));
 
 // Authentication
@@ -96,4 +101,32 @@ app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerJsDoc(swaggerOptions)))
 // Error Handler
 app.use(errorHandler);
 
-app.listen(process.env.PORT || 5000, () => console.log("Up and running 🚀"));
+const server = app.listen(process.env.PORT || 5000, () => console.log("Up and running 🚀"));
+
+// Socket.IO Configuration
+const io = socket(server, {
+	cors: {
+		origin:
+			(process.env.ENVIRONMENT === "Production")
+			? ["https://nguyenshomefurniture.vercel.app", "https://nguyenshomefurniture-admin.vercel.app"]
+			: ["http://localhost:5173", "http://localhost:5174"],
+		credentials: true
+	}
+});
+
+global.onlineUsers = new Map();
+
+io.on("connection", (socket) => {
+
+	socket.on("addUser", (userId) => {
+		onlineUsers.set(userId, socket.id)
+	});
+
+	socket.on("sendMessage", (data) => {
+		const receiverSocket = onlineUsers.get(data.receiverId);
+
+		if (receiverSocket) {
+			socket.to(receiverSocket).emit("receiveMessage", data.senderId, data.messageText);
+		}
+	});
+});
