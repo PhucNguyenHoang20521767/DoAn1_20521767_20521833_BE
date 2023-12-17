@@ -369,8 +369,6 @@ router.route("/getCustomerAvatarURL").get(protect, getCustomerAvatarURL);
  *     tags: [Customer]
  *     operatorId: getCustomerAvatarURLById
  *     description: Get customer avatar URL by ID
- *     security:
- *       - bearer: []
  *     parameters:
  *       - in: path
  *         name: id
