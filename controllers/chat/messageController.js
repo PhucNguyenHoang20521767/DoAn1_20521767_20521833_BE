@@ -30,12 +30,13 @@ exports.getLastMessageForConversation = async (req, res, next) => {
         return next(new ErrorResponse("Please provide valid conversation's ID", 400));
 
     try {
-        const message = await Message.find({ conversationId: conversationId }).sort({ createdAt: -1 }).limit(1);
+        const messages = await Message.find({ conversationId: conversationId });
+        const lastMessage = await Message.countDocuments({ conversationId: conversationId });
 
         res.status(200).json({
             success: true,
             messages: "Last message fetched successfully",
-            data: message
+            data: messages[lastMessage - 1]
         });
     } catch (error) {
         next(error);
