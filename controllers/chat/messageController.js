@@ -9,14 +9,59 @@ exports.getAllMessagesForConversation = async (req, res, next) => {
         return next(new ErrorResponse("Please provide valid conversation's ID", 400));
 
     try {
-         const messages = await Message.find({
+        const messages = await Message.find({
             conversationId: conversationId
-         });
+        });
 
-         res.status(200).json({
+        res.status(200).json({
             success: true,
             messages: "List of messages fetched successfully",
             data: messages
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.getLastMessageForConversation = async (req, res, next) => {
+    const { conversationId } = req.params;
+
+    if (!conversationId || !mongoose.Types.ObjectId.isValid(conversationId))
+        return next(new ErrorResponse("Please provide valid conversation's ID", 400));
+
+    try {
+        const message = await Message.find({ conversationId: conversationId }).sort({ createdAt: -1 }).limit(1);
+
+        res.status(200).json({
+            success: true,
+            messages: "Last message fetched successfully",
+            data: message
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.getNumberOfUnreadMessages = async (req, res, next) => {
+    const { conversationId, senderId } = req.params;
+
+    if (!conversationId || !mongoose.Types.ObjectId.isValid(conversationId))
+        return next(new ErrorResponse("Please provide valid conversation's ID", 400));
+
+    if (!senderId || !mongoose.Types.ObjectId.isValid(senderId))
+        return next(new ErrorResponse("Please provide valid sender's ID", 400));
+
+    try {
+        const total = await Message.countDocuments({
+            conversationId: conversationId,
+            senderId: senderId,
+            unreadMessage: true
+        });
+
+        res.status(200).json({
+            success: true,
+            messages: "Number of unread messages fetched successfully",
+            data: total
         });
     } catch (error) {
         next(error);
@@ -63,6 +108,27 @@ exports.deleteMessage = async (req, res, next) => {
         res.status(200).json({
             success: true,
             message: "Delete message successfully"
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.markAllMessagesAsRead = async (req, res, next) => {
+    const { conversationId } = req.params;
+
+    if (!conversationId || !mongoose.Types.ObjectId.isValid(conversationId))
+        return next(new ErrorResponse("Please provide valid conversation's ID", 400));
+
+    try {
+        await Message.updateMany(
+            { conversationId: conversationId },
+            { unreadMessage: false }
+        );
+
+        res.status(200).json({
+            success: true,
+            message: "Mark all messages as read successfully"
         });
     } catch (error) {
         next(error);
