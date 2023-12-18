@@ -22,6 +22,10 @@ var messageSchema = new Schema(
         messageSentDate: {
             type: Date,
             default: new Date()
+        },
+        unreadMessage: {
+            type: Boolean,
+            default: true
         }
     },
     { timestamps: true }
@@ -49,4 +53,6 @@ module.exports = Message;
  *           type: string
  *         messageSentDate:
  *           type: string
+ *         unreadMessage:
+ *           type: boolean
  */
