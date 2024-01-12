@@ -74,7 +74,7 @@ exports.getOrderById = async (req, res, next) => {
 };
 
 exports.createOrder = async (req, res, next) => {
-    const { customerId, orderCode, orderStatus, orderNote, orderAddress, paymentMethod, orderShippingFee } = req.body;
+    const { customerId, orderCode, orderStatus, orderNote, orderAddress, paymentMethod, orderShippingFee, voucherId } = req.body;
 
     try {
         const order = await Order.create({
@@ -84,7 +84,8 @@ exports.createOrder = async (req, res, next) => {
             orderNote,
             orderAddress,
             paymentMethod,
-            orderShippingFee
+            orderShippingFee,
+            voucherId
         });
 
         res.status(201).json({
@@ -103,7 +104,7 @@ exports.updateOrder = async (req, res, next) => {
     if (!orderId || !mongoose.Types.ObjectId.isValid(orderId))
         return next(new ErrorResponse("Please provide valid order's ID", 400));
 
-    const { customerId, staffId, orderCode, orderStatus, orderNote, orderAddress, paymentMethod, orderShippingFee, orderCompleteDay } = req.body;
+    const { customerId, staffId, orderCode, orderStatus, orderNote, orderAddress, paymentMethod, orderShippingFee, orderCompleteDay, voucherId } = req.body;
 
     try {
         const order = await Order.findByIdAndUpdate(orderId, {
@@ -115,7 +116,8 @@ exports.updateOrder = async (req, res, next) => {
             orderAddress,
             paymentMethod,
             orderShippingFee,
-            orderCompleteDay
+            orderCompleteDay,
+            voucherId
         });
 
         if (!order)
