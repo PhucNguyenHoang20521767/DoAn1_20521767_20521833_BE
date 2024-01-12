@@ -84,6 +84,7 @@ app.use("/api/statistics", require("./routes/statistics"));
 
 app.use("/api/conversations", require("./routes/conversations"));
 app.use("/api/messages", require("./routes/messages"));
+app.use("/api/vouchers", require("./routes/vouchers"));
 
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerJsDoc(swaggerOptions)));
 

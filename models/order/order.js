@@ -57,6 +57,12 @@ var orderSchema = new Schema(
         },
         orderCompleteDay: {
             type: Date
+        },
+        voucherId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Voucher",
+            trim: true,
+            default: null
         }
     },
     { timestamps: true }
@@ -95,5 +101,7 @@ module.exports = Order;
  *         orderShippingFee:
  *           type: number
  *         orderCompleteDay:
+ *           type: string
+ *         voucherId:
  *           type: string
  */
