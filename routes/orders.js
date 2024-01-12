@@ -92,6 +92,8 @@ router.route("/getOrderById/:orderId").get(getOrderById);
  *                 type: string
  *               orderShippingFee:
  *                 type: number
+ *               voucherId:
+ *                 type: string
  *     responses:
  *       201:
  *         description: Created
@@ -138,6 +140,8 @@ router.route("/createOrder").post(protect, createOrder);
  *               orderShippingFee:
  *                 type: number
  *               orderCompleteDay:
+ *                 type: string
+ *               voucherId:
  *                 type: string
  *     responses:
  *       200:
