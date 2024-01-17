@@ -1,4 +1,5 @@
 const moment = require("moment");
+const request = require("request");
 const express = require("express");
 const router = express.Router();
 const { protect, adminProtect } = require("../middleware/auth");
@@ -20,7 +21,7 @@ router.route("/createVNPayURL").post((req, res, next) => {
     let secretKey = process.env.VNPAY_HASH_SECRET;
     let vnpUrl = process.env.VNPAY_URL;
     let returnUrl = process.env.VNPAY_RETURN_URL;
-    let orderId = moment(date).format("DDHHmmss");
+    let orderId = moment(date).format("HHmmss");
     let amount = req.body.amount;
     let bankCode = req.body.bankCode;
 
@@ -92,6 +93,65 @@ router.route("/getVNPayReturn").get((req, res, next) => {
         });
     } else
         return next(new ErrorResponse("Invalid signature", 400));
+});
+
+router.route("/refundVNPay").post((req, res, next) => {
+    let date = new Date();
+    let crypto = require("crypto");
+
+    let tmnCode = process.env.VNPAY_TMN_CODE;
+    let secretKey = process.env.VNPAY_HASH_SECRET;
+    let vnpApi = process.env.VNPAY_API;
+
+    let vnpTxnRef = req.body.orderId;
+    let vnpTransactionDate = req.body.transactionDate;
+    let vnpAmount = req.body.amount * 100;
+    let vnpTransactionType = req.body.transactionType;
+    let vnpCreateBy = req.body.user
+
+    let vnpRequestId = moment(date).format("HHmmss");
+    let vnpVersion = "2.1.0";
+    let vnpCommand = "refund";
+    let vnpOrderInfo = "Hoan tien cho ma GD: " + vnpTxnRef;
+
+    let vnpIpAddress = req.headers["x-forwarded-for"] ||
+        req.connection.remoteAddress ||
+        req.socket.remoteAddress ||
+        req.connection.socket.remoteAddress;
+
+    let vnpCreateDate = moment(date).format("YYYYMMDDHHmmss");
+
+    let vnpTransactionNo = "0";
+
+    let data = vnpRequestId + "|" + vnpVersion + "|" + vnpCommand + "|" + tmnCode + "|" + vnpTransactionType + "|" + vnpTxnRef + "|" + vnpAmount + "|" + vnpTransactionNo + "|" + vnpTransactionDate + "|" + vnpCreateBy + "|" + vnpCreateDate + "|" + vnpIpAddress + "|" + vnpOrderInfo;
+    let hmac = crypto.createHmac("sha512", secretKey);
+    let vnpSecureHash = hmac.update(Buffer.from(data, "utf-8")).digest("hex");
+
+    let dataObj = {
+        "vnp_RequestId": vnpRequestId,
+        "vnp_Version": vnpVersion,
+        "vnp_Command": vnpCommand,
+        "vnp_TmnCode": tmnCode,
+        "vnp_TransactionType": vnpTransactionType,
+        "vnp_TxnRef": vnpTxnRef,
+        "vnp_Amount": vnpAmount,
+        "vnp_TransactionNo": vnpTransactionNo,
+        "vnp_CreateBy": vnpCreateBy,
+        "vnp_OrderInfo": vnpOrderInfo,
+        "vnp_TransactionDate": vnpTransactionDate,
+        "vnp_CreateDate": vnpCreateDate,
+        "vnp_IpAddr": vnpIpAddress,
+        "vnp_SecureHash": vnpSecureHash
+    };
+
+    request({
+        url: vnpApi,
+        method: "POST",
+        json: true,
+        body: dataObj
+    }, (error, response, body) => {
+        console.log(response);
+    });
 });
 
 /**
