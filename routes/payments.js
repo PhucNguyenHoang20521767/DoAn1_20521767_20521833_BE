@@ -109,39 +109,39 @@ router.route("/refundVNPay").post((req, res, next) => {
     let vnpTransactionType = req.body.transactionType;
     let vnpCreateBy = req.body.user
 
-    let vnpRequestId = moment(date).format("HHmmss");
-    let vnpVersion = "2.1.0";
-    let vnpCommand = "refund";
-    let vnpOrderInfo = "Hoan tien cho ma GD: " + vnpTxnRef;
+    let vnpRequestId = moment(date).format('HHmmss');
+    let vnpVersion = '2.1.0';
+    let vnpCommand = 'refund';
+    let vnpOrderInfo = 'Hoan tien cho ma GD: ' + vnpTxnRef;
 
-    let vnpIpAddress = req.headers["x-forwarded-for"] ||
+    let vnpIpAddress = req.headers['x-forwarded-for'] ||
         req.connection.remoteAddress ||
         req.socket.remoteAddress ||
         req.connection.socket.remoteAddress;
 
-    let vnpCreateDate = moment(date).format("YYYYMMDDHHmmss");
+    let vnpCreateDate = moment(date).format('YYYYMMDDHHmmss');
 
-    let vnpTransactionNo = "0";
+    let vnpTransactionNo = '0';
 
     let data = vnpRequestId + "|" + vnpVersion + "|" + vnpCommand + "|" + tmnCode + "|" + vnpTransactionType + "|" + vnpTxnRef + "|" + vnpAmount + "|" + vnpTransactionNo + "|" + vnpTransactionDate + "|" + vnpCreateBy + "|" + vnpCreateDate + "|" + vnpIpAddress + "|" + vnpOrderInfo;
     let hmac = crypto.createHmac("sha512", secretKey);
     let vnpSecureHash = hmac.update(Buffer.from(data, "utf-8")).digest("hex");
 
     let dataObj = {
-        "vnp_RequestId": vnpRequestId,
-        "vnp_Version": vnpVersion,
-        "vnp_Command": vnpCommand,
-        "vnp_TmnCode": tmnCode,
-        "vnp_TransactionType": vnpTransactionType,
-        "vnp_TxnRef": vnpTxnRef,
-        "vnp_Amount": vnpAmount,
-        "vnp_TransactionNo": vnpTransactionNo,
-        "vnp_CreateBy": vnpCreateBy,
-        "vnp_OrderInfo": vnpOrderInfo,
-        "vnp_TransactionDate": vnpTransactionDate,
-        "vnp_CreateDate": vnpCreateDate,
-        "vnp_IpAddr": vnpIpAddress,
-        "vnp_SecureHash": vnpSecureHash
+        'vnp_RequestId': vnpRequestId,
+        'vnp_Version': vnpVersion,
+        'vnp_Command': vnpCommand,
+        'vnp_TmnCode': tmnCode,
+        'vnp_TransactionType': vnpTransactionType,
+        'vnp_TxnRef': vnpTxnRef,
+        'vnp_Amount': vnpAmount,
+        'vnp_TransactionNo': vnpTransactionNo,
+        'vnp_CreateBy': vnpCreateBy,
+        'vnp_OrderInfo': vnpOrderInfo,
+        'vnp_TransactionDate': vnpTransactionDate,
+        'vnp_CreateDate': vnpCreateDate,
+        'vnp_IpAddr': vnpIpAddress,
+        'vnp_SecureHash': vnpSecureHash
     };
 
     request({
