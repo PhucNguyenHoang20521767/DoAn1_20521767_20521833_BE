@@ -150,7 +150,9 @@ router.route("/refundVNPay").post((req, res, next) => {
         json: true,
         body: dataObj
     }, (error, response, body) => {
-        console.log(response);
+        res.status(200).json({
+            response: response
+        });
     });
 });
 
